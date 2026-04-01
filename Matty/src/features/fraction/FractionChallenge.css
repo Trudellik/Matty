@@ -1,0 +1,274 @@
+/* ── Shared page shell ── */
+.frac-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.frac-back-btn {
+  align-self: flex-start;
+  margin: 24px 24px 0;
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 15px;
+  color: var(--text-h);
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: border-color 0.2s;
+}
+.frac-back-btn:hover { border-color: var(--accent); }
+.frac-topbar-back { margin: 0; font-size: 13px; padding: 6px 12px; }
+
+/* ── Idle / Game over ── */
+.frac-idle {
+  justify-content: center;
+  padding: 40px 24px;
+}
+.frac-idle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  max-width: 480px;
+}
+.frac-idle-icon {
+  font-size: 72px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--accent);
+}
+.frac-idle-content h1 {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  margin: 0;
+  color: var(--text-h);
+}
+.frac-idle-subtitle { font-size: 17px; color: var(--text); margin: 0; }
+.frac-best-badge {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-radius: 20px;
+  padding: 6px 18px;
+}
+.frac-final-score {
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--text-h);
+  line-height: 1;
+}
+.frac-final-label { font-size: 18px; color: var(--text); }
+.frac-new-best {
+  font-size: 14px;
+  font-weight: 600;
+  color: #16a34a;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+.frac-idle-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.frac-start-btn {
+  padding: 14px 56px;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--sans);
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.frac-start-btn:hover { opacity: 0.88; transform: scale(1.04); }
+.frac-home-btn {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--sans);
+  color: var(--text-h);
+  background: var(--social-bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.frac-home-btn:hover { border-color: var(--accent); }
+
+/* ── Game screen ── */
+.frac-game {
+  height: 100svh;
+  padding: 12px 20px 24px;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.frac-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.frac-lives     { display: flex; gap: 4px; font-size: 24px; }
+.life-full      { display: inline-block; }
+.life-lost      { display: inline-block; filter: grayscale(1); opacity: 0.4; }
+.life-cracking  { display: inline-block; animation: heart-crack 0.9s ease-out forwards; }
+
+@keyframes heart-crack {
+  0%   { transform: scale(1.6);  filter: brightness(1.4); }
+  15%  { transform: scale(1.4) rotate(-8deg); }
+  35%  { transform: scale(1.2) rotate(6deg);  }
+  55%  { transform: scale(1.1) rotate(-4deg); filter: brightness(0.9); }
+  75%  { transform: scale(1.0) rotate(2deg);  }
+  100% { transform: scale(0.9); opacity: 0.2; }
+}
+
+.frac-score-display {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text-h);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+.frac-level-badge {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+
+.frac-instruction {
+  font-size: 16px;
+  color: var(--text);
+  margin: 0 0 8px;
+  flex-shrink: 0;
+}
+
+/* ── Fraction cards arena ── */
+.frac-arena {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vw, 40px);
+  flex-wrap: wrap;
+  padding: 16px 0;
+}
+
+.frac-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: clamp(20px, 4vw, 40px) clamp(24px, 5vw, 56px);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  background: var(--social-bg);
+  cursor: pointer;
+  font-family: var(--mono);
+  transition: border-color 0.15s, transform 0.12s, background 0.15s;
+  min-width: clamp(100px, 18vw, 160px);
+}
+.frac-card:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  transform: scale(1.06);
+}
+.frac-card:active:not(:disabled) { transform: scale(0.96); }
+
+.frac-card-focused {
+  border-color: var(--text-h);
+  box-shadow: 0 0 0 2px var(--text-h);
+}
+.frac-card-correct {
+  border-color: #22c55e !important;
+  background: rgba(34, 197, 94, 0.12) !important;
+  animation: card-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.frac-card-wrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  animation: card-shake 0.35s ease-out;
+}
+
+@keyframes card-pop {
+  from { transform: scale(0.92); }
+  to   { transform: scale(1); }
+}
+@keyframes card-shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-6px); }
+  75%       { transform: translateX(6px); }
+}
+
+/* ── Fraction display inside card ── */
+.frac-numer {
+  font-size: clamp(32px, 7vw, 64px);
+  font-weight: 800;
+  color: var(--text-h);
+  line-height: 1;
+}
+.frac-line {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--text-h);
+  border-radius: 2px;
+}
+.frac-denom {
+  font-size: clamp(32px, 7vw, 64px);
+  font-weight: 800;
+  color: var(--text-h);
+  line-height: 1;
+}
+
+/* ── Directional pick buttons (cross layout) ── */
+.frac-nav-cross {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-bottom: 8px;
+  min-height: 152px; /* stable height: top row + mid row + bottom row */
+}
+.frac-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+}
+.frac-nav-gap { width: 56px; }
+.frac-nav-btn {
+  width: 56px;
+  height: 56px;
+  font-size: 20px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: var(--social-bg);
+  color: var(--text-h);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.frac-nav-btn:hover  { border-color: var(--accent); background: var(--accent-bg); transform: scale(1.06); }
+.frac-nav-btn:active { transform: scale(0.94); }
+
+@media (max-width: 600px) {
+  .frac-game { padding: 8px 12px 16px; }
+  .frac-arena { gap: 12px; }
+}
