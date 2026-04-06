@@ -1,0 +1,113 @@
+/* ── Root ────────────────────────────────────────────────────────── */
+.gh-root {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Topbar row ──────────────────────────────────────────────────── */
+.gh-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  gap: 0.5rem;
+}
+
+/* Quit button */
+.gh-quit-btn {
+  background: none;
+  border: none;
+  color: var(--accent, #7c9ef5);
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0.2rem 0.4rem;
+}
+
+/* Centre: streak + lives */
+.gh-centre {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gh-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  color: var(--text-muted, #aaa);
+}
+
+.gh-streak-hot { color: #ff9800; }
+
+.gh-streak-count { font-weight: 700; }
+
+.gh-lives {
+  display: flex;
+  gap: 0.15rem;
+  font-size: 1.1rem;
+}
+
+.life-lost { opacity: 0.35; }
+
+.life-cracking {
+  animation: crack 0.5s ease forwards;
+}
+
+@keyframes crack {
+  0%   { transform: scale(1);   }
+  40%  { transform: scale(1.4); }
+  100% { transform: scale(0.8); opacity: 0.4; }
+}
+
+/* Right: score + badge */
+.gh-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.gh-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text, #fff);
+}
+
+.gh-difficulty-badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent-dim, rgba(124,158,245,0.15));
+  color: var(--accent, #7c9ef5);
+  white-space: nowrap;
+}
+
+/* ── Timer drain bar ─────────────────────────────────────────────── */
+.gh-timer-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.gh-timer-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--accent, #7c9ef5);
+  transform-origin: left;
+  animation: gh-drain linear forwards;
+}
+
+.gh-timer-danger .gh-timer-fill,
+.gh-timer-fill.gh-timer-danger {
+  background: #e53935;
+}
+
+@keyframes gh-drain {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
