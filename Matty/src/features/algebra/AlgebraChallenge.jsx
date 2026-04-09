@@ -11,7 +11,7 @@ import './AlgebraChallenge.css'
 export default function AlgebraChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   const game = useAlgebraGame({
     saveScore:        (s) => saveScore('algebra', s),
@@ -29,7 +29,7 @@ export default function AlgebraChallenge() {
     const algScores = typeof scores['algebra'] === 'object' ? scores['algebra'] : {}
     return (
       <div className="alg-page">
-        <button className="alg-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="alg-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="alg-header">
           <span className="alg-big-icon">𝑥</span>
           <h1>{t('alg_title')}</h1>
@@ -66,7 +66,7 @@ export default function AlgebraChallenge() {
         actions={[
           { label: t('alg_play_again'),    onClick: playAgain,                primary: true },
           { label: t('alg_change_level'),  onClick: () => selectLevel(null) },
-          { label: t('mult_home'),         onClick: () => navigate('/') },
+          { label: t('mult_home'),         onClick: () => navigate(homePath()) },
         ]}
       />
     )

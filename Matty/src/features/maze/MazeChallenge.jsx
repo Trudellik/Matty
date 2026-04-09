@@ -14,7 +14,7 @@ const N = GRID_SIZE
 export default function MazeChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   const game = useMazeGame({
     saveScore:        (s) => saveScore('maze', s),
@@ -49,7 +49,7 @@ export default function MazeChallenge() {
         bestLabel={t('maze_best')}
         onStart={start}
         startLabel={t('maze_start')}
-        onBack={() => navigate('/')}
+        onBack={() => navigate(homePath())}
         backLabel={t('back')}
       />
     )
@@ -66,7 +66,7 @@ export default function MazeChallenge() {
         newBestLabel={t('maze_new_best')}
         actions={[
           { label: t('maze_play_again'), onClick: playAgain, primary: true },
-          { label: t('mult_home'),       onClick: () => navigate('/') },
+          { label: t('mult_home'),       onClick: () => navigate(homePath()) },
         ]}
       />
     )
@@ -76,7 +76,7 @@ export default function MazeChallenge() {
     <div className="maze-page">
       {/* Topbar */}
       <div className="maze-topbar">
-        <button className="maze-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="maze-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="maze-target-display">
           <span className="maze-target-label">{t('maze_target')}</span>
           <span className="maze-target-value">{maze.target}</span>

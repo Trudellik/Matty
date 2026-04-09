@@ -11,7 +11,7 @@ import './AdditionChallenge.css'
 export default function AdditionChallenge() {
   const navigate                 = useNavigate()
   const { scores, saveBestTime } = useHighScores()
-  const { t }                    = useLocale()
+  const { t, homePath }          = useLocale()
 
   const game = useAdditionGame({
     saveBestTime:     (level, time) => saveBestTime('addition', level, time),
@@ -45,7 +45,7 @@ export default function AdditionChallenge() {
     const addScores = typeof scores['addition'] === 'object' ? scores['addition'] : {}
     return (
       <div className="add-page">
-        <button className="add-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="add-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="add-header">
           <span className="add-big-icon">➕</span>
           <h1>{t('add_title')}</h1>
@@ -110,7 +110,7 @@ export default function AdditionChallenge() {
           actions={[
             { label: t('add_play_again'),    onClick: playAgain,              primary: true },
             { label: t('add_change_level'),  onClick: () => selectLevel(null) },
-            { label: t('mult_home'),         onClick: () => navigate('/') },
+            { label: t('mult_home'),         onClick: () => navigate(homePath()) },
           ]}
         />
       )}

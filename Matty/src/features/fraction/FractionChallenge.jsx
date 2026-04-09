@@ -9,7 +9,7 @@ import './FractionChallenge.css'
 export default function FractionChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   const game = useFractionGame({
     saveScore:        (s) => saveScore('fractions', s),
@@ -33,7 +33,7 @@ export default function FractionChallenge() {
         best={scores['fractions']}
         onStart={start}
         startLabel={t('frac_start')}
-        onBack={() => navigate('/')}
+        onBack={() => navigate(homePath())}
         backLabel={t('back')}
       />
     )
@@ -50,7 +50,7 @@ export default function FractionChallenge() {
         newBestLabel={t('frac_new_best')}
         actions={[
           { label: t('frac_play_again'), onClick: playAgain,          primary: true },
-          { label: t('mult_home'),       onClick: () => navigate('/') },
+          { label: t('mult_home'),       onClick: () => navigate(homePath()) },
         ]}
       />
     )
@@ -61,7 +61,7 @@ export default function FractionChallenge() {
     <div className="frac-page frac-game">
       {/* Topbar */}
       <div className="frac-topbar">
-        <button className="frac-back-btn frac-topbar-back" onClick={() => navigate('/')}>
+        <button className="frac-back-btn frac-topbar-back" onClick={() => navigate(homePath())}>
           {t('back')}
         </button>
         <div className="frac-lives">

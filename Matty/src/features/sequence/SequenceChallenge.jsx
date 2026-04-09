@@ -10,7 +10,7 @@ import './SequenceChallenge.css'
 export default function SequenceChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   const game = useSequenceGame({
     saveScore:        (s) => saveScore('sequence', s),
@@ -28,7 +28,7 @@ export default function SequenceChallenge() {
     const seqScores = typeof scores['sequence'] === 'object' ? scores['sequence'] : {}
     return (
       <div className="seq-page">
-        <button className="seq-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="seq-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="seq-header">
           <span className="seq-big-icon">🔢</span>
           <h1>{t('seq_title')}</h1>
@@ -65,7 +65,7 @@ export default function SequenceChallenge() {
         actions={[
           { label: t('seq_play_again'),   onClick: playAgain,              primary: true },
           { label: t('seq_change_level'), onClick: () => selectLevel(null) },
-          { label: t('mult_home'),        onClick: () => navigate('/') },
+          { label: t('mult_home'),        onClick: () => navigate(homePath()) },
         ]}
       />
     )

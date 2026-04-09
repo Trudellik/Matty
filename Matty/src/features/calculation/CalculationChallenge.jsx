@@ -9,7 +9,7 @@ import './CalculationChallenge.css'
 export default function CalculationChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   // D: inject score I/O — component doesn't know game internals
   const game = useCalculationGame({
@@ -40,7 +40,7 @@ export default function CalculationChallenge() {
         bestLabel={t('best_score')}
         onStart={handleStart}
         startLabel={t('mult_start')}
-        onBack={() => navigate('/')}
+        onBack={() => navigate(homePath())}
         backLabel={t('back')}
       />
     )
@@ -57,7 +57,7 @@ export default function CalculationChallenge() {
         newBestLabel={t('calc_new_best')}
         actions={[
           { label: t('calc_play_again'), onClick: handleStart, primary: true },
-          { label: t('mult_home'),       onClick: () => navigate('/') },
+          { label: t('mult_home'),       onClick: () => navigate(homePath()) },
         ]}
       />
     )
