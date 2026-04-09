@@ -10,7 +10,7 @@ import './MultiplicationChallenge.css'
 export default function MultiplicationChallenge() {
   const navigate                    = useNavigate()
   const { scores, saveBestTime }    = useHighScores()
-  const { t }                       = useLocale()
+  const { t, homePath }             = useLocale()
 
   // D: inject score I/O — component doesn't know game internals
   const game = useMultiplicationGame({
@@ -31,7 +31,7 @@ export default function MultiplicationChallenge() {
       ? scores['multiplication'] : {}
     return (
       <div className="mult-page">
-        <button className="mult-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="mult-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="mult-header">
           <span className="mult-big-icon">✖️</span>
           <h1>{t('mult_title')}</h1>
@@ -111,7 +111,7 @@ export default function MultiplicationChallenge() {
           actions={[
             { label: t('mult_play_again'),   onClick: playAgain,              primary: true },
             { label: t('mult_change_level'), onClick: () => selectLevel(null) },
-            { label: t('mult_home'),         onClick: () => navigate('/') },
+            { label: t('mult_home'),         onClick: () => navigate(homePath()) },
           ]}
         />
       )}

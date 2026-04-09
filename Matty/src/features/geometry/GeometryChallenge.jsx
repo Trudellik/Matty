@@ -125,7 +125,7 @@ function ShapeDisplay({ shape, dims }) {
 export default function GeometryChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   const game = useGeometryGame({
     saveScore:        (s) => saveScore('geometry', s),
@@ -143,7 +143,7 @@ export default function GeometryChallenge() {
     const geoScores = typeof scores['geometry'] === 'object' ? scores['geometry'] : {}
     return (
       <div className="geo-page">
-        <button className="geo-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="geo-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="geo-header">
           <span className="geo-big-icon">📐</span>
           <h1>{t('geo_title')}</h1>
@@ -180,7 +180,7 @@ export default function GeometryChallenge() {
         actions={[
           { label: t('geo_play_again'),   onClick: playAgain,              primary: true },
           { label: t('geo_change_level'), onClick: () => selectLevel(null) },
-          { label: t('mult_home'),        onClick: () => navigate('/') },
+          { label: t('mult_home'),        onClick: () => navigate(homePath()) },
         ]}
       />
     )

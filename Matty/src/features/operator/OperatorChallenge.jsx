@@ -16,7 +16,7 @@ const OP_META = {
 export default function OperatorChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
-  const { t }                 = useLocale()
+  const { t, homePath }       = useLocale()
 
   const game = useOperatorGame({
     saveScore:        (mode, s) => saveScore(`operator_${mode}`, s),
@@ -34,7 +34,7 @@ export default function OperatorChallenge() {
   if (!mode) {
     return (
       <div className="op-page op-mode-select">
-        <button className="op-back-btn" onClick={() => navigate('/')}>{t('back')}</button>
+        <button className="op-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
         <div className="op-mode-header">
           <span className="op-mode-icon">❓</span>
           <h1>{t('op_title')}</h1>
@@ -75,7 +75,7 @@ export default function OperatorChallenge() {
         actions={[
           { label: t('op_play_again'),   onClick: playAgain,          primary: true },
           { label: t('op_change_mode'),  onClick: backToModes },
-          { label: t('mult_home'),       onClick: () => navigate('/') },
+          { label: t('mult_home'),       onClick: () => navigate(homePath()) },
         ]}
       />
     )

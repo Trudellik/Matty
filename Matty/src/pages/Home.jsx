@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom'
 import challenges from '../config/challenges'
 import { useHighScores } from '../hooks/useHighScores'
 import { useLocale } from '../store/LocaleContext'
-import { LOCALES, LOCALE_LABELS } from '../utils/i18n'
 import { formatTime } from '../utils/utils'
 import './Home.css'
 
@@ -23,24 +22,13 @@ function getScoreBadge(challenge, scores, t) {
 function Home() {
   const navigate = useNavigate()
   const { scores } = useHighScores()
-  const { locale, setLocale, t } = useLocale()
+  const { t, challengePath } = useLocale()
 
   return (
     <div className="home">
       <header className="home-header">
         <h1>Matty</h1>
         <p>{t('home_subtitle')}</p>
-        <div className="locale-toggle">
-          {LOCALES.map((loc) => (
-            <button
-              key={loc}
-              className={`locale-btn${locale === loc ? ' locale-btn--active' : ''}`}
-              onClick={() => setLocale(loc)}
-            >
-              {LOCALE_LABELS[loc]}
-            </button>
-          ))}
-        </div>
       </header>
 
       <main className="challenges-grid">
@@ -54,7 +42,7 @@ function Home() {
             <button
               key={challenge.id}
               className={`challenge-card${disabled ? ' challenge-card--disabled' : ''}`}
-              onClick={() => !disabled && navigate(`/challenge/${challenge.id}`)}
+              onClick={() => !disabled && navigate(challengePath(challenge.id))}
               disabled={disabled}
             >
               <span className="challenge-icon">{challenge.icon}</span>

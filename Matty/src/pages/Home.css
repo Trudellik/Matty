@@ -23,35 +23,6 @@
   color: var(--text);
 }
 
-.locale-toggle {
-  display: inline-flex;
-  gap: 4px;
-  margin-top: 16px;
-  background: var(--code-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 3px;
-}
-
-.locale-btn {
-  padding: 4px 14px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: var(--sans);
-  color: var(--text);
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.locale-btn--active {
-  background: var(--bg);
-  color: var(--accent);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-}
-
 .challenges-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

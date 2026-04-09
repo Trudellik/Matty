@@ -1,28 +1,28 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext } from 'react'
+import { Outlet, useParams } from 'react-router-dom'
 import { t as translate, LOCALES } from '../utils/i18n'
 
 const LocaleContext = createContext(null)
 
-export function LocaleProvider({ children }) {
-  const [locale, setLocale] = useState(
-    () => {
-      const saved = localStorage.getItem('matty_locale')
-      return LOCALES.includes(saved) ? saved : 'en'
-    }
-  )
-
-  function changeLocale(next) {
-    localStorage.setItem('matty_locale', next)
-    setLocale(next)
-  }
+export function LocaleProvider() {
+  const { locale: paramLocale } = useParams()
+  const locale = LOCALES.includes(paramLocale) ? paramLocale : 'da'
 
   function t(key, vars) {
     return translate(locale, key, vars)
   }
 
+  function homePath() {
+    return `/${locale}`
+  }
+
+  function challengePath(id) {
+    return `/${locale}/challenge/${id}`
+  }
+
   return (
-    <LocaleContext.Provider value={{ locale, setLocale: changeLocale, t }}>
-      {children}
+    <LocaleContext.Provider value={{ locale, t, homePath, challengePath }}>
+      <Outlet />
     </LocaleContext.Provider>
   )
 }

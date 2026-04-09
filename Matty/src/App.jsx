@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import ChallengePage from './pages/ChallengePage'
 import MultiplicationChallenge from './features/multiplication/MultiplicationChallenge'
@@ -15,21 +15,22 @@ import './styles/App.css'
 
 function App() {
   return (
-    <LocaleProvider>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/challenge/multiplication" element={<MultiplicationChallenge />} />
-        <Route path="/challenge/calculation"    element={<CalculationChallenge />} />
-        <Route path="/challenge/addition"       element={<AdditionChallenge />} />
-        <Route path="/challenge/operator"       element={<OperatorChallenge />} />
-        <Route path="/challenge/fractions"      element={<FractionChallenge />} />
-        <Route path="/challenge/maze"           element={<MazeChallenge />} />
-        <Route path="/challenge/algebra"        element={<AlgebraChallenge />} />
-        <Route path="/challenge/geometry"       element={<GeometryChallenge />} />
-        <Route path="/challenge/sequence"       element={<SequenceChallenge />} />
-        <Route path="/challenge/:id" element={<ChallengePage />} />
-      </Routes>
-    </LocaleProvider>
+    <Routes>
+      <Route path="/" element={<Navigate to="/da" replace />} />
+      <Route path="/:locale" element={<LocaleProvider />}>
+        <Route index element={<Home />} />
+        <Route path="challenge/multiplication" element={<MultiplicationChallenge />} />
+        <Route path="challenge/calculation"    element={<CalculationChallenge />} />
+        <Route path="challenge/addition"       element={<AdditionChallenge />} />
+        <Route path="challenge/operator"       element={<OperatorChallenge />} />
+        <Route path="challenge/fractions"      element={<FractionChallenge />} />
+        <Route path="challenge/maze"           element={<MazeChallenge />} />
+        <Route path="challenge/algebra"        element={<AlgebraChallenge />} />
+        <Route path="challenge/geometry"       element={<GeometryChallenge />} />
+        <Route path="challenge/sequence"       element={<SequenceChallenge />} />
+        <Route path="challenge/:id"            element={<ChallengePage />} />
+      </Route>
+    </Routes>
   )
 }
 
