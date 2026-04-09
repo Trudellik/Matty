@@ -1,0 +1,153 @@
+/* ── Page shell ──────────────────────────────────────────────────── */
+.alg-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1rem 2rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── Level select ────────────────────────────────────────────────── */
+.alg-back-btn {
+  align-self: flex-start;
+  margin: 1rem 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.alg-header {
+  text-align: center;
+  margin: 1rem 0 1.5rem;
+}
+
+.alg-big-icon {
+  font-size: 3rem;
+}
+
+.alg-header h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.alg-header p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.alg-level-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+.alg-level-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: var(--card-bg);
+  color: var(--text);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.alg-level-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.2); }
+
+.alg-level-name { font-size: 1.1rem; font-weight: 700; }
+.alg-level-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+.alg-level-best { font-size: 0.8rem; color: var(--accent); margin-top: 0.3rem; }
+
+.alg-level-easy   { background: linear-gradient(135deg, #1a3a2a, #1e4d3a); }
+.alg-level-medium { background: linear-gradient(135deg, #2a2a1a, #4d4a1e); }
+.alg-level-hard   { background: linear-gradient(135deg, #3a1a1a, #5a2020); }
+
+/* ── Game screen ─────────────────────────────────────────────────── */
+.alg-game {
+  width: 100%;
+  max-width: 480px;
+}
+
+.alg-arena {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.alg-equation {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 700;
+}
+
+.alg-lhs, .alg-rhs { color: var(--text); }
+.alg-equals { color: var(--text-muted); }
+
+.alg-answer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+}
+
+.alg-x-label { font-weight: 700; color: var(--accent); }
+.alg-eq      { color: var(--text-muted); }
+
+.alg-input-box {
+  min-width: 3ch;
+  padding: 0.3rem 0.6rem;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  text-align: center;
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+.alg-cursor {
+  animation: blink 1s step-end infinite;
+  color: var(--accent);
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.alg-timer-num {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+/* ── Feedback overlay ────────────────────────────────────────────── */
+.alg-feedback {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.alg-feedback-correct { color: #4caf50; font-size: 5rem; }
+.alg-feedback-wrong, .alg-feedback-timeout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.alg-feedback-x       { font-size: 4rem; color: #e53935; }
+.alg-feedback-answer  { font-size: 2rem; color: var(--text); }
+.alg-feedback-sep     { font-size: 1.5rem; color: var(--text-muted); }
+.alg-feedback-timeout-icon { font-size: 3rem; }

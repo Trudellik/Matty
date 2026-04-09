@@ -1,0 +1,143 @@
+/* ── Page shell ──────────────────────────────────────────────────── */
+.seq-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1rem 2rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── Level select ────────────────────────────────────────────────── */
+.seq-back-btn {
+  align-self: flex-start;
+  margin: 1rem 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.seq-header {
+  text-align: center;
+  margin: 1rem 0 1.5rem;
+}
+
+.seq-big-icon { font-size: 3rem; }
+
+.seq-header h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.seq-header p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.seq-level-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+.seq-level-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: var(--card-bg);
+  color: var(--text);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.seq-level-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.2); }
+
+.seq-level-name { font-size: 1.1rem; font-weight: 700; }
+.seq-level-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+.seq-level-best { font-size: 0.8rem; color: var(--accent); margin-top: 0.3rem; }
+
+.seq-level-easy   { background: linear-gradient(135deg, #1a3a2a, #1e4d3a); }
+.seq-level-medium { background: linear-gradient(135deg, #2a2a1a, #4d4a1e); }
+.seq-level-hard   { background: linear-gradient(135deg, #3a1a1a, #5a2020); }
+
+/* ── Game screen ─────────────────────────────────────────────────── */
+.seq-game {
+  width: 100%;
+  max-width: 480px;
+}
+
+.seq-arena {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.seq-question-label {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* Sequence tiles */
+.seq-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.seq-tile {
+  min-width: 3rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  background: var(--card-bg);
+  border: 2px solid var(--border, #333);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+.seq-tile-blank {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-size: 1.4rem;
+}
+
+/* Choices grid */
+.seq-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+.seq-choice-btn {
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--border, #333);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.seq-choice-btn:hover:not(:disabled) { transform: scale(1.04); background: var(--card-hover, #2a2a2a); }
+.seq-choice-btn:disabled { cursor: default; }
+
+.seq-choice-correct { background: #1b4d2e !important; border-color: #4caf50 !important; color: #4caf50 !important; }
+.seq-choice-wrong   { background: #4d1b1b !important; border-color: #e53935 !important; color: #e53935 !important; }
