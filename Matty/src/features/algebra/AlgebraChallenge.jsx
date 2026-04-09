@@ -3,9 +3,9 @@ import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
 import { useAlgebraGame } from './useAlgebraGame'
 import { LEVELS } from './algebraEngine'
-import GameIdle from '../../components/GameIdle'
 import GameOver from '../../components/GameOver'
 import GameHeader from '../../components/GameHeader'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import './AlgebraChallenge.css'
 
 export default function AlgebraChallenge() {
@@ -27,30 +27,25 @@ export default function AlgebraChallenge() {
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle' && !level) {
     const algScores = typeof scores['algebra'] === 'object' ? scores['algebra'] : {}
+    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const options = Object.entries(LEVELS).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  t(cfg.descKey),
+      badge: algScores[key] !== undefined ? `🏆 ${algScores[key]}` : undefined,
+      color: COLORS[key],
+    }))
     return (
-      <div className="alg-page">
-        <button className="alg-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="alg-header">
-          <span className="alg-big-icon">𝑥</span>
-          <h1>{t('alg_title')}</h1>
-          <p>{t('alg_subtitle')}</p>
-        </div>
-        <div className="alg-level-grid">
-          {Object.entries(LEVELS).map(([key, cfg]) => (
-            <button
-              key={key}
-              className={`alg-level-card alg-level-${key}`}
-              onClick={() => startGame(key)}
-            >
-              <span className="alg-level-name">{t(cfg.labelKey)}</span>
-              <span className="alg-level-desc">{t(cfg.descKey)}</span>
-              {algScores[key] !== undefined && (
-                <span className="alg-level-best">🏆 {algScores[key]}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="𝑥"
+        title={t('alg_title')}
+        subtitle={t('alg_subtitle')}
+        options={options}
+        onStart={(key) => startGame(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 

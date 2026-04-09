@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
 import { useFractionGame } from './useFractionGame'
-import GameIdle from '../../components/GameIdle'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import GameOver from '../../components/GameOver'
 import './FractionChallenge.css'
 
@@ -26,15 +26,14 @@ export default function FractionChallenge() {
   // Idle screen
   if (gameState === 'idle') {
     return (
-      <GameIdle
+      <GameOptionsPage
         icon="½"
         title={t('frac_title')}
         subtitle={t('frac_subtitle')}
-        best={scores['fractions']}
         onStart={start}
-        startLabel={t('frac_start')}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
+        startLabel={t('frac_start')}
       />
     )
   }

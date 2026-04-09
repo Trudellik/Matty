@@ -5,7 +5,7 @@ import { useLocale } from '../../store/LocaleContext'
 import { useMazeGame } from './useMazeGame'
 import { GRID_SIZE } from './mazeEngine'
 import { formatTime } from '../../utils/utils'
-import GameIdle from '../../components/GameIdle'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import GameOver from '../../components/GameOver'
 import './MazeChallenge.css'
 
@@ -35,7 +35,7 @@ export default function MazeChallenge() {
 
   if (gameState === 'idle') {
     return (
-      <GameIdle
+      <GameOptionsPage
         icon="🧩"
         title={t('maze_title')}
         subtitle={t('maze_subtitle')}
@@ -45,12 +45,10 @@ export default function MazeChallenge() {
           t('maze_rule_red'),
           t('maze_rule_score'),
         ]}
-        best={scores['maze']}
-        bestLabel={t('maze_best')}
         onStart={start}
-        startLabel={t('maze_start')}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
+        startLabel={t('maze_start')}
       />
     )
   }

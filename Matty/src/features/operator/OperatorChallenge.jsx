@@ -4,6 +4,7 @@ import { useLocale } from '../../store/LocaleContext'
 import { useOperatorGame } from './useOperatorGame'
 import { OP_ORDER, MODES } from './operatorEngine'
 import GameOver from '../../components/GameOver'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import './OperatorChallenge.css'
 
 const OP_META = {
@@ -32,34 +33,28 @@ export default function OperatorChallenge() {
 
   // ── Mode select ───────────────────────────────────────────────────
   if (!mode) {
+    const COLORS = { basic: '#3b82f6', full: '#a855f7' }
+    const options = Object.entries(MODES).map(([key, cfg]) => {
+      const best = scores[`operator_${key}`]
+      return {
+        key,
+        label: t(cfg.labelKey),
+        desc:  `${cfg.ops.join('  ')}  —  ${t(cfg.descKey)}`,
+        badge: best !== undefined ? `🏆 ${best}` : undefined,
+        color: COLORS[key],
+      }
+    })
     return (
-      <div className="op-page op-mode-select">
-        <button className="op-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="op-mode-header">
-          <span className="op-mode-icon">❓</span>
-          <h1>{t('op_title')}</h1>
-          <p>{t('op_subtitle')}</p>
-        </div>
-        <div className="op-mode-grid">
-          {Object.entries(MODES).map(([key, cfg]) => {
-            const best = scores[`operator_${key}`]
-            return (
-              <button
-                key={key}
-                className={`op-mode-card op-mode-${key}`}
-                onClick={() => selectMode(key)}
-              >
-                <span className="op-mode-name">{t(cfg.labelKey)}</span>
-                <span className="op-mode-ops">{cfg.ops.join('  ')}</span>
-                <span className="op-mode-desc">{t(cfg.descKey)}</span>
-                {best !== undefined && (
-                  <span className="op-mode-best">🏆 {best}</span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="❓"
+        title={t('op_title')}
+        subtitle={t('op_subtitle')}
+        options={options}
+        onStart={(key) => selectMode(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 

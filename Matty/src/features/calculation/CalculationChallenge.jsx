@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
 import { useCalculationGame } from './useCalculationGame'
-import GameIdle from '../../components/GameIdle'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import GameOver from '../../components/GameOver'
 import './CalculationChallenge.css'
 
@@ -27,7 +27,7 @@ export default function CalculationChallenge() {
   // ── Idle ──────────────────────────────────────────────────────────
   if (gameState === 'idle') {
     return (
-      <GameIdle
+      <GameOptionsPage
         icon="⚡"
         title={t('calc_title')}
         subtitle={t('calc_subtitle')}
@@ -36,12 +36,10 @@ export default function CalculationChallenge() {
           `⏱ ${t('calc_rule_time')}`,
           `🔥 ${t('calc_rule_streak')}`,
         ]}
-        best={scores['calculation']}
-        bestLabel={t('best_score')}
         onStart={handleStart}
-        startLabel={t('mult_start')}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
+        startLabel={t('mult_start')}
       />
     )
   }

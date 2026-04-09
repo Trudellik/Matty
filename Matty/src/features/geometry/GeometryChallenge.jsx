@@ -5,6 +5,7 @@ import { useGeometryGame } from './useGeometryGame'
 import { LEVELS } from './geometryEngine'
 import GameOver from '../../components/GameOver'
 import GameHeader from '../../components/GameHeader'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import './GeometryChallenge.css'
 
 // ── Inline SVG shape renderer ──────────────────────────────────────
@@ -141,30 +142,25 @@ export default function GeometryChallenge() {
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle') {
     const geoScores = typeof scores['geometry'] === 'object' ? scores['geometry'] : {}
+    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const options = Object.entries(LEVELS).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  t(cfg.descKey),
+      badge: geoScores[key] !== undefined ? `🏆 ${geoScores[key]}` : undefined,
+      color: COLORS[key],
+    }))
     return (
-      <div className="geo-page">
-        <button className="geo-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="geo-header">
-          <span className="geo-big-icon">📐</span>
-          <h1>{t('geo_title')}</h1>
-          <p>{t('geo_subtitle')}</p>
-        </div>
-        <div className="geo-level-grid">
-          {Object.entries(LEVELS).map(([key, cfg]) => (
-            <button
-              key={key}
-              className={`geo-level-card geo-level-${key}`}
-              onClick={() => startGame(key)}
-            >
-              <span className="geo-level-name">{t(cfg.labelKey)}</span>
-              <span className="geo-level-desc">{t(cfg.descKey)}</span>
-              {geoScores[key] !== undefined && (
-                <span className="geo-level-best">🏆 {geoScores[key]}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="📐"
+        title={t('geo_title')}
+        subtitle={t('geo_subtitle')}
+        options={options}
+        onStart={(key) => startGame(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 

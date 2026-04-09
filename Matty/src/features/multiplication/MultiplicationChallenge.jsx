@@ -5,6 +5,7 @@ import { useMultiplicationGame } from './useMultiplicationGame'
 import { LEVELS, isPrefilled } from './multiplicationEngine'
 import { formatTime } from '../../utils/utils'
 import GameOver from '../../components/GameOver'
+import GameOptionsPage from '../../components/GameOptionsPage'
 import './MultiplicationChallenge.css'
 
 export default function MultiplicationChallenge() {
@@ -29,30 +30,25 @@ export default function MultiplicationChallenge() {
   if (!level) {
     const multiScores = typeof scores['multiplication'] === 'object'
       ? scores['multiplication'] : {}
+    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const options = Object.entries(LEVELS).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  t(cfg.descKey),
+      badge: multiScores[key] !== undefined ? `⏱ ${formatTime(multiScores[key])}` : undefined,
+      color: COLORS[key],
+    }))
     return (
-      <div className="mult-page">
-        <button className="mult-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="mult-header">
-          <span className="mult-big-icon">✖️</span>
-          <h1>{t('mult_title')}</h1>
-          <p>{t('mult_subtitle')}</p>
-        </div>
-        <div className="level-grid">
-          {Object.entries(LEVELS).map(([key, cfg]) => (
-            <button
-              key={key}
-              className={`level-card level-${key}`}
-              onClick={() => selectLevel(key)}
-            >
-              <span className="level-name">{t(cfg.labelKey)}</span>
-              <span className="level-desc">{t(cfg.descKey)}</span>
-              {multiScores[key] !== undefined && (
-                <span className="level-best">⏱ {formatTime(multiScores[key])}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="✖️"
+        title={t('mult_title')}
+        subtitle={t('mult_subtitle')}
+        options={options}
+        onStart={(key) => selectLevel(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 
