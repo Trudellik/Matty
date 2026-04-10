@@ -6,6 +6,8 @@ import { useAdditionGame } from './useAdditionGame'
 import { LEVELS } from './additionEngine'
 import { formatTime } from '../../utils/utils'
 import GameOver from '../../components/GameOver'
+import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './AdditionChallenge.css'
 
 export default function AdditionChallenge() {
@@ -21,7 +23,7 @@ export default function AdditionChallenge() {
   const {
     level, grid, target, selected, wrongPair,
     elapsed, started, completed, isNewBest,
-    focusedIdx, cols, selectLevel, startGame, playAgain, stopGame, selectCell,
+    focusedIdx, cols, selectLevel, playAgain, stopGame, selectCell,
   } = game
 
   const [mouseReady, setMouseReady] = useState(false)
@@ -43,61 +45,40 @@ export default function AdditionChallenge() {
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
     const addScores = typeof scores['addition'] === 'object' ? scores['addition'] : {}
+    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const options = Object.entries(LEVELS).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  t(cfg.descKey),
+      badge: addScores[key] !== undefined ? `⏱ ${formatTime(addScores[key])}` : undefined,
+      color: COLORS[key],
+    }))
     return (
-      <div className="add-page">
-        <button className="add-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="add-header">
-          <span className="add-big-icon">➕</span>
-          <h1>{t('add_title')}</h1>
-          <p>{t('add_subtitle')}</p>
-        </div>
-        <div className="add-level-grid">
-          {Object.entries(LEVELS).map(([key, cfg]) => (
-            <button
-              key={key}
-              className={`add-level-card add-level-${key}`}
-              onClick={() => selectLevel(key)}
-            >
-              <span className="add-level-name">{t(cfg.labelKey)}</span>
-              <span className="add-level-desc">{t(cfg.descKey)}</span>
-              {addScores[key] !== undefined && (
-                <span className="add-level-best">⏱ {formatTime(addScores[key])}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="➕"
+        title={t('add_title')}
+        subtitle={t('add_subtitle')}
+        options={options}
+        onStart={(key) => selectLevel(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="add-page add-game">
-      <div className="add-topbar">
-        <button
-          className="add-back-btn topbar-back"
-          onClick={() => { stopGame(); selectLevel(null) }}
-        >
-          {t('add_levels')}
-        </button>
-        <div className="add-timer">{formatTime(elapsed)}</div>
-        <div className="add-level-badge">{t(LEVELS[level].labelKey)}</div>
-      </div>
+    <ChallengePage
+      onQuit={() => { stopGame(); selectLevel(null) }}
+      quitLabel={t('add_levels')}
+      score={formatTime(elapsed)}
+      difficulty={t(LEVELS[level].labelKey)}
+    >
 
       <div className="add-target-bar">
         {t('add_target')}: <span className="add-target-num">{target}</span>
       </div>
-
-      {/* Start overlay */}
-      {!started && (
-        <div className="add-overlay">
-          <div className="add-overlay-card">
-            <p className="add-overlay-level">{t(LEVELS[level].labelKey)}</p>
-            <p className="add-overlay-hint">{t('add_hint')}</p>
-            <button className="add-start-btn" onClick={startGame}>{t('mult_start')}</button>
-          </div>
-        </div>
-      )}
 
       {completed && (
         <GameOver
@@ -138,6 +119,6 @@ export default function AdditionChallenge() {
           )
         })}
       </div>
-    </div>
+    </ChallengePage>
   )
 }

@@ -153,68 +153,6 @@
   padding: 4px 14px;
 }
 
-/* ── Start overlay ── */
-.start-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(4px);
-}
-.start-card {
-  background: var(--bg);
-  border: 2px solid var(--border);
-  border-radius: 20px;
-  padding: 48px 64px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  box-shadow: var(--shadow);
-}
-.start-level-name {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-h);
-  margin: 0;
-}
-.start-hint {
-  font-size: 15px;
-  color: var(--text);
-  line-height: 1.6;
-  margin: 0;
-}
-.start-hint kbd {
-  background: var(--code-bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--text-h);
-}
-.start-btn {
-  margin-top: 8px;
-  padding: 14px 56px;
-  font-size: 20px;
-  font-weight: 700;
-  font-family: var(--sans);
-  color: #fff;
-  background: var(--accent);
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
-}
-.start-btn:hover {
-  opacity: 0.88;
-  transform: scale(1.04);
-}
-
 /* ── Grid ── */
 .grid-scroll {
   overflow: auto;
@@ -489,6 +427,6 @@
   .mult-page { padding: 20px 12px 40px; }
   .mult-page.game-screen { padding: 8px; }
   .game-timer { font-size: 24px; }
-  .start-card { padding: 36px 32px; }
+
   .completion-card { padding: 32px 28px; }
 }

@@ -4,7 +4,8 @@ import { useLocale } from '../../store/LocaleContext'
 import { useSequenceGame } from './useSequenceGame'
 import { LEVELS } from './sequenceEngine'
 import GameOver from '../../components/GameOver'
-import GameHeader from '../../components/GameHeader'
+import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './SequenceChallenge.css'
 
 export default function SequenceChallenge() {
@@ -26,30 +27,25 @@ export default function SequenceChallenge() {
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle') {
     const seqScores = typeof scores['sequence'] === 'object' ? scores['sequence'] : {}
+    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const options = Object.entries(LEVELS).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  t(cfg.descKey),
+      badge: seqScores[key] !== undefined ? `🏆 ${seqScores[key]}` : undefined,
+      color: COLORS[key],
+    }))
     return (
-      <div className="seq-page">
-        <button className="seq-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="seq-header">
-          <span className="seq-big-icon">🔢</span>
-          <h1>{t('seq_title')}</h1>
-          <p>{t('seq_subtitle')}</p>
-        </div>
-        <div className="seq-level-grid">
-          {Object.entries(LEVELS).map(([key, cfg]) => (
-            <button
-              key={key}
-              className={`seq-level-card seq-level-${key}`}
-              onClick={() => startGame(key)}
-            >
-              <span className="seq-level-name">{t(cfg.labelKey)}</span>
-              <span className="seq-level-desc">{t(cfg.descKey)}</span>
-              {seqScores[key] !== undefined && (
-                <span className="seq-level-best">🏆 {seqScores[key]}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="🔢"
+        title={t('seq_title')}
+        subtitle={t('seq_subtitle')}
+        options={options}
+        onStart={(key) => startGame(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 
@@ -73,16 +69,15 @@ export default function SequenceChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="seq-page seq-game">
-      <GameHeader
-        onQuit={() => selectLevel(null)}
-        quitLabel={t('seq_levels')}
-        lives={lives}
-        maxLives={maxLives}
-        crackingIdx={crackingIdx}
-        score={score}
-        difficulty={level ? t(LEVELS[level].labelKey) : ''}
-      />
+    <ChallengePage
+      onQuit={() => selectLevel(null)}
+      quitLabel={t('seq_levels')}
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      score={score}
+      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+    >
 
       <div className="seq-arena">
         <div className="seq-question-label">{t('seq_question')}</div>
@@ -123,6 +118,6 @@ export default function SequenceChallenge() {
           </>
         )}
       </div>
-    </div>
+    </ChallengePage>
   )
 }

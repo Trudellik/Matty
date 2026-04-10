@@ -212,58 +212,6 @@
   100% { transform: scale(1); }
 }
 
-/* ── Overlays ── */
-.add-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-.add-overlay-card {
-  background: var(--bg);
-  border: 2px solid var(--border);
-  border-radius: 20px;
-  padding: 48px 64px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  box-shadow: var(--shadow);
-}
-.add-overlay-level {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-h);
-  margin: 0;
-}
-.add-overlay-hint {
-  font-size: 15px;
-  color: var(--text);
-  margin: 0;
-}
-.add-start-btn {
-  margin-top: 8px;
-  padding: 14px 56px;
-  font-size: 20px;
-  font-weight: 700;
-  font-family: var(--sans);
-  color: #fff;
-  background: var(--accent);
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
-}
-.add-start-btn:hover {
-  opacity: 0.88;
-  transform: scale(1.04);
-}
-
 .add-complete-emoji  { font-size: 56px; line-height: 1; }
 .add-overlay-card h2 { font-size: 32px; font-weight: 700; margin: 0; color: var(--text-h); }
 .add-complete-time {
@@ -313,6 +261,6 @@
   .add-page { padding: 20px 12px 40px; }
   .add-page.add-game { padding: 8px; }
   .add-timer { font-size: 24px; }
-  .add-overlay-card { padding: 36px 32px; }
+
   .add-grid { gap: 6px; }
 }

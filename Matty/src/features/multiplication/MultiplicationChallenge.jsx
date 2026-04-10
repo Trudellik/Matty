@@ -5,6 +5,8 @@ import { useMultiplicationGame } from './useMultiplicationGame'
 import { LEVELS, isPrefilled } from './multiplicationEngine'
 import { formatTime } from '../../utils/utils'
 import GameOver from '../../components/GameOver'
+import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './MultiplicationChallenge.css'
 
 export default function MultiplicationChallenge() {
@@ -19,72 +21,46 @@ export default function MultiplicationChallenge() {
   })
 
   const {
-    level, started, typingValue, filledCells,
+    level, typingValue, filledCells,
     wrongFlash, wrongInfo, elapsed, completed, isNewBest,
     size, cellsToFill, activeCell, currentCellRef,
-    selectLevel, startGame, playAgain, stopGame,
+    selectLevel, playAgain, stopGame,
   } = game
 
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
     const multiScores = typeof scores['multiplication'] === 'object'
       ? scores['multiplication'] : {}
+    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const options = Object.entries(LEVELS).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  t(cfg.descKey),
+      badge: multiScores[key] !== undefined ? `⏱ ${formatTime(multiScores[key])}` : undefined,
+      color: COLORS[key],
+    }))
     return (
-      <div className="mult-page">
-        <button className="mult-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="mult-header">
-          <span className="mult-big-icon">✖️</span>
-          <h1>{t('mult_title')}</h1>
-          <p>{t('mult_subtitle')}</p>
-        </div>
-        <div className="level-grid">
-          {Object.entries(LEVELS).map(([key, cfg]) => (
-            <button
-              key={key}
-              className={`level-card level-${key}`}
-              onClick={() => selectLevel(key)}
-            >
-              <span className="level-name">{t(cfg.labelKey)}</span>
-              <span className="level-desc">{t(cfg.descKey)}</span>
-              {multiScores[key] !== undefined && (
-                <span className="level-best">⏱ {formatTime(multiScores[key])}</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      <GameOptionsPage
+        icon="✖️"
+        title={t('mult_title')}
+        subtitle={t('mult_subtitle')}
+        options={options}
+        onStart={(key) => selectLevel(key)}
+        onBack={() => navigate(homePath())}
+        backLabel={t('back')}
+        startLabel={t('mult_start')}
+      />
     )
   }
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="mult-page game-screen">
-      <div className="game-topbar">
-        <button
-          className="mult-back-btn topbar-back"
-          onClick={() => { stopGame(); selectLevel(null) }}
-        >
-          {t('mult_levels')}
-        </button>
-        <div className="game-timer">{formatTime(elapsed)}</div>
-        <div className="game-level-badge">{t(LEVELS[level].labelKey)}</div>
-      </div>
-
-      {/* Start overlay */}
-      {!started && (
-        <div className="start-overlay">
-          <div className="start-card">
-            <p className="start-level-name">{t(LEVELS[level].labelKey)}</p>
-            <p className="start-hint">
-              {t('mult_cells_to_fill', { n: cellsToFill.length })}<br />
-              {t('mult_type_hint')}
-            </p>
-            <button className="start-btn" onClick={startGame}>
-              {t('mult_start')}
-            </button>
-          </div>
-        </div>
-      )}
+    <ChallengePage
+      onQuit={() => { stopGame(); selectLevel(null) }}
+      quitLabel={t('mult_levels')}
+      score={formatTime(elapsed)}
+      difficulty={t(LEVELS[level].labelKey)}
+    >
 
       {/* Wrong answer overlay */}
       {wrongInfo && (
@@ -171,6 +147,6 @@ export default function MultiplicationChallenge() {
           </tbody>
         </table>
       </div>
-    </div>
+    </ChallengePage>
   )
 }
