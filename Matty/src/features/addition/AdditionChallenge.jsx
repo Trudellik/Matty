@@ -7,6 +7,7 @@ import { LEVELS } from './additionEngine'
 import { formatTime } from '../../utils/utils'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './AdditionChallenge.css'
 
 export default function AdditionChallenge() {
@@ -22,7 +23,7 @@ export default function AdditionChallenge() {
   const {
     level, grid, target, selected, wrongPair,
     elapsed, started, completed, isNewBest,
-    focusedIdx, cols, selectLevel, startGame, playAgain, stopGame, selectCell,
+    focusedIdx, cols, selectLevel, playAgain, stopGame, selectCell,
   } = game
 
   const [mouseReady, setMouseReady] = useState(false)
@@ -68,32 +69,16 @@ export default function AdditionChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="add-page add-game">
-      <div className="add-topbar">
-        <button
-          className="add-back-btn topbar-back"
-          onClick={() => { stopGame(); selectLevel(null) }}
-        >
-          {t('add_levels')}
-        </button>
-        <div className="add-timer">{formatTime(elapsed)}</div>
-        <div className="add-level-badge">{t(LEVELS[level].labelKey)}</div>
-      </div>
+    <ChallengePage
+      onQuit={() => { stopGame(); selectLevel(null) }}
+      quitLabel={t('add_levels')}
+      score={formatTime(elapsed)}
+      difficulty={t(LEVELS[level].labelKey)}
+    >
 
       <div className="add-target-bar">
         {t('add_target')}: <span className="add-target-num">{target}</span>
       </div>
-
-      {/* Start overlay */}
-      {!started && (
-        <div className="add-overlay">
-          <div className="add-overlay-card">
-            <p className="add-overlay-level">{t(LEVELS[level].labelKey)}</p>
-            <p className="add-overlay-hint">{t('add_hint')}</p>
-            <button className="add-start-btn" onClick={startGame}>{t('mult_start')}</button>
-          </div>
-        </div>
-      )}
 
       {completed && (
         <GameOver
@@ -134,6 +119,6 @@ export default function AdditionChallenge() {
           )
         })}
       </div>
-    </div>
+    </ChallengePage>
   )
 }

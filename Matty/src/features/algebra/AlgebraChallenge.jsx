@@ -4,8 +4,8 @@ import { useLocale } from '../../store/LocaleContext'
 import { useAlgebraGame } from './useAlgebraGame'
 import { LEVELS } from './algebraEngine'
 import GameOver from '../../components/GameOver'
-import GameHeader from '../../components/GameHeader'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './AlgebraChallenge.css'
 
 export default function AlgebraChallenge() {
@@ -69,16 +69,15 @@ export default function AlgebraChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="alg-page alg-game">
-      <GameHeader
-        onQuit={() => { selectLevel(null) }}
-        quitLabel={t('alg_levels')}
-        lives={lives}
-        maxLives={maxLives}
-        crackingIdx={crackingIdx}
-        score={score}
-        difficulty={level ? t(LEVELS[level].labelKey) : ''}
-      />
+    <ChallengePage
+      onQuit={() => { selectLevel(null) }}
+      quitLabel={t('alg_levels')}
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      score={score}
+      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+    >
 
       <div className="alg-arena">
         {question && (
@@ -116,6 +115,6 @@ export default function AlgebraChallenge() {
           )}
         </div>
       )}
-    </div>
+    </ChallengePage>
   )
 }

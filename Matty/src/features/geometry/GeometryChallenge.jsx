@@ -4,8 +4,8 @@ import { useLocale } from '../../store/LocaleContext'
 import { useGeometryGame } from './useGeometryGame'
 import { LEVELS } from './geometryEngine'
 import GameOver from '../../components/GameOver'
-import GameHeader from '../../components/GameHeader'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './GeometryChallenge.css'
 
 // ── Inline SVG shape renderer ──────────────────────────────────────
@@ -184,16 +184,15 @@ export default function GeometryChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="geo-page geo-game">
-      <GameHeader
-        onQuit={() => selectLevel(null)}
-        quitLabel={t('geo_levels')}
-        lives={lives}
-        maxLives={maxLives}
-        crackingIdx={crackingIdx}
-        score={score}
-        difficulty={level ? t(LEVELS[level].labelKey) : ''}
-      />
+    <ChallengePage
+      onQuit={() => selectLevel(null)}
+      quitLabel={t('geo_levels')}
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      score={score}
+      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+    >
 
       <div className="geo-arena">
         {question && (
@@ -226,6 +225,6 @@ export default function GeometryChallenge() {
           </>
         )}
       </div>
-    </div>
+    </ChallengePage>
   )
 }

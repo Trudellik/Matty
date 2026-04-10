@@ -7,6 +7,7 @@ import { GRID_SIZE } from './mazeEngine'
 import { formatTime } from '../../utils/utils'
 import GameOptionsPage from '../../components/GameOptionsPage'
 import GameOver from '../../components/GameOver'
+import ChallengePage from '../../pages/ChallengePage'
 import './MazeChallenge.css'
 
 const N = GRID_SIZE
@@ -71,16 +72,12 @@ export default function MazeChallenge() {
   }
 
   return (
-    <div className="maze-page">
-      {/* Topbar */}
-      <div className="maze-topbar">
-        <button className="maze-back-btn" onClick={() => navigate(homePath())}>{t('back')}</button>
-        <div className="maze-target-display">
-          <span className="maze-target-label">{t('maze_target')}</span>
-          <span className="maze-target-value">{maze.target}</span>
-        </div>
-        <div className="maze-timer">{formatTime(elapsed)}</div>
-      </div>
+    <ChallengePage
+      onQuit={() => navigate(homePath())}
+      quitLabel={t('back')}
+      score={formatTime(elapsed)}
+      difficulty={`${t('maze_target')} ${maze.target}`}
+    >
 
       {/* Grid */}
       <div className="maze-grid-viewport">
@@ -133,6 +130,6 @@ export default function MazeChallenge() {
           </div>
         </div>
       </div>
-    </div>
+    </ChallengePage>
   )
 }

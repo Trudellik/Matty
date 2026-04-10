@@ -25,13 +25,7 @@ export function useAdditionGame({ saveBestTime, getExistingScore }) {
   useEffect(() => { completedRef.current  = completed  }, [completed])
   useEffect(() => { focusedIdxRef.current = focusedIdx }, [focusedIdx])
 
-  // Enter on start overlay
-  useEffect(() => {
-    if (!level || started) return
-    function onKey(e) { if (e.key === 'Enter') { setStarted(true); setRunning(true) } }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [level, started])
+
 
   // Timer
   useEffect(() => {
@@ -105,13 +99,11 @@ export function useAdditionGame({ saveBestTime, getExistingScore }) {
 
   function selectLevel(selectedLevel) {
     setLevel(selectedLevel)
-    setStarted(false)
     setCompleted(false)
     setIsNewBest(false)
     setSelected(null)
     setWrongPair(null)
     setElapsed(0)
-    setRunning(false)
     setFocusedIdx(0)
     completedRef.current = false
 
@@ -119,6 +111,11 @@ export function useAdditionGame({ saveBestTime, getExistingScore }) {
       const cfg = LEVELS[selectedLevel]
       setTarget(cfg.target)
       setGrid(buildGrid(cfg.cols, cfg.rows, cfg.target))
+      setStarted(true)
+      setRunning(true)
+    } else {
+      setStarted(false)
+      setRunning(false)
     }
   }
 

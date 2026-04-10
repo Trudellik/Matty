@@ -5,6 +5,7 @@ import { useOperatorGame } from './useOperatorGame'
 import { OP_ORDER, MODES } from './operatorEngine'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './OperatorChallenge.css'
 
 const OP_META = {
@@ -78,30 +79,18 @@ export default function OperatorChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="op-page op-game">
-      <div className="op-topbar">
-        <div className={`op-streak${streak >= 3 ? ' op-streak-hot' : ''}`}>
-          <span className="op-streak-icon">{streak >= 3 ? '🔥' : '⚡'}</span>
-          <span className="op-streak-count">{streak}</span>
-        </div>
-        <div className="op-lives">
-          {Array.from({ length: maxLives }, (_, i) => {
-            if (i === crackingIdx) return <span key={i} className="life-cracking">💔</span>
-            if (i < lives)        return <span key={i} className="life-full">❤️</span>
-            return                       <span key={i} className="life-lost">🖤</span>
-          })}
-        </div>
-        <div className="op-score-display">{correct}</div>
-        <div className="op-level-badge">{t('op_level')} {difficulty}</div>
-      </div>
-
-      <div className="op-timer-track">
-        <div
-          key={timerKey}
-          className="op-timer-fill"
-          style={{ animationDuration: `${timeCap}s` }}
-        />
-      </div>
+    <ChallengePage
+      onQuit={backToModes}
+      quitLabel={t('op_change_mode')}
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      streak={streak}
+      score={correct}
+      difficulty={`${t('op_level')} ${difficulty}`}
+      timerKey={timerKey}
+      timerDuration={timeCap}
+    >
 
       <div className="op-arena">
         {question && (
@@ -165,6 +154,6 @@ export default function OperatorChallenge() {
           )}
         </div>
       )}
-    </div>
+    </ChallengePage>
   )
 }

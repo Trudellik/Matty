@@ -36,13 +36,7 @@ export function useMultiplicationGame({ saveBestTime, getExistingScore }) {
   useEffect(() => { elapsedRef.current   = elapsed     }, [elapsed])
   useEffect(() => { completedRef.current = completed   }, [completed])
 
-  // Enter on start overlay
-  useEffect(() => {
-    if (!level || started) return
-    function onKey(e) { if (e.key === 'Enter') { setStarted(true); setRunning(true) } }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [level, started])
+
 
   // Timer
   useEffect(() => {
@@ -126,18 +120,24 @@ export function useMultiplicationGame({ saveBestTime, getExistingScore }) {
 
   function selectLevel(selectedLevel) {
     setLevel(selectedLevel)
-    setStarted(false)
     setCurrentIdx(0)
     setTypingValue('')
     setFilledCells({})
     setWrongFlash(false)
     setElapsed(0)
-    setRunning(false)
     setCompleted(false)
     setIsNewBest(false)
     typingRef.current    = ''
     idxRef.current       = 0
     completedRef.current = false
+
+    if (selectedLevel) {
+      setStarted(true)
+      setRunning(true)
+    } else {
+      setStarted(false)
+      setRunning(false)
+    }
   }
 
   // ── Public interface ─────────────────────────────────────────────

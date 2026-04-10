@@ -4,6 +4,7 @@ import { useLocale } from '../../store/LocaleContext'
 import { useCalculationGame } from './useCalculationGame'
 import GameOptionsPage from '../../components/GameOptionsPage'
 import GameOver from '../../components/GameOver'
+import ChallengePage from '../../pages/ChallengePage'
 import './CalculationChallenge.css'
 
 export default function CalculationChallenge() {
@@ -63,34 +64,23 @@ export default function CalculationChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="calc-page calc-game">
-      <div className="calc-topbar">
-        <div className="calc-lives">
-          {Array.from({ length: maxLives }, (_, i) => {
-            if (i === crackingIdx) return <span key={i} className="life-cracking">💔</span>
-            if (i < lives)        return <span key={i} className="life-full">❤️</span>
-            return                       <span key={i} className="life-lost">🖤</span>
-          })}
-        </div>
-        <div className="calc-score-display">{score}</div>
-        <div className="calc-info-right">
-          <div className="calc-ops-badge">{ops.join(' ')}</div>
-          <div className="calc-level-badge">{t('calc_level')} {difficulty}</div>
-        </div>
-      </div>
+    <ChallengePage
+      onQuit={() => handleStart()}
+      quitLabel="✕"
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      score={score}
+      difficulty={`${ops.join(' ')}  ${t('calc_level')} ${difficulty}`}
+      timerKey={questionKey}
+      timerDuration={timePerQ}
+      timerDanger={timerDanger}
+    >
 
       <div className="calc-progress-track">
         <div
           className="calc-progress-fill"
           style={{ width: `${(levelProgress / pointsToLevel) * 100}%` }}
-        />
-      </div>
-
-      <div className="calc-timer-track">
-        <div
-          key={questionKey}
-          className={`calc-timer-fill${timerDanger ? ' timer-danger' : ''}`}
-          style={{ animationDuration: `${timePerQ}s` }}
         />
       </div>
 
@@ -127,6 +117,6 @@ export default function CalculationChallenge() {
           )}
         </div>
       )}
-    </div>
+    </ChallengePage>
   )
 }

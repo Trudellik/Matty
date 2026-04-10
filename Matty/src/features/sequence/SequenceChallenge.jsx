@@ -4,8 +4,8 @@ import { useLocale } from '../../store/LocaleContext'
 import { useSequenceGame } from './useSequenceGame'
 import { LEVELS } from './sequenceEngine'
 import GameOver from '../../components/GameOver'
-import GameHeader from '../../components/GameHeader'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './SequenceChallenge.css'
 
 export default function SequenceChallenge() {
@@ -69,16 +69,15 @@ export default function SequenceChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="seq-page seq-game">
-      <GameHeader
-        onQuit={() => selectLevel(null)}
-        quitLabel={t('seq_levels')}
-        lives={lives}
-        maxLives={maxLives}
-        crackingIdx={crackingIdx}
-        score={score}
-        difficulty={level ? t(LEVELS[level].labelKey) : ''}
-      />
+    <ChallengePage
+      onQuit={() => selectLevel(null)}
+      quitLabel={t('seq_levels')}
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      score={score}
+      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+    >
 
       <div className="seq-arena">
         <div className="seq-question-label">{t('seq_question')}</div>
@@ -119,6 +118,6 @@ export default function SequenceChallenge() {
           </>
         )}
       </div>
-    </div>
+    </ChallengePage>
   )
 }

@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
-import ChallengePage from './pages/ChallengePage'
+import NotReadyPage from './pages/NotReadyPage'
 import MultiplicationChallenge from './features/multiplication/MultiplicationChallenge'
 import CalculationChallenge from './features/calculation/CalculationChallenge'
 import AdditionChallenge from './features/addition/AdditionChallenge'
@@ -28,7 +28,7 @@ function App() {
         <Route path="challenge/algebra"        element={<AlgebraChallenge />} />
         <Route path="challenge/geometry"       element={<GeometryChallenge />} />
         <Route path="challenge/sequence"       element={<SequenceChallenge />} />
-        <Route path="challenge/:id"            element={<ChallengePage />} />
+        <Route path="challenge/:id"            element={<NotReadyPage />} />
       </Route>
     </Routes>
   )

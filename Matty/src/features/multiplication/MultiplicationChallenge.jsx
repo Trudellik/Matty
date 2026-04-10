@@ -6,6 +6,7 @@ import { LEVELS, isPrefilled } from './multiplicationEngine'
 import { formatTime } from '../../utils/utils'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import ChallengePage from '../../pages/ChallengePage'
 import './MultiplicationChallenge.css'
 
 export default function MultiplicationChallenge() {
@@ -20,10 +21,10 @@ export default function MultiplicationChallenge() {
   })
 
   const {
-    level, started, typingValue, filledCells,
+    level, typingValue, filledCells,
     wrongFlash, wrongInfo, elapsed, completed, isNewBest,
     size, cellsToFill, activeCell, currentCellRef,
-    selectLevel, startGame, playAgain, stopGame,
+    selectLevel, playAgain, stopGame,
   } = game
 
   // ── Level select ──────────────────────────────────────────────────
@@ -54,33 +55,12 @@ export default function MultiplicationChallenge() {
 
   // ── Game screen ───────────────────────────────────────────────────
   return (
-    <div className="mult-page game-screen">
-      <div className="game-topbar">
-        <button
-          className="mult-back-btn topbar-back"
-          onClick={() => { stopGame(); selectLevel(null) }}
-        >
-          {t('mult_levels')}
-        </button>
-        <div className="game-timer">{formatTime(elapsed)}</div>
-        <div className="game-level-badge">{t(LEVELS[level].labelKey)}</div>
-      </div>
-
-      {/* Start overlay */}
-      {!started && (
-        <div className="start-overlay">
-          <div className="start-card">
-            <p className="start-level-name">{t(LEVELS[level].labelKey)}</p>
-            <p className="start-hint">
-              {t('mult_cells_to_fill', { n: cellsToFill.length })}<br />
-              {t('mult_type_hint')}
-            </p>
-            <button className="start-btn" onClick={startGame}>
-              {t('mult_start')}
-            </button>
-          </div>
-        </div>
-      )}
+    <ChallengePage
+      onQuit={() => { stopGame(); selectLevel(null) }}
+      quitLabel={t('mult_levels')}
+      score={formatTime(elapsed)}
+      difficulty={t(LEVELS[level].labelKey)}
+    >
 
       {/* Wrong answer overlay */}
       {wrongInfo && (
@@ -167,6 +147,6 @@ export default function MultiplicationChallenge() {
           </tbody>
         </table>
       </div>
-    </div>
+    </ChallengePage>
   )
 }

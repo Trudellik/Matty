@@ -4,6 +4,7 @@ import { useLocale } from '../../store/LocaleContext'
 import { useFractionGame } from './useFractionGame'
 import GameOptionsPage from '../../components/GameOptionsPage'
 import GameOver from '../../components/GameOver'
+import ChallengePage from '../../pages/ChallengePage'
 import './FractionChallenge.css'
 
 export default function FractionChallenge() {
@@ -57,21 +58,14 @@ export default function FractionChallenge() {
 
   // Playing screen
   return (
-    <div className="frac-page frac-game">
-      {/* Topbar */}
-      <div className="frac-topbar">
-        <button className="frac-back-btn frac-topbar-back" onClick={() => navigate(homePath())}>
-          {t('back')}
-        </button>
-        <div className="frac-lives">
-          {Array.from({ length: maxLives }, (_, i) => {
-            if (i === crackingIdx) return <span key={i} className="life-cracking">💔</span>
-            if (i < lives)         return <span key={i} className="life-full">❤️</span>
-            return                        <span key={i} className="life-lost">🖤</span>
-          })}
-        </div>
-        <div className="frac-score-display">{score}</div>
-      </div>
+    <ChallengePage
+      onQuit={() => navigate(homePath())}
+      quitLabel={t('back')}
+      lives={lives}
+      maxLives={maxLives}
+      crackingIdx={crackingIdx}
+      score={score}
+    >
 
       {/* Instruction */}
       <p className="frac-instruction">{t('frac_instruction')}</p>
@@ -128,6 +122,6 @@ export default function FractionChallenge() {
           )}
         </div>
       </div>
-    </div>
+    </ChallengePage>
   )
 }

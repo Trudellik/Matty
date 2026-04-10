@@ -5,11 +5,11 @@ export const GAME_CONFIG = { MAX_LIVES: 3, CORRECT_TO_LEVEL: 10 }
 // Difficulty ramps: more fractions and bigger numbers over time
 export const DIFFICULTY = [
   { minCorrect: 0,   count: 2, maxDenom: 6  },
-  { minCorrect: 10,  count: 3, maxDenom: 6  },
-  { minCorrect: 20,  count: 4, maxDenom: 8  },
-  { minCorrect: 30,  count: 4, maxDenom: 10 },
-  { minCorrect: 40,  count: 4, maxDenom: 12 },
-  { minCorrect: 50,  count: 4, maxDenom: 18 },
+  { minCorrect: 10,  count: 2, maxDenom: 6  },
+  { minCorrect: 20,  count: 3, maxDenom: 8  },
+  { minCorrect: 30,  count: 2, maxDenom: 10 },
+  { minCorrect: 40,  count: 2, maxDenom: 12 },
+  { minCorrect: 50,  count: 2, maxDenom: 18 },
 ]
 
 export function getDifficultyConfig(correct) {
