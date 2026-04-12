@@ -22,13 +22,16 @@ export default function GameOptionsPage({
   icon, title, subtitle,
   rules,
   options = [],
+  defaultSelected,
+  extra,
   onStart,
   onBack,
   backLabel  = '← Back',
   startLabel = 'Start',
 }) {
   const hasOptions = options.length > 0
-  const [selected, setSelected] = useState(hasOptions ? null : '__none__')
+  const initKey = defaultSelected ?? (hasOptions ? options[0]?.key : null) ?? '__none__'
+  const [selected, setSelected] = useState(initKey)
   const startRef = useRef(null)
 
   const canStart = selected !== null
@@ -90,6 +93,8 @@ export default function GameOptionsPage({
           </div>
         )}
 
+        {extra}
+
         {hasOptions && (
           <div className="gop-options">
             {options.map(opt => {
@@ -130,9 +135,6 @@ export default function GameOptionsPage({
         >
           {startLabel}
         </button>
-        {hasOptions && !selected && (
-          <p className="gop-hint">↑ Pick a level above</p>
-        )}
       </div>
     </div>
   )

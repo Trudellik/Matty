@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -27,6 +28,15 @@ export default function MultiplicationChallenge() {
     selectLevel, playAgain, stopGame,
   } = game
 
+  const inputRef    = useRef(null)
+  const lastLevelRef = useRef(null)
+
+  useEffect(() => {
+    if (level && !completed) {
+      inputRef.current?.focus()
+    }
+  }, [level, completed])
+
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
     const multiScores = typeof scores['multiplication'] === 'object'
@@ -45,7 +55,8 @@ export default function MultiplicationChallenge() {
         title={t('mult_title')}
         subtitle={t('mult_subtitle')}
         options={options}
-        onStart={(key) => selectLevel(key)}
+        defaultSelected={lastLevelRef.current}
+        onStart={(key) => { lastLevelRef.current = key; selectLevel(key) }}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('mult_start')}
@@ -61,6 +72,14 @@ export default function MultiplicationChallenge() {
       score={formatTime(elapsed)}
       difficulty={t(LEVELS[level].labelKey)}
     >
+
+      <input
+        ref={inputRef}
+        type="text"
+        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', left: '-9999px' }}
+        value=""
+        readOnly
+      />
 
       {/* Wrong answer overlay */}
       {wrongInfo && (

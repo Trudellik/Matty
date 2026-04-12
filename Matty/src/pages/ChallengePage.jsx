@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import GameHeader from '../components/GameHeader'
+import { useLocale } from '../store/LocaleContext'
 import './ChallengePage.css'
 
 /**
@@ -41,10 +43,23 @@ export default function ChallengePage({
   children,
   className = '',
 }) {
+  const { t } = useLocale()
+  const [confirming, setConfirming] = useState(false)
+
+  useEffect(() => {
+    if (!confirming) return
+    function onKey(e) {
+      if (e.key === 'Escape') setConfirming(false)
+      if (e.key === 'Enter')  { setConfirming(false); onQuit?.() }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [confirming, onQuit])
+
   return (
     <div className={`cp-page${className ? ` ${className}` : ''}`}>
       <GameHeader
-        onQuit={onQuit}
+        onQuit={() => setConfirming(true)}
         quitLabel={quitLabel}
         lives={lives}
         maxLives={maxLives}
@@ -59,6 +74,23 @@ export default function ChallengePage({
       <div className="cp-content">
         {children}
       </div>
+
+      {confirming && (
+        <div className="cp-confirm-backdrop" onClick={() => setConfirming(false)}>
+          <div className="cp-confirm-dialog" onClick={e => e.stopPropagation()}>
+            <div className="cp-confirm-title">{t('quit_confirm_title')}</div>
+            <div className="cp-confirm-body">{t('quit_confirm_body')}</div>
+            <div className="cp-confirm-actions">
+              <button className="cp-confirm-stay" onClick={() => setConfirming(false)}>
+                {t('quit_confirm_stay')}
+              </button>
+              <button className="cp-confirm-leave" onClick={() => { setConfirming(false); onQuit?.() }}>
+                {t('quit_confirm_leave')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
