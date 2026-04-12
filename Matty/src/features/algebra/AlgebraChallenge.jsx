@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -24,6 +25,15 @@ export default function AlgebraChallenge() {
     startGame, playAgain, selectLevel,
   } = game
 
+  const inputRef    = useRef(null)
+  const lastLevelRef = useRef(null)
+
+  useEffect(() => {
+    if (gameState === 'playing' && !feedback) {
+      inputRef.current?.focus()
+    }
+  }, [gameState, feedback])
+
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle' && !level) {
     const algScores = typeof scores['algebra'] === 'object' ? scores['algebra'] : {}
@@ -41,7 +51,8 @@ export default function AlgebraChallenge() {
         title={t('alg_title')}
         subtitle={t('alg_subtitle')}
         options={options}
-        onStart={(key) => startGame(key)}
+        defaultSelected={lastLevelRef.current}
+        onStart={(key) => { lastLevelRef.current = key; startGame(key) }}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('mult_start')}
@@ -78,6 +89,14 @@ export default function AlgebraChallenge() {
       score={score}
       difficulty={level ? t(LEVELS[level].labelKey) : ''}
     >
+
+      <input
+        ref={inputRef}
+        type="text"
+        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', left: '-9999px' }}
+        value=""
+        readOnly
+      />
 
       <div className="alg-arena">
         {question && (

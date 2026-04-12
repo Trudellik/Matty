@@ -106,9 +106,8 @@ export function useMultiplicationGame({ saveBestTime, getExistingScore }) {
 
       } else if (e.key === 'Backspace') {
         e.preventDefault()
-        const next = typingRef.current.slice(0, -1)
-        typingRef.current = next
-        setTypingValue(next)
+        typingRef.current = ''
+        setTypingValue('')
       }
     }
 

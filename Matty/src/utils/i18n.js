@@ -11,6 +11,10 @@ const translations = {
     back_to_home: 'Back to Home',
     back: '← Back',
     challenge_coming_soon: 'Challenge coming soon!',
+    quit_confirm_title: 'Leave challenge?',
+    quit_confirm_body: 'Your progress will be lost.',
+    quit_confirm_leave: 'Leave',
+    quit_confirm_stay: 'Keep Playing',
 
     // Challenge cards
     challenge_addition_label: 'Addition',
@@ -138,6 +142,9 @@ const translations = {
     maze_score_label: 'points',
     maze_new_best: 'New best score!',
     maze_play_again: 'Play Again',
+    maze_target_label: 'Target Sum',
+    maze_random: 'Random',
+    maze_custom: 'Custom',
 
     // Algebra challenge
     challenge_algebra_label: 'Algebra',
@@ -219,6 +226,10 @@ const translations = {
     back_to_home: 'Tilbage til start',
     back: '← Tilbage',
     challenge_coming_soon: 'Udfordring kommer snart!',
+    quit_confirm_title: 'Forlad udfordring?',
+    quit_confirm_body: 'Din fremgang vil gå tabt.',
+    quit_confirm_leave: 'Forlad',
+    quit_confirm_stay: 'Fortsæt',
 
     // Challenge cards
     challenge_addition_label: 'Addition',
@@ -346,6 +357,9 @@ const translations = {
     maze_score_label: 'point',
     maze_new_best: 'Ny rekordscore!',
     maze_play_again: 'Spil igen',
+    maze_target_label: 'Målsum',
+    maze_random: 'Tilfældig',
+    maze_custom: 'Brugerdefineret',
 
     // Algebra challenge
     challenge_algebra_label: 'Algebra',

@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -19,6 +20,8 @@ export default function OperatorChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
   const { t, homePath }       = useLocale()
+
+  const lastModeRef = useRef(null)
 
   const game = useOperatorGame({
     saveScore:        (mode, s) => saveScore(`operator_${mode}`, s),
@@ -51,7 +54,8 @@ export default function OperatorChallenge() {
         title={t('op_title')}
         subtitle={t('op_subtitle')}
         options={options}
-        onStart={(key) => selectMode(key)}
+        defaultSelected={lastModeRef.current}
+        onStart={(key) => { lastModeRef.current = key; selectMode(key) }}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('mult_start')}
