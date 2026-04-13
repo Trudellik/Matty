@@ -44,9 +44,9 @@ export function getDifficultyConfig(correct, mode) {
   }
 
   // basic
-  if (level === 1) return { blanks: 1,         maxN: 10, ops: ['+', '-'] }
-  if (level === 2) return { blanks: 1,         maxN: 20, ops: ['+', '-'] }
-  return                  { blanks: level - 1, maxN: 20, ops: ['+', '-'] }
+  if (level === 1) return { blanks: level, maxN: 10, ops: ['+', '-'] }
+  if (level === 2) return { blanks: level, maxN: 20, ops: ['+', '-'] }
+  return                  { blanks: level, maxN: 20, ops: ['+', '-'] }
 }
 
 function buildQuestion(blanks, ops, maxN) {

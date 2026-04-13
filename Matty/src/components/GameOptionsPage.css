@@ -92,7 +92,7 @@
   padding: 32px 20px 24px;
   border-radius: 18px;
   border: 2.5px solid var(--c, var(--border));
-  background: var(--c-bg, var(--social-bg));
+  background: transparent;
   cursor: pointer;
   text-align: center;
   font-family: var(--sans);

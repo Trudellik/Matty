@@ -12,18 +12,21 @@ export function useMazeGame({ saveScore, getExistingScore }) {
   const [elapsed,    setElapsed]    = useState(0)
   const [isNewBest,  setIsNewBest]  = useState(false)
 
-  const mazeRef    = useRef(null)
-  const posRef     = useRef({ r: 0, c: 0 })
-  const visitedRef = useRef(new Set(['0,0']))
-  const wrongRef   = useRef(new Set())
-  const elapsedRef = useRef(0)
-  const timerRef   = useRef(null)
+  const mazeRef       = useRef(null)
+  const posRef        = useRef({ r: 0, c: 0 })
+  const visitedRef    = useRef(new Set(['0,0']))
+  const wrongRef      = useRef(new Set())
+  const elapsedRef    = useRef(0)
+  const timerRef      = useRef(null)
+  const lastTargetRef = useRef(null)
 
   useEffect(() => () => clearInterval(timerRef.current), [])
 
-  function start() {
+  function start(target) {
+    const tgt = target ?? null
+    lastTargetRef.current = tgt
     clearInterval(timerRef.current)
-    const m           = generateMaze()
+    const m           = generateMaze(tgt ?? undefined)
     const initVisited = new Set(['0,0'])
 
     mazeRef.current    = m
@@ -104,6 +107,6 @@ export function useMazeGame({ saveScore, getExistingScore }) {
   return {
     gameState, maze, position, visited, wrongCells,
     elapsed, isNewBest,
-    handleMove, start, playAgain: start,
+    handleMove, start, playAgain: () => start(lastTargetRef.current),
   }
 }

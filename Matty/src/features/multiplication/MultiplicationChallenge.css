@@ -158,11 +158,22 @@
   overflow: auto;
   width: 100%;
   max-width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .mult-grid {
   border-collapse: collapse;
-  margin: 0 auto;
+  table-layout: fixed;
+}
+
+/* Cell size: 80% of the smaller viewport dimension divided by column count */
+.mult-grid.level-easy,
+.mult-grid.level-medium {
+  --cell-size: min(calc((80vw) / 10), calc((80svh - 90px) / 10));
+}
+.mult-grid.level-hard {
+  --cell-size: min(calc((80vw) / 15), calc((80svh - 90px) / 15));
 }
 
 .corner-cell,
@@ -171,9 +182,9 @@
   border: 1px solid var(--border);
   padding: 0;
   box-sizing: border-box;
-  width: 1%;
-  height: 1%;
-  font-size: clamp(19px, 1.1vw, 30px);
+  width: var(--cell-size);
+  height: var(--cell-size);
+  font-size: clamp(11px, calc(var(--cell-size) * 0.38), 35px);
 }
 
 .corner-cell {

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -28,6 +28,9 @@ export default function MazeChallenge() {
     handleMove, start, playAgain,
   } = game
 
+  const [targetMode,   setTargetMode]   = useState('random')
+  const [customTarget, setCustomTarget] = useState(12)
+
   const currentCellRef = useRef(null)
 
   useEffect(() => {
@@ -46,7 +49,31 @@ export default function MazeChallenge() {
           t('maze_rule_red'),
           t('maze_rule_score'),
         ]}
-        onStart={start}
+        extra={
+          <div className="maze-target-picker">
+            <div className="maze-target-label">{t('maze_target_label')}</div>
+            <div className="maze-target-toggle">
+              <button
+                className={`maze-target-btn${targetMode === 'random' ? ' maze-target-btn--active' : ''}`}
+                onClick={() => setTargetMode('random')}
+              >{t('maze_random')}</button>
+              <button
+                className={`maze-target-btn${targetMode === 'custom' ? ' maze-target-btn--active' : ''}`}
+                onClick={() => setTargetMode('custom')}
+              >{t('maze_custom')}</button>
+            </div>
+            {targetMode === 'custom' && (
+              <div className="maze-target-stepper">
+                <button className="maze-step-btn maze-step-btn--jump" onClick={() => setCustomTarget(v => Math.max(3, v - 10))}>−10</button>
+                <button className="maze-step-btn" onClick={() => setCustomTarget(v => Math.max(3, v - 1))}>−</button>
+                <span className="maze-step-val">{customTarget}</span>
+                <button className="maze-step-btn" onClick={() => setCustomTarget(v => Math.min(100, v + 1))}>+</button>
+                <button className="maze-step-btn maze-step-btn--jump" onClick={() => setCustomTarget(v => Math.min(100, v + 10))}>+10</button>
+              </div>
+            )}
+          </div>
+        }
+        onStart={() => start(targetMode === 'custom' ? customTarget : undefined)}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('maze_start')}

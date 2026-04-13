@@ -7,6 +7,53 @@
   box-sizing: border-box;
 }
 
+/* ── Mode / duration pickers on idle screen ── */
+.add-mode-pickers {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.add-picker-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-picker-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.add-picker-row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-picker-btn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: var(--social-bg);
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.add-picker-btn:hover { border-color: var(--accent); }
+.add-picker-btn--active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
 /* ── Back button ── */
 .add-back-btn {
   align-self: flex-start;

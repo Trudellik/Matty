@@ -33,32 +33,25 @@ function makeWrongExpr(target) {
   return { expr: `${a}+${b}`, valid: false }
 }
 
-// Random winding path from (0,0) to (N-1,N-1).
-//
-// Rules that guarantee "exactly one valid unvisited neighbour" at every step:
-//   1. Self-avoiding: never revisit a cell.
-//   2. Non-adjacent: no two non-consecutive path cells share an edge
-//      (so no shortcuts appear during gameplay).
-//
-// Generation uses an iterative DFS with a per-position candidate stack so
-// backtracking never re-tries a direction that already failed.
-// Momentum: 60% chance the new cell inherits the same direction preference.
-function generatePath() {
+// Single attempt at a winding self-avoiding path with the non-adjacency
+// constraint. Returns the path array on success, or null if the step budget
+// is exhausted (caller retries with fresh randomness).
+function attemptPath() {
   const N       = GRID_SIZE
   const pathSet = new Set(['0,0'])
   const path    = [[0, 0]]
-
-  // dirStack[i] = ordered list of directions still to try from path[i]
   const dirStack = [shuffle([...DIRS])]
 
-  while (true) {
-    const [r, c]    = path[path.length - 1]
-    if (r === N - 1 && c === N - 1) break
+  for (let steps = 0; steps < 300_000; steps++) {
+    const top = path[path.length - 1]
+    if (!top) return null                        // backtracked past start
+
+    const [r, c] = top
+    if (r === N - 1 && c === N - 1) return path // reached exit ✓
 
     const remaining = dirStack[dirStack.length - 1]
 
     if (!remaining.length) {
-      // Exhausted all options here — backtrack
       path.pop()
       pathSet.delete(`${r},${c}`)
       dirStack.pop()
@@ -73,20 +66,17 @@ function generatePath() {
     const key = `${nr},${nc}`
     if (pathSet.has(key)) continue
 
-    // Reject if the candidate cell touches any existing path cell other than
-    // the current cell — this preserves the unique-next-step guarantee.
+    // Non-adjacency: candidate must not touch any path cell except current
     const crowded = DIRS.some(([er, ec]) => {
       const ar = nr + er, ac = nc + ec
-      if (ar === r && ac === c) return false   // current cell — OK
+      if (ar === r && ac === c) return false
       return pathSet.has(`${ar},${ac}`)
     })
     if (crowded) continue
 
-    // Commit the move
     pathSet.add(key)
     path.push([nr, nc])
 
-    // Build direction order for the new cell: 60% momentum (same dir first)
     const others  = DIRS.filter(([d0, d1]) => d0 !== dr || d1 !== dc)
     const ordered = Math.random() < 0.6
       ? [[dr, dc], ...shuffle(others)]
@@ -94,23 +84,31 @@ function generatePath() {
     dirStack.push(ordered)
   }
 
-  return path
+  return null // step budget hit — caller will retry
 }
 
-export function generateMaze() {
-  const N      = GRID_SIZE
-  const target = rand(10, 18)
+// Keeps retrying until a valid path is found (usually succeeds first try).
+function generatePath() {
+  for (;;) {
+    const path = attemptPath()
+    if (path) return path
+  }
+}
+
+export function generateMaze(target) {
+  const N   = GRID_SIZE
+  const tgt = (target != null) ? target : rand(10, 18)
   const path   = generatePath()
 
   // Start with all cells having wrong expressions
   const grid = Array.from({ length: N }, () =>
-    Array.from({ length: N }, () => makeWrongExpr(target))
+    Array.from({ length: N }, () => makeWrongExpr(tgt))
   )
 
   // Mark every path cell as correct
   for (const [r, c] of path) {
-    grid[r][c] = makeCorrectExpr(target)
+    grid[r][c] = makeCorrectExpr(tgt)
   }
 
-  return { grid, target }
+  return { grid, target: tgt }
 }

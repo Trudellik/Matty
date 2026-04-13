@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -24,6 +25,14 @@ export default function CalculationChallenge() {
     timerDanger, ops, pointsToLevel, maxLives, timePerQ,
     handleStart,
   } = game
+
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    if (gameState === 'playing' && !feedback) {
+      inputRef.current?.focus()
+    }
+  }, [gameState, feedback])
 
   // ── Idle ──────────────────────────────────────────────────────────
   if (gameState === 'idle') {
@@ -76,6 +85,14 @@ export default function CalculationChallenge() {
       timerDuration={timePerQ}
       timerDanger={timerDanger}
     >
+
+      <input
+        ref={inputRef}
+        type="text"
+        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', left: '-9999px' }}
+        value=""
+        readOnly
+      />
 
       <div className="calc-progress-track">
         <div

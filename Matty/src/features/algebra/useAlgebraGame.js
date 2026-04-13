@@ -80,7 +80,8 @@ export function useAlgebraGame({ saveScore, getExistingScore }) {
     if (gameState !== 'playing' || feedback) return
     const onKey = (e) => {
       if (e.key === 'Backspace') {
-        setTypingValue(v => v.slice(0, -1))
+        e.preventDefault()
+        setTypingValue('')
       } else if (e.key === '-' && typingValue === '') {
         setTypingValue('-')
       } else if (/^\d$/.test(e.key)) {
