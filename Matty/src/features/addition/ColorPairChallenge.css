@@ -1,0 +1,241 @@
+/* ── Idle screen ── */
+.color-pair-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 24px 24px 48px;
+}
+
+.cp-back-btn {
+  align-self: flex-start;
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 15px;
+  color: var(--text-h);
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: border-color 0.2s;
+}
+.cp-back-btn:hover { border-color: var(--accent); }
+
+.cp-idle-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  max-width: 480px;
+  margin-top: 32px;
+}
+
+.cp-idle-icon {
+  font-size: 72px;
+  line-height: 1;
+}
+
+.cp-idle-content h1 {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  margin: 0;
+  color: var(--text-h);
+}
+
+.cp-idle-subtitle {
+  font-size: 17px;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ── Duration picker (reused in idle) ── */
+.cp-picker-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cp-picker-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.cp-picker-row {
+  display: flex;
+  gap: 8px;
+}
+
+.cp-picker-btn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: var(--social-bg);
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.cp-picker-btn:hover { border-color: var(--accent); }
+.cp-picker-btn--active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* ── Rules list ── */
+.cp-rules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cp-rules li {
+  font-size: 15px;
+  color: var(--text);
+}
+.cp-rules li::before {
+  content: '• ';
+  color: var(--accent);
+}
+
+/* ── Start button ── */
+.cp-start-btn {
+  padding: 14px 56px;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--sans);
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.cp-start-btn:hover { opacity: 0.88; transform: scale(1.04); }
+
+/* ── Playing screen: full-viewport, no scroll ── */
+.color-pair-game {
+  height: 100svh;
+  overflow: hidden;
+}
+
+.color-pair-game .cp-content {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 16px 12px;
+  overflow: hidden;
+}
+
+/* ── Instruction ── */
+.cp-instruction {
+  font-size: 15px;
+  color: var(--text);
+  margin: 0;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* ── Color-pair grid ── */
+/*
+ * Size the grid so it always fits inside the remaining viewport space.
+ * --cp-cols drives the column count; the grid is always square.
+ * We use a CSS custom property trick: set the grid width to
+ * min(available-width, available-height) via vmin, then subtract
+ * header (~56px) + instruction (~28px) + badge (~36px) + padding (~40px).
+ */
+.cp-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cp-cols), 1fr);
+  gap: clamp(4px, 1vmin, 12px);
+  /* Square grid that fits in the viewport with room for header + instruction */
+  width:  min(calc(100vw - 32px), calc(100svh - 160px));
+  height: min(calc(100vw - 32px), calc(100svh - 160px));
+  flex-shrink: 0;
+}
+
+/* ── Individual cell ── */
+.cp-cell {
+  border-radius: clamp(6px, 1.5vw, 14px);
+  border: 3px solid transparent;
+  background: var(--cell-color, var(--social-bg));
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s, opacity 0.15s, filter 0.15s;
+}
+
+.cp-cell:hover:not(:disabled) {
+  transform: scale(1.08);
+  filter: brightness(1.15);
+}
+
+.cp-cell--selected {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px var(--cell-color, var(--accent)),
+              0 4px 16px -2px var(--cell-color, rgba(0,0,0,0.3));
+  transform: scale(1.1);
+}
+
+.cp-cell--wrong {
+  animation: cp-shake 0.35s ease-out;
+  filter: brightness(0.75);
+}
+
+.cp-cell--matched {
+  opacity: 0.18;
+  cursor: default;
+  animation: cp-match 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Wild / empty center cell — diagonal black-and-white stripe */
+.cp-cell--wild {
+  background: repeating-linear-gradient(
+    45deg,
+    #fff 0px,
+    #fff 6px,
+    #222 6px,
+    #222 12px
+  );
+  cursor: default;
+  border-color: var(--border);
+  opacity: 0.55;
+}
+
+@keyframes cp-shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-5px); }
+  75%       { transform: translateX(5px); }
+}
+
+@keyframes cp-match {
+  0%   { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ── Round info badge (timed mode) ── */
+.cp-round-badge {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 16px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .cp-idle { padding: 16px 16px 32px; }
+  .cp-idle-content h1 { font-size: 30px; }
+  .cp-idle-icon { font-size: 56px; }
+}

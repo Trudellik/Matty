@@ -8,12 +8,17 @@ import { formatTime } from '../../utils/utils'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
 import ChallengePage from '../../pages/ChallengePage'
+import ColorPairChallenge from './ColorPairChallenge'
 import './AdditionChallenge.css'
 
 export default function AdditionChallenge() {
   const navigate                 = useNavigate()
   const { scores, saveBestTime } = useHighScores()
   const { t, homePath }          = useLocale()
+
+  // Option selections on the idle screen
+  const [gameType, setGameType]   = useState('sum')   // 'sum' | 'color'
+  const [duration, setDuration]   = useState('single') // 'single' | 'timed'
 
   const game = useAdditionGame({
     saveBestTime:     (level, time) => saveBestTime('addition', level, time),
@@ -42,8 +47,8 @@ export default function AdditionChallenge() {
     }
   }, [started, completed])
 
-  // ── Level select ──────────────────────────────────────────────────
-  if (!level) {
+  // ── Idle screen ───────────────────────────────────────────────────
+  if (!level && gameType === 'sum') {
     const addScores = typeof scores['addition'] === 'object' ? scores['addition'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
@@ -53,16 +58,63 @@ export default function AdditionChallenge() {
       badge: addScores[key] !== undefined ? `⏱ ${formatTime(addScores[key])}` : undefined,
       color: COLORS[key],
     }))
+
+    const modeExtra = (
+      <div className="add-mode-pickers">
+        <div className="add-picker-group">
+          <span className="add-picker-label">{t('add_mode_label')}</span>
+          <div className="add-picker-row">
+            <button
+              className={`add-picker-btn${gameType === 'sum' ? ' add-picker-btn--active' : ''}`}
+              onClick={() => setGameType('sum')}
+            >{t('add_mode_sum')}</button>
+            <button
+              className={`add-picker-btn${gameType === 'color' ? ' add-picker-btn--active' : ''}`}
+              onClick={() => setGameType('color')}
+            >{t('add_mode_color')}</button>
+          </div>
+        </div>
+        <div className="add-picker-group">
+          <span className="add-picker-label">{t('add_duration_label')}</span>
+          <div className="add-picker-row">
+            <button
+              className={`add-picker-btn${duration === 'single' ? ' add-picker-btn--active' : ''}`}
+              onClick={() => setDuration('single')}
+            >{t('add_duration_single')}</button>
+            <button
+              className={`add-picker-btn${duration === 'timed' ? ' add-picker-btn--active' : ''}`}
+              onClick={() => setDuration('timed')}
+            >{t('add_duration_timed')}</button>
+          </div>
+        </div>
+      </div>
+    )
+
     return (
       <GameOptionsPage
         icon="➕"
         title={t('add_title')}
         subtitle={t('add_subtitle')}
         options={options}
+        extra={modeExtra}
         onStart={(key) => selectLevel(key)}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('mult_start')}
+      />
+    )
+  }
+
+  // ── Color-pair mode (delegates to its own component) ──────────────
+  if (gameType === 'color') {
+    return (
+      <ColorPairChallenge
+        duration={duration}
+        setDuration={setDuration}
+        setGameType={setGameType}
+        t={t}
+        homePath={homePath}
+        navigate={navigate}
       />
     )
   }

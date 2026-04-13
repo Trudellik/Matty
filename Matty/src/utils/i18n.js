@@ -77,6 +77,29 @@ const translations = {
     frac_play_again: 'Play Again',
     frac_level: 'Lvl',
 
+    // Addition challenge — mode + duration pickers
+    add_mode_label: 'Game Type',
+    add_mode_sum: 'Sum',
+    add_mode_color: 'Color',
+    add_duration_label: 'Duration',
+    add_duration_single: 'One Round',
+    add_duration_timed: '3 Minutes',
+
+    // Color-pair challenge
+    cp_title: 'Color Match',
+    cp_subtitle: 'Find the two cells with the same color',
+    cp_rule_pairs: 'Tap two cells of the same color to match them',
+    cp_rule_wild: 'Striped cell in the center is the odd one out — ignore it',
+    cp_rule_timed: 'Grid grows by 1 each round — clear as many as you can in 3 min',
+    cp_start: 'Start',
+    cp_instruction: 'Match all color pairs!',
+    cp_complete: 'Round Clear!',
+    cp_gameover: 'Time\'s Up!',
+    cp_score_label: 'rounds cleared',
+    cp_rounds: 'rounds',
+    cp_grid_size: 'Grid',
+    cp_play_again: 'Play Again',
+
     // Addition challenge
     add_title: 'Number Bond Blitz',
     add_subtitle: 'Find all pairs that add up to the target',
@@ -291,6 +314,29 @@ const translations = {
     frac_new_best: 'Ny rekordscore!',
     frac_play_again: 'Spil igen',
     frac_level: 'Niv',
+
+    // Addition challenge — mode + duration pickers
+    add_mode_label: 'Spiltype',
+    add_mode_sum: 'Sum',
+    add_mode_color: 'Farve',
+    add_duration_label: 'Varighed',
+    add_duration_single: 'Én runde',
+    add_duration_timed: '3 minutter',
+
+    // Color-pair challenge
+    cp_title: 'Farvematch',
+    cp_subtitle: 'Find de to felter med samme farve',
+    cp_rule_pairs: 'Tryk på to felter med samme farve for at matche dem',
+    cp_rule_wild: 'Det stribede felt i midten er det uparrede — ignorer det',
+    cp_rule_timed: 'Gitteret vokser med 1 per runde — klare så mange du kan på 3 min',
+    cp_start: 'Start',
+    cp_instruction: 'Match alle farvepar!',
+    cp_complete: 'Runde klaret!',
+    cp_gameover: 'Tid udløbet!',
+    cp_score_label: 'runder klaret',
+    cp_rounds: 'runder',
+    cp_grid_size: 'Gitter',
+    cp_play_again: 'Spil igen',
 
     // Addition challenge
     add_title: 'Talpar Blitz',
