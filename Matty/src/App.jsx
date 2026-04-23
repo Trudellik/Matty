@@ -11,6 +11,7 @@ import AlgebraChallenge from './features/algebra/AlgebraChallenge'
 import GeometryChallenge from './features/geometry/GeometryChallenge'
 import SequenceChallenge from './features/sequence/SequenceChallenge'
 import PairingChallenge from './features/pairing/PairingChallenge'
+import ColorMatchChallenge from './features/colormatch/ColorMatchChallenge'
 import { LocaleProvider } from './store/LocaleContext'
 import './styles/App.css'
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="challenge/geometry"       element={<GeometryChallenge />} />
         <Route path="challenge/sequence"       element={<SequenceChallenge />} />
         <Route path="challenge/pairing"        element={<PairingChallenge />} />
+        <Route path="challenge/colormatch"     element={<ColorMatchChallenge />} />
         <Route path="challenge/:id"            element={<NotReadyPage />} />
       </Route>
     </Routes>
