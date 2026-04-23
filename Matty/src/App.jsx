@@ -10,6 +10,7 @@ import MazeChallenge from './features/maze/MazeChallenge'
 import AlgebraChallenge from './features/algebra/AlgebraChallenge'
 import GeometryChallenge from './features/geometry/GeometryChallenge'
 import SequenceChallenge from './features/sequence/SequenceChallenge'
+import PairingChallenge from './features/pairing/PairingChallenge'
 import { LocaleProvider } from './store/LocaleContext'
 import './styles/App.css'
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="challenge/algebra"        element={<AlgebraChallenge />} />
         <Route path="challenge/geometry"       element={<GeometryChallenge />} />
         <Route path="challenge/sequence"       element={<SequenceChallenge />} />
+        <Route path="challenge/pairing"        element={<PairingChallenge />} />
         <Route path="challenge/:id"            element={<NotReadyPage />} />
       </Route>
     </Routes>

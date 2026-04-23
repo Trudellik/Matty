@@ -30,9 +30,9 @@ export function useSequenceGame({ saveScore, getExistingScore }) {
 
   const endGame = useCallback(() => {
     const finalScore = scoreRef.current
-    const existing   = getExistingScore()
+    const existing   = getExistingScore(levelRef.current)
     const newBest    = existing === undefined || finalScore > existing
-    if (newBest) saveScore(finalScore)
+    if (newBest) saveScore(levelRef.current, finalScore)
     setIsNewBest(newBest)
     setGameState('gameover')
     log('end', { score: finalScore, newBest })
