@@ -223,6 +223,24 @@ const translations = {
     geo_play_again: 'Play Again',
     geo_change_level: 'Change Level',
 
+    // Color Match challenge
+    challenge_colormatch_label: 'Color Match',
+    challenge_colormatch_desc: 'Flip cards and match pairs of color GIFs',
+    cm_title: 'Color Match',
+    cm_subtitle: 'Flip cards and find every matching pair',
+    cm_level_easy: 'Easy',
+    cm_level_easy_desc: '3×4 grid — 6 color pairs',
+    cm_level_medium: 'Medium',
+    cm_level_medium_desc: '4×4 grid — 8 color pairs',
+    cm_level_hard: 'Hard',
+    cm_level_hard_desc: '4×5 grid — 10 color pairs',
+    cm_rule_flip: 'Each cell shows either an animated GIF or a solid colour',
+    cm_rule_match: 'Tap a GIF cell then tap the solid colour that matches it',
+    cm_rule_time: 'Clear the board as fast as you can',
+    cm_complete: 'All Matched!',
+    cm_new_best: 'New best time!',
+    cm_play_again: 'Play Again',
+
     // Sequence challenge
     challenge_sequence_label: 'Sequences',
     challenge_sequence_desc: 'Find the missing number in the pattern',
@@ -470,6 +488,24 @@ const translations = {
     geo_new_best: 'Ny rekordscore!',
     geo_play_again: 'Spil igen',
     geo_change_level: 'Skift niveau',
+
+    // Color Match challenge
+    challenge_colormatch_label: 'Farvematch',
+    challenge_colormatch_desc: 'Vend kort og match par af farve-GIF\'er',
+    cm_title: 'Farvematch',
+    cm_subtitle: 'Vend kort og find alle matchende par',
+    cm_level_easy: 'Let',
+    cm_level_easy_desc: '3×4 gitter — 6 farvepar',
+    cm_level_medium: 'Mellem',
+    cm_level_medium_desc: '4×4 gitter — 8 farvepar',
+    cm_level_hard: 'Svær',
+    cm_level_hard_desc: '4×5 gitter — 10 farvepar',
+    cm_rule_flip: 'Hvert felt viser enten en animeret GIF eller en ensfarvet farve',
+    cm_rule_match: 'Tryk på et GIF-felt, derefter på den ensfarvet farve der matcher',
+    cm_rule_time: 'Ryd brættet så hurtigt som muligt',
+    cm_complete: 'Alle matchet!',
+    cm_new_best: 'Ny bedste tid!',
+    cm_play_again: 'Spil igen',
 
     // Sequence challenge
     challenge_sequence_label: 'Talrækker',

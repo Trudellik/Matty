@@ -65,7 +65,8 @@ function Home() {
       </main>
 
       <footer className="home-footer">
-        <p>Made with ♥ by Matty</p>
+        <p>Made with ♥ by Kenneth Andersen</p>
+        <p className="home-version">v{__APP_VERSION__}</p>
       </footer>
     </div>
   )

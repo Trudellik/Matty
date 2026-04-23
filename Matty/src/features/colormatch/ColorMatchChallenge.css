@@ -1,0 +1,144 @@
+/* ── Game wrapper ── */
+.cm-game {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.cm-game .cp-content {
+  position: relative;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 16px 16px;
+  overflow: hidden;
+}
+
+/* ── Color background grid ── */
+.cm-bg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  gap: 3px;
+  padding: 3px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.13;
+}
+
+.cm-bg-cell {
+  border-radius: 2px;
+}
+
+/* ── Card grid ──
+ * Non-square aspect-ratio aware: CSS custom property division works in modern browsers.
+ */
+.cm-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cm-cols), 1fr);
+  grid-template-rows:    repeat(var(--cm-rows), 1fr);
+  gap: clamp(5px, 1.2vmin, 12px);
+  width: min(
+    calc(100vw - 32px),
+    calc((100svh - 140px) * var(--cm-cols) / var(--cm-rows))
+  );
+  height: min(
+    calc(100svh - 140px),
+    calc((100vw - 32px) * var(--cm-rows) / var(--cm-cols))
+  );
+  flex-shrink: 0;
+}
+
+/* ── Cell base ── */
+.cm-cell {
+  position: relative;
+  border-radius: clamp(6px, 1.5vw, 14px);
+  border: 3px solid transparent;
+  background: var(--social-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.12s, border-color 0.12s, box-shadow 0.12s, filter 0.15s;
+  overflow: hidden;
+}
+
+.cm-cell:hover:not(:disabled) {
+  transform: scale(1.07);
+  filter: brightness(1.12);
+}
+
+/* GIF cell: fills the full card squarely */
+.cm-cell img {
+  width:  100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Color cell: solid filled block that fills the full card */
+.cm-cell-color {
+  display: block;
+  width:  100%;
+  height: 100%;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.15);
+}
+
+/* Selected */
+.cm-cell--selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent);
+  transform: scale(1.1);
+}
+
+/* Wrong pair shake */
+.cm-cell--wrong {
+  animation: cm-shake 0.35s ease-out;
+  filter: brightness(0.7);
+}
+
+/* Matched: full opacity, green ring + check mark overlay */
+.cm-cell--matched {
+  opacity: 1;
+  cursor: default;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px #22c55e;
+  animation: cm-match 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.cm-cell--matched::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(16px, 4vmin, 32px);
+  font-weight: 900;
+  color: #fff;
+  background: rgba(34, 197, 94, 0.45);
+  border-radius: inherit;
+}
+
+@keyframes cm-shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-5px); }
+  75%       { transform: translateX(5px); }
+}
+
+@keyframes cm-match {
+  0%   { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+  .cm-grid { gap: 5px; }
+}
