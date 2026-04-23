@@ -14,8 +14,8 @@ export default function SequenceChallenge() {
   const { t, homePath }       = useLocale()
 
   const game = useSequenceGame({
-    saveScore:        (s) => saveScore('sequence', s),
-    getExistingScore: ()  => scores['sequence'],
+    saveScore:        (lvl, s) => saveScore(`sequence_${lvl}`, s),
+    getExistingScore: (lvl)   => scores[`sequence_${lvl}`],
   })
 
   const {
@@ -26,13 +26,12 @@ export default function SequenceChallenge() {
 
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle') {
-    const seqScores = typeof scores['sequence'] === 'object' ? scores['sequence'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: seqScores[key] !== undefined ? `🏆 ${seqScores[key]}` : undefined,
+      badge: scores[`sequence_${key}`] !== undefined ? `🏆 ${scores[`sequence_${key}`]}` : undefined,
       color: COLORS[key],
     }))
     return (

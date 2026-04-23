@@ -6,7 +6,16 @@ import { formatTime } from '../utils/utils'
 import './Home.css'
 
 function getScoreBadge(challenge, scores, t) {
-  const data = scores[challenge.id]
+  if (challenge.scoreKeys) {
+    const vals = challenge.scoreKeys.map(k => scores[k]).filter(v => v !== undefined && v !== null)
+    if (vals.length === 0) return null
+    const best = challenge.scoreType === 'time' ? Math.min(...vals) : Math.max(...vals)
+    return challenge.scoreType === 'time'
+      ? `${t('best_time')} ${formatTime(best)}`
+      : `${t('best_score')} ${best}`
+  }
+
+  const data = scores[challenge.scoreKey ?? challenge.id]
   if (data === undefined || data === null) return null
 
   if (challenge.scoreType === 'time') {
@@ -54,6 +63,10 @@ function Home() {
           )
         })}
       </main>
+
+      <footer className="home-footer">
+        <p>Made with ♥ by Matty</p>
+      </footer>
     </div>
   )
 }

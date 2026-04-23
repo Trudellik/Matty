@@ -129,8 +129,8 @@ export default function GeometryChallenge() {
   const { t, homePath }       = useLocale()
 
   const game = useGeometryGame({
-    saveScore:        (s) => saveScore('geometry', s),
-    getExistingScore: ()  => scores['geometry'],
+    saveScore:        (lvl, s) => saveScore(`geometry_${lvl}`, s),
+    getExistingScore: (lvl)   => scores[`geometry_${lvl}`],
   })
 
   const {
@@ -141,13 +141,12 @@ export default function GeometryChallenge() {
 
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle') {
-    const geoScores = typeof scores['geometry'] === 'object' ? scores['geometry'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: geoScores[key] !== undefined ? `🏆 ${geoScores[key]}` : undefined,
+      badge: scores[`geometry_${key}`] !== undefined ? `🏆 ${scores[`geometry_${key}`]}` : undefined,
       color: COLORS[key],
     }))
     return (

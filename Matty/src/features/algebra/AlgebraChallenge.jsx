@@ -15,8 +15,8 @@ export default function AlgebraChallenge() {
   const { t, homePath }       = useLocale()
 
   const game = useAlgebraGame({
-    saveScore:        (s) => saveScore('algebra', s),
-    getExistingScore: ()  => scores['algebra'],
+    saveScore:        (lvl, s) => saveScore(`algebra_${lvl}`, s),
+    getExistingScore: (lvl)   => scores[`algebra_${lvl}`],
   })
 
   const {
@@ -36,13 +36,12 @@ export default function AlgebraChallenge() {
 
   // ── Level select ──────────────────────────────────────────────────
   if (gameState === 'idle' && !level) {
-    const algScores = typeof scores['algebra'] === 'object' ? scores['algebra'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: algScores[key] !== undefined ? `🏆 ${algScores[key]}` : undefined,
+      badge: scores[`algebra_${key}`] !== undefined ? `🏆 ${scores[`algebra_${key}`]}` : undefined,
       color: COLORS[key],
     }))
     return (
