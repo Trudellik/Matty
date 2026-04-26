@@ -2,28 +2,47 @@ import { useState, useEffect, useRef } from 'react'
 import { generateFractions, biggestId, getDifficultyConfig, GAME_CONFIG } from './fractionEngine'
 
 const { MAX_LIVES, CORRECT_TO_LEVEL } = GAME_CONFIG
+const ENDURANCE_SECS = 3 * 60
 
-export function useFractionGame({ saveScore, getExistingScore }) {
-  const [gameState,   setGameState]   = useState('idle')
-  const [lives,       setLives]       = useState(MAX_LIVES)
-  const [score,       setScore]       = useState(0)
-  const [fractions,   setFractions]   = useState([])  // all cards in the round (display)
-  const [remaining,   setRemaining]   = useState([])  // not yet correctly picked (logic)
-  const [focusedId,   setFocusedId]   = useState(null)
-  const [feedback,    setFeedback]    = useState(null)
-  const [isNewBest,   setIsNewBest]   = useState(false)
-  const [crackingIdx, setCrackingIdx] = useState(null)
+export function useFractionGame({ saveScore, getExistingScore, gameMode = 'lives' }) {
+  const [gameState,    setGameState]    = useState('idle')
+  const [lives,        setLives]        = useState(MAX_LIVES)
+  const [score,        setScore]        = useState(0)
+  const [fractions,    setFractions]    = useState([])
+  const [remaining,    setRemaining]    = useState([])
+  const [focusedId,    setFocusedId]    = useState(null)
+  const [feedback,     setFeedback]     = useState(null)
+  const [isNewBest,    setIsNewBest]    = useState(false)
+  const [crackingIdx,  setCrackingIdx]  = useState(null)
+  const [gameSecsLeft, setGameSecsLeft] = useState(ENDURANCE_SECS)
 
   const frozenRef    = useRef(false)
   const livesRef     = useRef(MAX_LIVES)
   const scoreRef     = useRef(0)
-  const fractionsRef = useRef([])  // stable fixed-position map for key handler
-  const remainingRef = useRef([])  // current active fractions for selection logic
+  const fractionsRef = useRef([])
+  const remainingRef = useRef([])
   const focusedIdRef = useRef(null)
+  const gameModeRef  = useRef(gameMode)
+  const gameTimerRef = useRef(null)
+  const gameSecsRef  = useRef(ENDURANCE_SECS)
 
   useEffect(() => { livesRef.current     = lives     }, [lives])
   useEffect(() => { scoreRef.current     = score     }, [score])
   useEffect(() => { focusedIdRef.current = focusedId }, [focusedId])
+  useEffect(() => { gameModeRef.current  = gameMode  }, [gameMode])
+
+  function clearGameTimer() {
+    if (gameTimerRef.current) { clearInterval(gameTimerRef.current); gameTimerRef.current = null }
+  }
+
+  function endGame() {
+    clearGameTimer()
+    frozenRef.current = true
+    const existing = getExistingScore()
+    setIsNewBest(existing === undefined || scoreRef.current > existing)
+    saveScore(scoreRef.current)
+    setGameState('gameover')
+  }
 
   function setFocused(id) {
     focusedIdRef.current = id
@@ -45,7 +64,7 @@ export function useFractionGame({ saveScore, getExistingScore }) {
     if (frozenRef.current) return
     const act = remainingRef.current
     if (!act.length) return
-    if (!act.some(f => f.id === id)) return  // already correctly picked this round
+    if (!act.some(f => f.id === id)) return
     const correct = biggestId(act)
 
     if (id === correct) {
@@ -70,6 +89,13 @@ export function useFractionGame({ saveScore, getExistingScore }) {
       }, 400)
     } else {
       frozenRef.current = true
+
+      if (gameModeRef.current === 'endurance') {
+        setFeedback({ type: 'wrong', selectedId: id, correctId: correct })
+        setTimeout(() => loadQuestion(), 1300)
+        return
+      }
+
       const newLives = livesRef.current - 1
       livesRef.current = newLives
       setCrackingIdx(newLives)
@@ -79,10 +105,7 @@ export function useFractionGame({ saveScore, getExistingScore }) {
 
       setTimeout(() => {
         if (newLives <= 0) {
-          const existing = getExistingScore()
-          setIsNewBest(existing === undefined || scoreRef.current > existing)
-          saveScore(scoreRef.current)
-          setGameState('gameover')
+          endGame()
         } else {
           loadQuestion()
         }
@@ -96,8 +119,6 @@ export function useFractionGame({ saveScore, getExistingScore }) {
     const fracs = fractionsRef.current
     if (!fracs.length) return
 
-    // 3 fractions: left=0 (left), up=1 (center), right=2 (right)
-    // 4 fractions: left=0, right=1, up=2, down=3
     const KEY_TO_IDX = fracs.length === 3
       ? { ArrowLeft: 0, ArrowUp: 1, ArrowRight: 2 }
       : { ArrowLeft: 0, ArrowRight: 1, ArrowUp: 2, ArrowDown: 3 }
@@ -123,23 +144,39 @@ export function useFractionGame({ saveScore, getExistingScore }) {
   }, [gameState])
 
   function start() {
-    scoreRef.current  = 0
-    livesRef.current  = MAX_LIVES
+    scoreRef.current    = 0
+    livesRef.current    = MAX_LIVES
+    gameSecsRef.current = ENDURANCE_SECS
+    clearGameTimer()
     setScore(0)
     setLives(MAX_LIVES)
     setIsNewBest(false)
+    setGameSecsLeft(ENDURANCE_SECS)
     setGameState('playing')
+
+    if (gameModeRef.current === 'endurance') {
+      gameTimerRef.current = setInterval(() => {
+        gameSecsRef.current -= 1
+        setGameSecsLeft(gameSecsRef.current)
+        if (gameSecsRef.current <= 0) endGame()
+      }, 1000)
+    }
+
     loadQuestion(0)
   }
 
   const cfg = getDifficultyConfig(score)
 
+  const mm = Math.floor(gameSecsLeft / 60)
+  const ss = String(gameSecsLeft % 60).padStart(2, '0')
+
   return {
     gameState, lives, score, fractions, remaining, focusedId, feedback, isNewBest, crackingIdx,
-    maxLives:       MAX_LIVES,
+    maxLives:       gameMode === 'endurance' ? 0 : MAX_LIVES,
     correctToLevel: CORRECT_TO_LEVEL,
     difficulty:     Math.floor(score / CORRECT_TO_LEVEL) + 1,
     fracCount:      cfg.count,
+    gameMinsLeft:   `${mm}:${ss}`,
     handleSelect,
     selectByIndex: (idx) => {
       if (frozenRef.current) return

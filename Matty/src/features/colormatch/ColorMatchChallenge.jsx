@@ -26,7 +26,7 @@ function ColorBg() {
 export default function ColorMatchChallenge() {
   const navigate                 = useNavigate()
   const { t, homePath }          = useLocale()
-  const { scores, saveBestTime } = useHighScores()
+  const { scores, saveBestTime, globalTimes, globalTimeHolder } = useHighScores()
 
   const game = useColorMatchGame({
     saveBestTime:     (lvl, time) => saveBestTime('colormatch', lvl, time),
@@ -38,12 +38,18 @@ export default function ColorMatchChallenge() {
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
     const cmScores = typeof scores['colormatch'] === 'object' ? scores['colormatch'] : {}
-    const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const glTimes  = globalTimes('colormatch') ?? {}
+    const COLORS   = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
+    const timeBadge = (key) => {
+      const my = cmScores[key] !== undefined ? `⏱ ${formatTime(cmScores[key])}` : undefined
+      const gl = glTimes[key]  !== undefined ? `⏱ ${formatTime(glTimes[key])}` : undefined
+      return (my || gl) ? { my, global: gl, globalHolder: globalTimeHolder('colormatch', key) } : undefined
+    }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: cmScores[key] !== undefined ? `⏱ ${formatTime(cmScores[key])}` : undefined,
+      badge: timeBadge(key),
       color: COLORS[key],
     }))
 

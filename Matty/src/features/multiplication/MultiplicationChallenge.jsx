@@ -12,13 +12,13 @@ import './MultiplicationChallenge.css'
 
 export default function MultiplicationChallenge() {
   const navigate                    = useNavigate()
-  const { scores, saveBestTime, globalTimes } = useHighScores()
+  const { scores, saveBestTime, globalTimes, globalTimeHolder } = useHighScores()
   const timeBadge = (challengeId, level) => {
     const my = scores[challengeId]?.[level]
     const gl = globalTimes(challengeId)?.[level]
     const fmt = v => v !== undefined ? `⏱ ${formatTime(v)}` : undefined
     const myF = fmt(my), glF = fmt(gl)
-    return (myF || glF) ? { my: myF, global: glF } : undefined
+    return (myF || glF) ? { my: myF, global: glF, globalHolder: globalTimeHolder(challengeId, level) } : undefined
   }
   const { t, homePath }             = useLocale()
 

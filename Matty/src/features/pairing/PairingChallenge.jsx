@@ -12,7 +12,7 @@ import './PairingChallenge.css'
 export default function PairingChallenge() {
   const navigate                        = useNavigate()
   const { t, homePath }                 = useLocale()
-  const { scores, saveScore, saveBestTime, globalScore, globalTimes } = useHighScores()
+  const { scores, saveScore, saveBestTime, globalScore, globalTimes, globalScoreHolder, globalTimeHolder } = useHighScores()
 
   const [pairType, setPairType] = useState('color')   // 'color' | 'number' | 'alphabet'
   const [duration, setDuration] = useState('single')  // 'single' | 'timed'
@@ -44,14 +44,14 @@ export default function PairingChallenge() {
         const gl = globalTimes('pairing_single')?.[key]
         const fmt = v => v !== undefined ? `⏱ ${formatTime(v)}` : undefined
         const myF = fmt(my), glF = fmt(gl)
-        return (myF || glF) ? { my: myF, global: glF } : undefined
+        return (myF || glF) ? { my: myF, global: glF, globalHolder: globalTimeHolder('pairing_single', key) } : undefined
       }
       const scoreKey = `pairing_timed_${key}`
       const my = scores[scoreKey]
       const gl = globalScore(scoreKey)
-      const myF = my !== undefined ? `🏆 ${my}` : undefined
-      const glF = gl !== undefined ? `🏆 ${gl}` : undefined
-      return (myF || glF) ? { my: myF, global: glF } : undefined
+      const myF = my !== undefined ? String(my) : undefined
+      const glF = gl !== undefined ? String(gl) : undefined
+      return (myF || glF) ? { my: myF, global: glF, globalHolder: globalScoreHolder(scoreKey) } : undefined
     }
     const PAIR_OPTIONS = [
       { key: 'color',    label: t('pair_type_color'),    desc: t('pair_type_color_desc'),    color: '#a855f7', badge: pairBadge('color') },

@@ -118,7 +118,7 @@ export default function GameOptionsPage({
                   {opt.desc && <span className="gop-option-desc">{opt.desc}</span>}
                   {opt.badge !== undefined && (
                     typeof opt.badge === 'object'
-                      ? <ScoreBadges my={opt.badge.my} global={opt.badge.global} size="sm" />
+                      ? <ScoreBadges my={opt.badge.my} global={opt.badge.global} globalHolder={opt.badge.globalHolder ?? null} size="sm" />
                       : <span className="gop-option-badge">{opt.badge}</span>
                   )}
                 </button>

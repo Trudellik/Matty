@@ -127,11 +127,11 @@ function ShapeDisplay({ shape, dims }) {
 
 export default function GeometryChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore, globalScore } = useHighScores()
+  const { scores, saveScore, globalScore, globalScoreHolder } = useHighScores()
   const scoreBadge = (key) => {
-    const my  = scores[key] !== undefined ? `🏆 ${scores[key]}` : undefined
-    const gl  = globalScore(key) !== undefined ? `🏆 ${globalScore(key)}` : undefined
-    return (my || gl) ? { my, global: gl } : undefined
+    const my  = scores[key] !== undefined ? String(scores[key]) : undefined
+    const gl  = globalScore(key) !== undefined ? String(globalScore(key)) : undefined
+    return (my || gl) ? { my, global: gl, globalHolder: globalScoreHolder(key) } : undefined
   }
   const { t, homePath }       = useLocale()
   const [gameMode, setGameMode] = useState('lives')
