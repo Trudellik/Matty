@@ -13,10 +13,12 @@ import SequenceChallenge from './features/sequence/SequenceChallenge'
 import PairingChallenge from './features/pairing/PairingChallenge'
 import ColorMatchChallenge from './features/colormatch/ColorMatchChallenge'
 import { LocaleProvider } from './store/LocaleContext'
+import { UserProvider } from './store/UserContext'
 import './styles/App.css'
 
 function App() {
   return (
+    <UserProvider>
     <Routes>
       <Route path="/" element={<Navigate to="/da" replace />} />
       <Route path="/:locale" element={<LocaleProvider />}>
@@ -35,6 +37,7 @@ function App() {
         <Route path="challenge/:id"            element={<NotReadyPage />} />
       </Route>
     </Routes>
+    </UserProvider>
   )
 }
 

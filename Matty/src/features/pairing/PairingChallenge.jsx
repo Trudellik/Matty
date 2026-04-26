@@ -12,7 +12,7 @@ import './PairingChallenge.css'
 export default function PairingChallenge() {
   const navigate                        = useNavigate()
   const { t, homePath }                 = useLocale()
-  const { scores, saveScore, saveBestTime } = useHighScores()
+  const { scores, saveScore, saveBestTime, globalScore, globalTimes } = useHighScores()
 
   const [pairType, setPairType] = useState('color')   // 'color' | 'number' | 'alphabet'
   const [duration, setDuration] = useState('single')  // 'single' | 'timed'
@@ -40,11 +40,18 @@ export default function PairingChallenge() {
   if (gameState === 'idle') {
     const pairBadge = (key) => {
       if (duration === 'single') {
-        const t = scores['pairing_single']?.[key]
-        return t !== undefined ? `⏱ ${formatTime(t)}` : undefined
+        const my = scores['pairing_single']?.[key]
+        const gl = globalTimes('pairing_single')?.[key]
+        const fmt = v => v !== undefined ? `⏱ ${formatTime(v)}` : undefined
+        const myF = fmt(my), glF = fmt(gl)
+        return (myF || glF) ? { my: myF, global: glF } : undefined
       }
-      const s = scores[`pairing_timed_${key}`]
-      return s !== undefined ? `🏆 ${s}` : undefined
+      const scoreKey = `pairing_timed_${key}`
+      const my = scores[scoreKey]
+      const gl = globalScore(scoreKey)
+      const myF = my !== undefined ? `🏆 ${my}` : undefined
+      const glF = gl !== undefined ? `🏆 ${gl}` : undefined
+      return (myF || glF) ? { my: myF, global: glF } : undefined
     }
     const PAIR_OPTIONS = [
       { key: 'color',    label: t('pair_type_color'),    desc: t('pair_type_color_desc'),    color: '#a855f7', badge: pairBadge('color') },
@@ -143,12 +150,17 @@ export default function PairingChallenge() {
           const isWrong    = wrongPair?.includes(cell.id)
           const isColor    = pairType === 'color'
 
+          // Color mode: replace matched cells with an invisible placeholder
+          if (isColor && cell.matched) {
+            return <div key={cell.id} className="pair-cell-gone" />
+          }
+
           let cls = 'pair-cell'
-          if (isWild)        cls += ' pair-cell--wild'
-          if (cell.matched)  cls += ' pair-cell--matched'
-          else if (isWrong)  cls += ' pair-cell--wrong'
+          if (isWild)          cls += ' pair-cell--wild'
+          if (cell.matched)    cls += ' pair-cell--matched'
+          else if (isWrong)    cls += ' pair-cell--wrong'
           else if (isSelected) cls += ' pair-cell--selected'
-          if (isColor)       cls += ' pair-cell--color'
+          if (isColor)         cls += ' pair-cell--color'
 
           const style = {}
           if (isColor && !isWild) style['--cell-color'] = cell.value

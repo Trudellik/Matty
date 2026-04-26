@@ -90,19 +90,22 @@ export function useFractionGame({ saveScore, getExistingScore }) {
     }
   }
 
-  // Arrow keys map to fixed card positions (0–3), regardless of which are already picked
-  const KEY_TO_IDX = { ArrowLeft: 0, ArrowRight: 1, ArrowUp: 2, ArrowDown: 3 }
-
   const keyHandlerRef = useRef(null)
   keyHandlerRef.current = (e) => {
     if (frozenRef.current) return
     const fracs = fractionsRef.current
     if (!fracs.length) return
 
+    // 3 fractions: left=0 (left), up=1 (center), right=2 (right)
+    // 4 fractions: left=0, right=1, up=2, down=3
+    const KEY_TO_IDX = fracs.length === 3
+      ? { ArrowLeft: 0, ArrowUp: 1, ArrowRight: 2 }
+      : { ArrowLeft: 0, ArrowRight: 1, ArrowUp: 2, ArrowDown: 3 }
+
     const idx = KEY_TO_IDX[e.key]
     if (idx !== undefined) {
       e.preventDefault()
-      if (idx < fracs.length) handleSelect(fracs[idx].id)
+      handleSelect(fracs[idx].id)
       return
     }
 
@@ -139,7 +142,9 @@ export function useFractionGame({ saveScore, getExistingScore }) {
     fracCount:      cfg.count,
     handleSelect,
     selectByIndex: (idx) => {
-      if (!frozenRef.current) keyHandlerRef.current({ key: ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'][idx], preventDefault: () => {} })
+      if (frozenRef.current) return
+      const fracs = fractionsRef.current
+      if (idx < fracs.length) handleSelect(fracs[idx].id)
     },
     start,
     playAgain: start,

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import ScoreBadges from './ScoreBadges'
 import './GameOptionsPage.css'
 
 /**
@@ -116,7 +117,9 @@ export default function GameOptionsPage({
                   <span className="gop-option-label">{opt.label}</span>
                   {opt.desc && <span className="gop-option-desc">{opt.desc}</span>}
                   {opt.badge !== undefined && (
-                    <span className="gop-option-badge">{opt.badge}</span>
+                    typeof opt.badge === 'object'
+                      ? <ScoreBadges my={opt.badge.my} global={opt.badge.global} size="sm" />
+                      : <span className="gop-option-badge">{opt.badge}</span>
                   )}
                 </button>
               )

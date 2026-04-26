@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -5,22 +6,30 @@ import { useSequenceGame } from './useSequenceGame'
 import { LEVELS } from './sequenceEngine'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import GameModePicker from '../../components/GameModePicker'
 import ChallengePage from '../../pages/ChallengePage'
 import './SequenceChallenge.css'
 
 export default function SequenceChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore } = useHighScores()
+  const { scores, saveScore, globalScore } = useHighScores()
+  const scoreBadge = (key) => {
+    const my = scores[key] !== undefined ? `🏆 ${scores[key]}` : undefined
+    const gl = globalScore(key) !== undefined ? `🏆 ${globalScore(key)}` : undefined
+    return (my || gl) ? { my, global: gl } : undefined
+  }
   const { t, homePath }       = useLocale()
+  const [gameMode, setGameMode] = useState('lives')
 
   const game = useSequenceGame({
-    saveScore:        (lvl, s) => saveScore(`sequence_${lvl}`, s),
-    getExistingScore: (lvl)   => scores[`sequence_${lvl}`],
+    saveScore:        (lvl, s) => saveScore(`sequence_${gameMode}_${lvl}`, s),
+    getExistingScore: (lvl)   => scores[`sequence_${gameMode}_${lvl}`],
+    gameMode,
   })
 
   const {
     level, gameState, lives, maxLives, score, question,
-    feedback, isNewBest, crackingIdx,
+    feedback, isNewBest, crackingIdx, gameMinsLeft,
     handleSelect, startGame, playAgain, selectLevel,
   } = game
 
@@ -31,7 +40,7 @@ export default function SequenceChallenge() {
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: scores[`sequence_${key}`] !== undefined ? `🏆 ${scores[`sequence_${key}`]}` : undefined,
+      badge: scoreBadge(`sequence_${gameMode}_${key}`),
       color: COLORS[key],
     }))
     return (
@@ -40,6 +49,7 @@ export default function SequenceChallenge() {
         title={t('seq_title')}
         subtitle={t('seq_subtitle')}
         options={options}
+        extra={<GameModePicker value={gameMode} onChange={setGameMode} />}
         onStart={(key) => startGame(key)}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
@@ -71,11 +81,15 @@ export default function SequenceChallenge() {
     <ChallengePage
       onQuit={() => selectLevel(null)}
       quitLabel={t('seq_levels')}
-      lives={lives}
+      lives={gameMode === 'endurance' ? undefined : lives}
       maxLives={maxLives}
       crackingIdx={crackingIdx}
       score={score}
-      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+      difficulty={
+        gameMode === 'endurance' && level
+          ? `${t(LEVELS[level].labelKey)}  ⏱ ${gameMinsLeft}`
+          : level ? t(LEVELS[level].labelKey) : ''
+      }
     >
 
       <div className="seq-arena">

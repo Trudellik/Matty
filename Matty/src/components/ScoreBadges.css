@@ -1,0 +1,51 @@
+.sb-root {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 20px;
+  font-family: var(--sans);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Sizes */
+.sb-root--md .sb-badge { padding: 3px 10px; font-size: 12px; }
+.sb-root--sm .sb-badge { padding: 2px 8px;  font-size: 11px; }
+
+.sb-label {
+  opacity: 0.65;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* My score — accent colour */
+.sb-badge--my {
+  background: var(--accent-bg);
+  border: 1.5px solid var(--accent-border, var(--accent));
+  color: var(--accent);
+}
+
+/* Global best — gold tone */
+.sb-badge--global {
+  background: rgba(234, 179, 8, 0.10);
+  border: 1.5px solid rgba(234, 179, 8, 0.35);
+  color: #b45309;
+}
+
+/* Dark-mode friendly gold */
+@media (prefers-color-scheme: dark) {
+  .sb-badge--global {
+    background: rgba(234, 179, 8, 0.12);
+    border-color: rgba(234, 179, 8, 0.30);
+    color: #fbbf24;
+  }
+}

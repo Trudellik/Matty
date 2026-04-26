@@ -26,7 +26,14 @@ function ColorBg() {
 export default function ColorMatchChallenge() {
   const navigate                 = useNavigate()
   const { t, homePath }          = useLocale()
-  const { scores, saveBestTime } = useHighScores()
+  const { scores, saveBestTime, globalTimes } = useHighScores()
+  const timeBadge = (challengeId, level) => {
+    const my = scores[challengeId]?.[level]
+    const gl = globalTimes(challengeId)?.[level]
+    const fmt = v => v !== undefined ? `⏱ ${formatTime(v)}` : undefined
+    const myF = fmt(my), glF = fmt(gl)
+    return (myF || glF) ? { my: myF, global: glF } : undefined
+  }
 
   const game = useColorMatchGame({
     saveBestTime:     (lvl, time) => saveBestTime('colormatch', lvl, time),
@@ -37,13 +44,12 @@ export default function ColorMatchChallenge() {
 
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
-    const cmScores = typeof scores['colormatch'] === 'object' ? scores['colormatch'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: cmScores[key] !== undefined ? `⏱ ${formatTime(cmScores[key])}` : undefined,
+      badge: timeBadge('colormatch', key),
       color: COLORS[key],
     }))
 

@@ -1,0 +1,180 @@
+.up-root {
+  position: relative;
+  display: inline-flex;
+}
+
+.up-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 24px;
+  border: 2px solid var(--border);
+  background: var(--social-bg);
+  color: var(--text-h);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.up-trigger:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.up-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.up-name {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.up-caret {
+  font-size: 9px;
+  opacity: 0.5;
+}
+
+/* ── Dropdown ── */
+.up-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--social-bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.up-user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.up-user-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-h);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+.up-user-item:hover {
+  background: var(--accent-bg);
+}
+.up-user-item--active {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.up-item-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text-h);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.up-user-item--active .up-item-avatar {
+  background: var(--accent);
+  color: #fff;
+}
+
+.up-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.up-item-check {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.up-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* ── Add new user form ── */
+.up-add-form {
+  display: flex;
+  gap: 6px;
+  padding: 2px 4px 4px;
+}
+
+.up-add-input {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-family: var(--sans);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.up-add-input:focus {
+  border-color: var(--accent);
+}
+.up-add-input::placeholder {
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.up-add-btn {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.up-add-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.up-add-btn:not(:disabled):hover {
+  opacity: 0.85;
+}

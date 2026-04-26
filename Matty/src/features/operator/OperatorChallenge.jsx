@@ -18,7 +18,12 @@ const OP_META = {
 
 export default function OperatorChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore } = useHighScores()
+  const { scores, saveScore, globalScore } = useHighScores()
+  const scoreBadge = (key) => {
+    const my = scores[key] !== undefined ? `🏆 ${scores[key]}` : undefined
+    const gl = globalScore(key) !== undefined ? `🏆 ${globalScore(key)}` : undefined
+    return (my || gl) ? { my, global: gl } : undefined
+  }
   const { t, homePath }       = useLocale()
 
   const lastModeRef = useRef(null)
@@ -44,7 +49,7 @@ export default function OperatorChallenge() {
         key,
         label: t(cfg.labelKey),
         desc:  `${cfg.ops.join('  ')}  —  ${t(cfg.descKey)}`,
-        badge: best !== undefined ? `🏆 ${best}` : undefined,
+        badge: scoreBadge(`operator_${key}`),
         color: COLORS[key],
       }
     })
