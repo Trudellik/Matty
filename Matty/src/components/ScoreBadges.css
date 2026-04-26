@@ -20,11 +20,22 @@
 .sb-root--sm .sb-badge { padding: 2px 8px;  font-size: 11px; }
 
 .sb-label {
-  opacity: 0.65;
   font-size: 0.85em;
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: 0.4px;
+}
+
+.sb-holder-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background: rgba(234, 179, 8, 0.25);
+  font-size: 0.9em;
+  font-weight: 800;
+  line-height: 1;
 }
 
 /* My score — accent colour */
@@ -48,4 +59,23 @@
     border-color: rgba(234, 179, 8, 0.30);
     color: #fbbf24;
   }
+}
+
+/* Merged — personal best equals global best */
+.sb-badge--merged {
+  position: relative;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.12) 0%, rgba(234, 179, 8, 0.10) 100%);
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  isolation: isolate;
+  color: var(--text-h);
+  font-weight: 700;
+}
+.sb-badge--merged::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #a855f7 0%, #eab308 100%);
+  z-index: -1;
 }

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -6,6 +6,7 @@ import { useOperatorGame } from './useOperatorGame'
 import { OP_ORDER, MODES } from './operatorEngine'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import GameModePicker from '../../components/GameModePicker'
 import ChallengePage from '../../pages/ChallengePage'
 import './OperatorChallenge.css'
 
@@ -18,24 +19,26 @@ const OP_META = {
 
 export default function OperatorChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore, globalScore } = useHighScores()
+  const { scores, saveScore, globalScore, globalScoreHolder } = useHighScores()
   const scoreBadge = (key) => {
-    const my = scores[key] !== undefined ? `🏆 ${scores[key]}` : undefined
-    const gl = globalScore(key) !== undefined ? `🏆 ${globalScore(key)}` : undefined
-    return (my || gl) ? { my, global: gl } : undefined
+    const my = scores[key] !== undefined ? String(scores[key]) : undefined
+    const gl = globalScore(key) !== undefined ? String(globalScore(key)) : undefined
+    return (my || gl) ? { my, global: gl, globalHolder: globalScoreHolder(key) } : undefined
   }
   const { t, homePath }       = useLocale()
 
   const lastModeRef = useRef(null)
+  const [gameMode, setGameMode] = useState('lives')
 
   const game = useOperatorGame({
-    saveScore:        (mode, s) => saveScore(`operator_${mode}`, s),
-    getExistingScore: (mode)    => scores[`operator_${mode}`],
+    saveScore:        (mode, s) => saveScore(`operator_${gameMode}_${mode}`, s),
+    getExistingScore: (mode)    => scores[`operator_${gameMode}_${mode}`],
+    gameMode,
   })
 
   const {
     mode, gameState, lives, correct, question, filledOps, feedback, isNewBest, crackingIdx,
-    timerKey, timeCap, streak,
+    timerKey, timeCap, streak, gameMinsLeft,
     ops, maxLives, correctToLevel, levelProgress, difficulty,
     selectMode, handleAnswer, playAgain, backToModes,
   } = game
@@ -43,22 +46,20 @@ export default function OperatorChallenge() {
   // ── Mode select ───────────────────────────────────────────────────
   if (!mode) {
     const COLORS = { basic: '#3b82f6', full: '#a855f7' }
-    const options = Object.entries(MODES).map(([key, cfg]) => {
-      const best = scores[`operator_${key}`]
-      return {
-        key,
-        label: t(cfg.labelKey),
-        desc:  `${cfg.ops.join('  ')}  —  ${t(cfg.descKey)}`,
-        badge: scoreBadge(`operator_${key}`),
-        color: COLORS[key],
-      }
-    })
+    const options = Object.entries(MODES).map(([key, cfg]) => ({
+      key,
+      label: t(cfg.labelKey),
+      desc:  `${cfg.ops.join('  ')}  —  ${t(cfg.descKey)}`,
+      badge: scoreBadge(`operator_${gameMode}_${key}`),
+      color: COLORS[key],
+    }))
     return (
       <GameOptionsPage
         icon="❓"
         title={t('op_title')}
         subtitle={t('op_subtitle')}
         options={options}
+        extra={<GameModePicker value={gameMode} onChange={setGameMode} />}
         defaultSelected={lastModeRef.current}
         onStart={(key) => { lastModeRef.current = key; selectMode(key) }}
         onBack={() => navigate(homePath())}
@@ -91,14 +92,18 @@ export default function OperatorChallenge() {
     <ChallengePage
       onQuit={backToModes}
       quitLabel={t('op_change_mode')}
-      lives={lives}
+      lives={gameMode === 'endurance' ? undefined : lives}
       maxLives={maxLives}
       crackingIdx={crackingIdx}
       streak={streak}
       score={correct}
-      difficulty={`${t('op_level')} ${difficulty}`}
-      timerKey={timerKey}
-      timerDuration={timeCap}
+      difficulty={
+        gameMode === 'endurance'
+          ? `${t('op_level')} ${difficulty}  ⏱ ${gameMinsLeft}`
+          : `${t('op_level')} ${difficulty}`
+      }
+      timerKey={gameMode === 'lives' ? timerKey : undefined}
+      timerDuration={gameMode === 'lives' ? timeCap : undefined}
     >
 
       <div className="op-arena">

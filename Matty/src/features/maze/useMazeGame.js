@@ -61,12 +61,8 @@ export function useMazeGame({ saveScore, getExistingScore }) {
     const key  = `${nr},${nc}`
     const cell = m.grid[nr][nc]
 
-    // Already visited → free to backtrack
-    if (visitedRef.current.has(key)) {
-      posRef.current = { r: nr, c: nc }
-      setPosition({ r: nr, c: nc })
-      return
-    }
+    // Already visited or invalid → blocked
+    if (visitedRef.current.has(key)) return 'blocked'
 
     if (cell.valid) {
       visitedRef.current.add(key)
@@ -85,28 +81,16 @@ export function useMazeGame({ saveScore, getExistingScore }) {
     } else {
       wrongRef.current.add(key)
       setWrongCells(new Set(wrongRef.current))
+      return 'blocked'
     }
   }
 
-  // keyHandlerRef reassigned every render — no stale closures
-  const keyHandlerRef = useRef(null)
-  keyHandlerRef.current = (e) => {
-    if (gameState !== 'playing') return
-    const map = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }
-    const move = map[e.key]
-    if (move) { e.preventDefault(); handleMove(...move) }
-  }
-
-  useEffect(() => {
-    if (gameState !== 'playing') return
-    function onKey(e) { keyHandlerRef.current(e) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [gameState])
+  const MOVE_MAP = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }
 
   return {
     gameState, maze, position, visited, wrongCells,
     elapsed, isNewBest,
     handleMove, start, playAgain: () => start(lastTargetRef.current),
+    MOVE_MAP,
   }
 }

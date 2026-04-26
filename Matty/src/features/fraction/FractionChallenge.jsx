@@ -1,25 +1,34 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
 import { useFractionGame } from './useFractionGame'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import GameModePicker from '../../components/GameModePicker'
+import ScoreBadges from '../../components/ScoreBadges'
 import GameOver from '../../components/GameOver'
 import ChallengePage from '../../pages/ChallengePage'
 import './FractionChallenge.css'
 
 export default function FractionChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore } = useHighScores()
+  const { scores, saveScore, globalScore, globalScoreHolder } = useHighScores()
   const { t, homePath }       = useLocale()
+  const [gameMode, setGameMode] = useState('lives')
+
+  const scoreKey = `fractions_${gameMode}`
+  const myBest = scores[scoreKey] !== undefined ? String(scores[scoreKey]) : undefined
+  const glBest = globalScore(scoreKey) !== undefined ? String(globalScore(scoreKey)) : undefined
 
   const game = useFractionGame({
-    saveScore:        (s) => saveScore('fractions', s),
-    getExistingScore: ()  => scores['fractions'],
+    saveScore:        (s) => saveScore(scoreKey, s),
+    getExistingScore: ()  => scores[scoreKey],
+    gameMode,
   })
 
   const {
     gameState, lives, score, fractions, remaining, focusedId, feedback, isNewBest, crackingIdx,
-    maxLives,
+    maxLives, gameMinsLeft,
     handleSelect, selectByIndex,
     start, playAgain,
   } = game
@@ -31,6 +40,10 @@ export default function FractionChallenge() {
         icon="½"
         title={t('frac_title')}
         subtitle={t('frac_subtitle')}
+        extra={<>
+          <ScoreBadges my={myBest} global={glBest} globalHolder={globalScoreHolder(scoreKey)} />
+          <GameModePicker value={gameMode} onChange={setGameMode} />
+        </>}
         onStart={start}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
@@ -61,16 +74,15 @@ export default function FractionChallenge() {
     <ChallengePage
       onQuit={() => navigate(homePath())}
       quitLabel={t('back')}
-      lives={lives}
+      lives={gameMode === 'endurance' ? undefined : lives}
       maxLives={maxLives}
       crackingIdx={crackingIdx}
       score={score}
+      difficulty={gameMode === 'endurance' ? `⏱ ${gameMinsLeft}` : undefined}
     >
 
-      {/* Instruction */}
       <p className="frac-instruction">{t('frac_instruction')}</p>
 
-      {/* Fraction cards */}
       <div className="frac-arena">
         {fractions.map(f => {
           const isPicked      = !remaining.some(r => r.id === f.id)
@@ -103,7 +115,6 @@ export default function FractionChallenge() {
       {/* Directional pick buttons — layout depends on fraction count */}
       <div className="frac-nav-cross">
         {fractions.length === 3 ? (
-          // 3 fractions: left / center(up) / right
           <div className="frac-nav-row">
             {fractions[0] && remaining.some(r => r.id === fractions[0].id) && (
               <button className="frac-nav-btn" onClick={() => selectByIndex(0)} aria-label="Pick 1st">◀</button>
@@ -118,7 +129,6 @@ export default function FractionChallenge() {
             )}
           </div>
         ) : (
-          // 4 fractions: cross layout
           <>
             <div className="frac-nav-row">
               {fractions[2] && remaining.some(r => r.id === fractions[2].id) && (

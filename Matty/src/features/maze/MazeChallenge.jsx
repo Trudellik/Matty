@@ -25,17 +25,42 @@ export default function MazeChallenge() {
   const {
     gameState, maze, position, visited, wrongCells,
     elapsed, isNewBest,
-    handleMove, start, playAgain,
+    handleMove, start, playAgain, MOVE_MAP,
   } = game
 
   const [targetMode,   setTargetMode]   = useState('random')
   const [customTarget, setCustomTarget] = useState(12)
+  const [bumpDir,      setBumpDir]      = useState(null)
 
   const currentCellRef = useRef(null)
+  const bumpTimerRef   = useRef(null)
 
   useEffect(() => {
     currentCellRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
   }, [position.r, position.c])
+
+  function tryMove(dr, dc) {
+    const result = handleMove(dr, dc)
+    if (result === 'blocked') {
+      const dir = dr === -1 ? 'up' : dr === 1 ? 'down' : dc === -1 ? 'left' : 'right'
+      clearTimeout(bumpTimerRef.current)
+      setBumpDir(dir)
+      bumpTimerRef.current = setTimeout(() => setBumpDir(null), 300)
+    }
+  }
+
+  const tryMoveRef = useRef(null)
+  tryMoveRef.current = tryMove
+
+  useEffect(() => {
+    if (gameState !== 'playing') return
+    function onKey(e) {
+      const move = MOVE_MAP[e.key]
+      if (move) { e.preventDefault(); tryMoveRef.current(...move) }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [gameState])
 
   if (gameState === 'idle') {
     return (
@@ -103,12 +128,12 @@ export default function MazeChallenge() {
       onQuit={() => navigate(homePath())}
       quitLabel={t('back')}
       score={formatTime(elapsed)}
-      difficulty={`${t('maze_target')} ${maze.target}`}
+      difficulty={String(maze.target)}
     >
 
       {/* Grid */}
       <div className="maze-grid-viewport">
-        <div className="maze-grid" style={{ gridTemplateColumns: `repeat(${N}, var(--cell-w))` }}>
+        <div className="maze-grid" style={{ gridTemplateColumns: `repeat(${N}, var(--maze-cell))` }}>
           {maze.grid.map((row, r) =>
             row.map((cell, c) => {
               const key       = `${r},${c}`
@@ -121,6 +146,7 @@ export default function MazeChallenge() {
               const cls = [
                 'maze-cell',
                 isCurrent                               ? 'maze-cell-current' : '',
+                isCurrent && bumpDir                    ? `maze-cell-bump-${bumpDir}` : '',
                 !isCurrent && isVisited                 ? 'maze-cell-path'    : '',
                 !isCurrent && !isVisited && isWrong     ? 'maze-cell-wrong'   : '',
                 isEntry && !isCurrent                   ? 'maze-cell-entry'   : '',
@@ -141,22 +167,6 @@ export default function MazeChallenge() {
         </div>
       </div>
 
-      {/* Directional controls */}
-      <div className="maze-controls">
-        <div className="maze-nav-cross">
-          <div className="maze-nav-row">
-            <button className="maze-nav-btn" onClick={() => handleMove(-1, 0)} aria-label="Up">▲</button>
-          </div>
-          <div className="maze-nav-row">
-            <button className="maze-nav-btn" onClick={() => handleMove(0, -1)} aria-label="Left">◀</button>
-            <div className="maze-nav-gap" />
-            <button className="maze-nav-btn" onClick={() => handleMove(0, 1)} aria-label="Right">▶</button>
-          </div>
-          <div className="maze-nav-row">
-            <button className="maze-nav-btn" onClick={() => handleMove(1, 0)} aria-label="Down">▼</button>
-          </div>
-        </div>
-      </div>
     </ChallengePage>
   )
 }
