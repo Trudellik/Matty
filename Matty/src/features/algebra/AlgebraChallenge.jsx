@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -6,22 +6,30 @@ import { useAlgebraGame } from './useAlgebraGame'
 import { LEVELS } from './algebraEngine'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import GameModePicker from '../../components/GameModePicker'
 import ChallengePage from '../../pages/ChallengePage'
 import './AlgebraChallenge.css'
 
 export default function AlgebraChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore } = useHighScores()
+  const { scores, saveScore, globalScore } = useHighScores()
+  const scoreBadge = (key) => {
+    const my = scores[key] !== undefined ? `🏆 ${scores[key]}` : undefined
+    const gl = globalScore(key) !== undefined ? `🏆 ${globalScore(key)}` : undefined
+    return (my || gl) ? { my, global: gl } : undefined
+  }
   const { t, homePath }       = useLocale()
+  const [gameMode, setGameMode] = useState('lives')
 
   const game = useAlgebraGame({
-    saveScore:        (lvl, s) => saveScore(`algebra_${lvl}`, s),
-    getExistingScore: (lvl)   => scores[`algebra_${lvl}`],
+    saveScore:        (lvl, s) => saveScore(`algebra_${gameMode}_${lvl}`, s),
+    getExistingScore: (lvl)   => scores[`algebra_${gameMode}_${lvl}`],
+    gameMode,
   })
 
   const {
     level, gameState, lives, maxLives, score, question, typingValue,
-    feedback, timeLeft, isNewBest, crackingIdx,
+    feedback, timeLeft, gameMinsLeft, isNewBest, crackingIdx,
     startGame, playAgain, selectLevel,
   } = game
 
@@ -41,7 +49,7 @@ export default function AlgebraChallenge() {
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: scores[`algebra_${key}`] !== undefined ? `🏆 ${scores[`algebra_${key}`]}` : undefined,
+      badge: scoreBadge(`algebra_${gameMode}_${key}`),
       color: COLORS[key],
     }))
     return (
@@ -51,6 +59,7 @@ export default function AlgebraChallenge() {
         subtitle={t('alg_subtitle')}
         options={options}
         defaultSelected={lastLevelRef.current}
+        extra={<GameModePicker value={gameMode} onChange={setGameMode} />}
         onStart={(key) => { lastLevelRef.current = key; startGame(key) }}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
@@ -82,11 +91,15 @@ export default function AlgebraChallenge() {
     <ChallengePage
       onQuit={() => { selectLevel(null) }}
       quitLabel={t('alg_levels')}
-      lives={lives}
+      lives={gameMode === 'endurance' ? undefined : lives}
       maxLives={maxLives}
       crackingIdx={crackingIdx}
       score={score}
-      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+      difficulty={
+        gameMode === 'endurance' && level
+          ? `${t(LEVELS[level].labelKey)}  ⏱ ${gameMinsLeft}`
+          : level ? t(LEVELS[level].labelKey) : ''
+      }
     >
 
       <input
@@ -114,7 +127,7 @@ export default function AlgebraChallenge() {
             </div>
           </>
         )}
-        <div className="alg-timer-num">{timeLeft}s</div>
+        {gameMode === 'lives' && <div className="alg-timer-num">{timeLeft}s</div>}
       </div>
 
       {feedback && (

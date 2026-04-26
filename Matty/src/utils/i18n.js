@@ -127,6 +127,14 @@ const translations = {
     add_play_again: 'Play Again',
     add_change_level: 'Change Level',
 
+    // Game mode picker (shared across all lives-based challenges)
+    game_mode_label: 'Mode',
+    game_mode_lives: '3 Lives',
+    game_mode_lives_desc: '5 seconds per question',
+    game_mode_endurance: '3 Minutes',
+    game_mode_endurance_desc: 'No timer — answer at your own pace',
+    game_mode_time_left: 'left',
+
     // Calculation challenge
     calc_title: 'Calculation',
     calc_subtitle: 'Answer math questions before time runs out',
@@ -392,6 +400,14 @@ const translations = {
     add_new_best: 'Ny bedste tid!',
     add_play_again: 'Spil igen',
     add_change_level: 'Skift niveau',
+
+    // Game mode picker (shared across all lives-based challenges)
+    game_mode_label: 'Tilstand',
+    game_mode_lives: '3 Liv',
+    game_mode_lives_desc: '5 sekunder per spørgsmål',
+    game_mode_endurance: '3 Minutter',
+    game_mode_endurance_desc: 'Ingen tidsbegrænsning — svar i dit eget tempo',
+    game_mode_time_left: 'tilbage',
 
     // Calculation challenge
     calc_title: 'Beregning',

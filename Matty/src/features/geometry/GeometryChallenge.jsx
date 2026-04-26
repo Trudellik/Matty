@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
@@ -5,6 +6,7 @@ import { useGeometryGame } from './useGeometryGame'
 import { LEVELS } from './geometryEngine'
 import GameOver from '../../components/GameOver'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import GameModePicker from '../../components/GameModePicker'
 import ChallengePage from '../../pages/ChallengePage'
 import './GeometryChallenge.css'
 
@@ -125,17 +127,24 @@ function ShapeDisplay({ shape, dims }) {
 
 export default function GeometryChallenge() {
   const navigate              = useNavigate()
-  const { scores, saveScore } = useHighScores()
+  const { scores, saveScore, globalScore } = useHighScores()
+  const scoreBadge = (key) => {
+    const my  = scores[key] !== undefined ? `🏆 ${scores[key]}` : undefined
+    const gl  = globalScore(key) !== undefined ? `🏆 ${globalScore(key)}` : undefined
+    return (my || gl) ? { my, global: gl } : undefined
+  }
   const { t, homePath }       = useLocale()
+  const [gameMode, setGameMode] = useState('lives')
 
   const game = useGeometryGame({
-    saveScore:        (lvl, s) => saveScore(`geometry_${lvl}`, s),
-    getExistingScore: (lvl)   => scores[`geometry_${lvl}`],
+    saveScore:        (lvl, s) => saveScore(`geometry_${gameMode}_${lvl}`, s),
+    getExistingScore: (lvl)   => scores[`geometry_${gameMode}_${lvl}`],
+    gameMode,
   })
 
   const {
     level, gameState, lives, maxLives, score, question,
-    feedback, isNewBest, crackingIdx,
+    feedback, isNewBest, crackingIdx, gameMinsLeft,
     handleSelect, startGame, playAgain, selectLevel,
   } = game
 
@@ -146,7 +155,7 @@ export default function GeometryChallenge() {
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: scores[`geometry_${key}`] !== undefined ? `🏆 ${scores[`geometry_${key}`]}` : undefined,
+      badge: scoreBadge(`geometry_${gameMode}_${key}`),
       color: COLORS[key],
     }))
     return (
@@ -155,6 +164,7 @@ export default function GeometryChallenge() {
         title={t('geo_title')}
         subtitle={t('geo_subtitle')}
         options={options}
+        extra={<GameModePicker value={gameMode} onChange={setGameMode} />}
         onStart={(key) => startGame(key)}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
@@ -186,11 +196,15 @@ export default function GeometryChallenge() {
     <ChallengePage
       onQuit={() => selectLevel(null)}
       quitLabel={t('geo_levels')}
-      lives={lives}
+      lives={gameMode === 'endurance' ? undefined : lives}
       maxLives={maxLives}
       crackingIdx={crackingIdx}
       score={score}
-      difficulty={level ? t(LEVELS[level].labelKey) : ''}
+      difficulty={
+        gameMode === 'endurance' && level
+          ? `${t(LEVELS[level].labelKey)}  ⏱ ${gameMinsLeft}`
+          : level ? t(LEVELS[level].labelKey) : ''
+      }
     >
 
       <div className="geo-arena">

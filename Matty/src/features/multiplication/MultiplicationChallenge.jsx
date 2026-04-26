@@ -12,7 +12,14 @@ import './MultiplicationChallenge.css'
 
 export default function MultiplicationChallenge() {
   const navigate                    = useNavigate()
-  const { scores, saveBestTime }    = useHighScores()
+  const { scores, saveBestTime, globalTimes } = useHighScores()
+  const timeBadge = (challengeId, level) => {
+    const my = scores[challengeId]?.[level]
+    const gl = globalTimes(challengeId)?.[level]
+    const fmt = v => v !== undefined ? `⏱ ${formatTime(v)}` : undefined
+    const myF = fmt(my), glF = fmt(gl)
+    return (myF || glF) ? { my: myF, global: glF } : undefined
+  }
   const { t, homePath }             = useLocale()
 
   // D: inject score I/O — component doesn't know game internals
@@ -39,14 +46,12 @@ export default function MultiplicationChallenge() {
 
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
-    const multiScores = typeof scores['multiplication'] === 'object'
-      ? scores['multiplication'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: multiScores[key] !== undefined ? `⏱ ${formatTime(multiScores[key])}` : undefined,
+      badge: timeBadge('multiplication', key),
       color: COLORS[key],
     }))
     return (

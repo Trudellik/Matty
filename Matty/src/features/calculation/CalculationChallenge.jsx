@@ -1,9 +1,10 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useHighScores } from '../../hooks/useHighScores'
 import { useLocale } from '../../store/LocaleContext'
 import { useCalculationGame } from './useCalculationGame'
 import GameOptionsPage from '../../components/GameOptionsPage'
+import GameModePicker from '../../components/GameModePicker'
 import GameOver from '../../components/GameOver'
 import ChallengePage from '../../pages/ChallengePage'
 import './CalculationChallenge.css'
@@ -12,16 +13,18 @@ export default function CalculationChallenge() {
   const navigate              = useNavigate()
   const { scores, saveScore } = useHighScores()
   const { t, homePath }       = useLocale()
+  const [gameMode, setGameMode] = useState('lives')
 
   // D: inject score I/O — component doesn't know game internals
   const game = useCalculationGame({
-    saveScore:        (score) => saveScore('calculation', score),
-    getExistingScore: ()      => scores['calculation'],
+    saveScore:        (score) => saveScore(`calculation_${gameMode}`, score),
+    getExistingScore: ()      => scores[`calculation_${gameMode}`],
+    gameMode,
   })
 
   const {
     gameState, lives, score, difficulty, streak, levelProgress,
-    question, typingValue, timeLeft, feedback, isNewBest, crackingIdx, questionKey,
+    question, typingValue, timeLeft, gameMinsLeft, feedback, isNewBest, crackingIdx, questionKey,
     timerDanger, ops, pointsToLevel, maxLives, timePerQ,
     handleStart,
   } = game
@@ -43,9 +46,10 @@ export default function CalculationChallenge() {
         subtitle={t('calc_subtitle')}
         rules={[
           `❤️❤️❤️ ${t('calc_rule_lives')}`,
-          `⏱ ${t('calc_rule_time')}`,
+          gameMode === 'lives' ? `⏱ ${t('calc_rule_time')}` : `⏱ ${t('game_mode_endurance_desc')}`,
           `🔥 ${t('calc_rule_streak')}`,
         ]}
+        extra={<GameModePicker value={gameMode} onChange={setGameMode} />}
         onStart={handleStart}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
@@ -80,10 +84,14 @@ export default function CalculationChallenge() {
       maxLives={maxLives}
       crackingIdx={crackingIdx}
       score={score}
-      difficulty={`${ops.join(' ')}  ${t('calc_level')} ${difficulty}`}
-      timerKey={questionKey}
-      timerDuration={timePerQ}
-      timerDanger={timerDanger}
+      difficulty={
+        gameMode === 'endurance'
+          ? `${ops.join(' ')}  ⏱ ${gameMinsLeft}`
+          : `${ops.join(' ')}  ${t('calc_level')} ${difficulty}`
+      }
+      timerKey={gameMode === 'lives' ? questionKey : undefined}
+      timerDuration={gameMode === 'lives' ? timePerQ : undefined}
+      timerDanger={gameMode === 'lives' ? timerDanger : false}
     >
 
       <input

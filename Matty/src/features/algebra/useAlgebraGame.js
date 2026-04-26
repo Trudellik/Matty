@@ -2,26 +2,34 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { LEVELS } from './algebraEngine'
 import { useGameLogger } from '../../hooks/useGameLogger'
 
-export function useAlgebraGame({ saveScore, getExistingScore }) {
+const ENDURANCE_SECS = 3 * 60
+
+export function useAlgebraGame({ saveScore, getExistingScore, gameMode = 'lives' }) {
   const log = useGameLogger('algebra')
 
-  const [level,       setLevel]       = useState(null)
-  const [gameState,   setGameState]   = useState('idle') // idle | playing | gameover
-  const [lives,       setLives]       = useState(3)
-  const [score,       setScore]       = useState(0)
-  const [question,    setQuestion]    = useState(null)
-  const [typingValue, setTypingValue] = useState('')
-  const [feedback,    setFeedback]    = useState(null) // { type: 'correct'|'wrong', correctAnswer }
-  const [timeLeft,    setTimeLeft]    = useState(0)
-  const [isNewBest,   setIsNewBest]   = useState(false)
-  const [crackingIdx, setCrackingIdx] = useState(null)
+  const [level,        setLevel]        = useState(null)
+  const [gameState,    setGameState]    = useState('idle') // idle | playing | gameover
+  const [lives,        setLives]        = useState(3)
+  const [score,        setScore]        = useState(0)
+  const [question,     setQuestion]     = useState(null)
+  const [typingValue,  setTypingValue]  = useState('')
+  const [feedback,     setFeedback]     = useState(null)
+  const [timeLeft,     setTimeLeft]     = useState(0)
+  const [gameSecsLeft, setGameSecsLeft] = useState(ENDURANCE_SECS)
+  const [isNewBest,    setIsNewBest]    = useState(false)
+  const [crackingIdx,  setCrackingIdx]  = useState(null)
 
   const timerRef    = useRef(null)
+  const gameTimerRef = useRef(null)
   const livesRef    = useRef(3)
   const scoreRef    = useRef(0)
   const levelRef    = useRef(null)
+  const gameModeRef = useRef(gameMode)
+  const gameSecsRef = useRef(ENDURANCE_SECS)
 
-  const maxLives = LEVELS[level]?.MAX_LIVES ?? 3
+  useEffect(() => { gameModeRef.current = gameMode }, [gameMode])
+
+  const maxLives = gameMode === 'endurance' ? 0 : (LEVELS[level]?.MAX_LIVES ?? 3)
 
   const nextQuestion = useCallback(() => {
     if (!levelRef.current) return
@@ -45,6 +53,11 @@ export function useAlgebraGame({ saveScore, getExistingScore }) {
   }, [getExistingScore, saveScore, log])
 
   const loseLife = useCallback(() => {
+    if (gameModeRef.current === 'endurance') {
+      // No lives in endurance — just move to next question after showing feedback
+      setTimeout(() => nextQuestion(), 900)
+      return
+    }
     const idx = livesRef.current - 1
     setCrackingIdx(idx)
     setTimeout(() => {
@@ -56,9 +69,9 @@ export function useAlgebraGame({ saveScore, getExistingScore }) {
     }, 600)
   }, [endGame, nextQuestion])
 
-  // Timer tick
+  // Per-question timer tick (lives mode only)
   useEffect(() => {
-    if (gameState !== 'playing' || feedback) return
+    if (gameState !== 'playing' || feedback || gameMode !== 'lives') return
     clearInterval(timerRef.current)
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
@@ -73,7 +86,23 @@ export function useAlgebraGame({ saveScore, getExistingScore }) {
       })
     }, 1000)
     return () => clearInterval(timerRef.current)
-  }, [gameState, question, feedback, loseLife, log])
+  }, [gameState, question, feedback, gameMode, loseLife, log])
+
+  // 3-minute game timer (endurance mode only)
+  useEffect(() => {
+    if (gameMode !== 'endurance') return
+    if (gameState !== 'playing' && gameState !== 'feedback') return
+    clearInterval(gameTimerRef.current)
+    gameTimerRef.current = setInterval(() => {
+      gameSecsRef.current -= 1
+      setGameSecsLeft(gameSecsRef.current)
+      if (gameSecsRef.current <= 0) {
+        clearInterval(gameTimerRef.current)
+        endGame()
+      }
+    }, 1000)
+    return () => clearInterval(gameTimerRef.current)
+  }, [gameState, gameMode, endGame])
 
   // Keyboard input
   useEffect(() => {
@@ -107,12 +136,14 @@ export function useAlgebraGame({ saveScore, getExistingScore }) {
     livesRef.current  = cfg.MAX_LIVES
     scoreRef.current  = 0
     levelRef.current  = lvl
+    gameSecsRef.current = ENDURANCE_SECS
     setLevel(lvl)
     setLives(cfg.MAX_LIVES)
     setScore(0)
+    setGameSecsLeft(ENDURANCE_SECS)
     setIsNewBest(false)
     setGameState('playing')
-    log('start', { level: lvl, timePerQ: cfg.timePerQ, maxLives: cfg.MAX_LIVES })
+    log('start', { level: lvl, timePerQ: cfg.timePerQ, maxLives: cfg.MAX_LIVES, gameMode })
     const q = cfg.generate()
     setQuestion(q)
     setTypingValue('')
@@ -123,9 +154,12 @@ export function useAlgebraGame({ saveScore, getExistingScore }) {
   const playAgain   = useCallback(() => startGame(level),  [startGame, level])
   const selectLevel = useCallback((lvl) => { setLevel(lvl); setGameState('idle') }, [])
 
+  const mm = Math.floor(gameSecsLeft / 60)
+  const ss = String(gameSecsLeft % 60).padStart(2, '0')
+
   return {
     level, gameState, lives, maxLives, score, question, typingValue,
-    feedback, timeLeft, isNewBest, crackingIdx,
+    feedback, timeLeft, gameMinsLeft: `${mm}:${ss}`, isNewBest, crackingIdx,
     startGame, playAgain, selectLevel,
   }
 }

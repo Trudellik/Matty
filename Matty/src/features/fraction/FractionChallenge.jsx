@@ -100,27 +100,47 @@ export default function FractionChallenge() {
         })}
       </div>
 
-      {/* Directional pick buttons — cross layout, only show if fraction exists at that index */}
+      {/* Directional pick buttons — layout depends on fraction count */}
       <div className="frac-nav-cross">
-        <div className="frac-nav-row">
-          {fractions[2] && remaining.some(r => r.id === fractions[2].id) && (
-            <button className="frac-nav-btn" onClick={() => selectByIndex(2)} aria-label="Pick 3rd">▲</button>
-          )}
-        </div>
-        <div className="frac-nav-row">
-          {fractions[0] && remaining.some(r => r.id === fractions[0].id) && (
-            <button className="frac-nav-btn" onClick={() => selectByIndex(0)} aria-label="Pick 1st">◀</button>
-          )}
-          <div className="frac-nav-gap" />
-          {fractions[1] && remaining.some(r => r.id === fractions[1].id) && (
-            <button className="frac-nav-btn" onClick={() => selectByIndex(1)} aria-label="Pick 2nd">▶</button>
-          )}
-        </div>
-        <div className="frac-nav-row">
-          {fractions[3] && remaining.some(r => r.id === fractions[3].id) && (
-            <button className="frac-nav-btn" onClick={() => selectByIndex(3)} aria-label="Pick 4th">▼</button>
-          )}
-        </div>
+        {fractions.length === 3 ? (
+          // 3 fractions: left / center(up) / right
+          <div className="frac-nav-row">
+            {fractions[0] && remaining.some(r => r.id === fractions[0].id) && (
+              <button className="frac-nav-btn" onClick={() => selectByIndex(0)} aria-label="Pick 1st">◀</button>
+            )}
+            <div className="frac-nav-gap" />
+            {fractions[1] && remaining.some(r => r.id === fractions[1].id) && (
+              <button className="frac-nav-btn" onClick={() => selectByIndex(1)} aria-label="Pick 2nd">▲</button>
+            )}
+            <div className="frac-nav-gap" />
+            {fractions[2] && remaining.some(r => r.id === fractions[2].id) && (
+              <button className="frac-nav-btn" onClick={() => selectByIndex(2)} aria-label="Pick 3rd">▶</button>
+            )}
+          </div>
+        ) : (
+          // 4 fractions: cross layout
+          <>
+            <div className="frac-nav-row">
+              {fractions[2] && remaining.some(r => r.id === fractions[2].id) && (
+                <button className="frac-nav-btn" onClick={() => selectByIndex(2)} aria-label="Pick 3rd">▲</button>
+              )}
+            </div>
+            <div className="frac-nav-row">
+              {fractions[0] && remaining.some(r => r.id === fractions[0].id) && (
+                <button className="frac-nav-btn" onClick={() => selectByIndex(0)} aria-label="Pick 1st">◀</button>
+              )}
+              <div className="frac-nav-gap" />
+              {fractions[1] && remaining.some(r => r.id === fractions[1].id) && (
+                <button className="frac-nav-btn" onClick={() => selectByIndex(1)} aria-label="Pick 2nd">▶</button>
+              )}
+            </div>
+            <div className="frac-nav-row">
+              {fractions[3] && remaining.some(r => r.id === fractions[3].id) && (
+                <button className="frac-nav-btn" onClick={() => selectByIndex(3)} aria-label="Pick 4th">▼</button>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </ChallengePage>
   )

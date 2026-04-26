@@ -2,23 +2,31 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { LEVELS, generateQuestion } from './geometryEngine'
 import { useGameLogger } from '../../hooks/useGameLogger'
 
-export function useGeometryGame({ saveScore, getExistingScore }) {
+const ENDURANCE_SECS = 3 * 60
+
+export function useGeometryGame({ saveScore, getExistingScore, gameMode = 'lives' }) {
   const log = useGameLogger('geometry')
 
-  const [level,      setLevel]      = useState(null)
-  const [gameState,  setGameState]  = useState('idle')
-  const [lives,      setLives]      = useState(3)
-  const [score,      setScore]      = useState(0)
-  const [question,   setQuestion]   = useState(null)
-  const [feedback,   setFeedback]   = useState(null)
-  const [isNewBest,  setIsNewBest]  = useState(false)
-  const [crackingIdx,setCrackingIdx]= useState(null)
+  const [level,        setLevel]        = useState(null)
+  const [gameState,    setGameState]    = useState('idle')
+  const [lives,        setLives]        = useState(3)
+  const [score,        setScore]        = useState(0)
+  const [question,     setQuestion]     = useState(null)
+  const [feedback,     setFeedback]     = useState(null)
+  const [isNewBest,    setIsNewBest]    = useState(false)
+  const [crackingIdx,  setCrackingIdx]  = useState(null)
+  const [gameSecsLeft, setGameSecsLeft] = useState(ENDURANCE_SECS)
 
-  const livesRef = useRef(3)
-  const scoreRef = useRef(0)
-  const levelRef = useRef(null)
+  const livesRef    = useRef(3)
+  const scoreRef    = useRef(0)
+  const levelRef    = useRef(null)
+  const gameModeRef = useRef(gameMode)
+  const gameSecsRef = useRef(ENDURANCE_SECS)
+  const gameTimerRef = useRef(null)
 
-  const maxLives = LEVELS[level]?.MAX_LIVES ?? 3
+  useEffect(() => { gameModeRef.current = gameMode }, [gameMode])
+
+  const maxLives = gameMode === 'endurance' ? 0 : (LEVELS[level]?.MAX_LIVES ?? 3)
 
   const nextQuestion = useCallback(() => {
     if (!levelRef.current) return
@@ -39,6 +47,10 @@ export function useGeometryGame({ saveScore, getExistingScore }) {
   }, [getExistingScore, saveScore, log])
 
   const loseLife = useCallback(() => {
+    if (gameModeRef.current === 'endurance') {
+      setTimeout(() => nextQuestion(), 900)
+      return
+    }
     const idx = livesRef.current - 1
     setCrackingIdx(idx)
     setTimeout(() => {
@@ -78,28 +90,49 @@ export function useGeometryGame({ saveScore, getExistingScore }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [gameState, feedback, question, handleSelect])
 
+  // 3-minute game timer (endurance mode)
+  useEffect(() => {
+    if (gameMode !== 'endurance') return
+    if (gameState !== 'playing' && gameState !== 'feedback') return
+    clearInterval(gameTimerRef.current)
+    gameTimerRef.current = setInterval(() => {
+      gameSecsRef.current -= 1
+      setGameSecsLeft(gameSecsRef.current)
+      if (gameSecsRef.current <= 0) {
+        clearInterval(gameTimerRef.current)
+        endGame()
+      }
+    }, 1000)
+    return () => clearInterval(gameTimerRef.current)
+  }, [gameState, gameMode, endGame])
+
   const startGame = useCallback((lvl) => {
     const cfg = LEVELS[lvl]
-    livesRef.current = cfg.MAX_LIVES
-    scoreRef.current = 0
-    levelRef.current = lvl
+    livesRef.current  = cfg.MAX_LIVES
+    scoreRef.current  = 0
+    levelRef.current  = lvl
+    gameSecsRef.current = ENDURANCE_SECS
     setLevel(lvl)
     setLives(cfg.MAX_LIVES)
     setScore(0)
+    setGameSecsLeft(ENDURANCE_SECS)
     setIsNewBest(false)
     setGameState('playing')
-    log('start', { level: lvl, maxLives: cfg.MAX_LIVES })
+    log('start', { level: lvl, maxLives: cfg.MAX_LIVES, gameMode })
     const q = generateQuestion(lvl)
     setQuestion(q)
     setFeedback(null)
-  }, [log])
+  }, [log, gameMode])
 
   const playAgain   = useCallback(() => startGame(level),  [startGame, level])
   const selectLevel = useCallback((lvl) => { setLevel(lvl); setGameState('idle') }, [])
 
+  const mm = Math.floor(gameSecsLeft / 60)
+  const ss = String(gameSecsLeft % 60).padStart(2, '0')
+
   return {
     level, gameState, lives, maxLives, score, question,
-    feedback, isNewBest, crackingIdx,
+    feedback, isNewBest, crackingIdx, gameMinsLeft: `${mm}:${ss}`,
     handleSelect, startGame, playAgain, selectLevel,
   }
 }

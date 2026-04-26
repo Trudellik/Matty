@@ -7,13 +7,9 @@ import {
 } from './calculationEngine'
 
 const { MAX_LIVES, TIME_PER_Q, POINTS_TO_LEVEL } = GAME_CONFIG
+const ENDURANCE_SECS = 3 * 60
 
-/**
- * D: receives score I/O as injected functions — decoupled from challenge ID
- *    and from the shape of useHighScores.
- * I: only the two functions this hook actually needs are required.
- */
-export function useCalculationGame({ saveScore, getExistingScore }) {
+export function useCalculationGame({ saveScore, getExistingScore, gameMode = 'lives' }) {
   const [gameState,      setGameState]      = useState('idle')
   const [lives,          setLives]          = useState(MAX_LIVES)
   const [score,          setScore]          = useState(0)
@@ -23,6 +19,7 @@ export function useCalculationGame({ saveScore, getExistingScore }) {
   const [question,       setQuestion]       = useState(null)
   const [typingValue,    setTypingValue]    = useState('')
   const [timeLeft,       setTimeLeft]       = useState(TIME_PER_Q)
+  const [gameSecsLeft,   setGameSecsLeft]   = useState(ENDURANCE_SECS)
   const [feedback,       setFeedback]       = useState(null)
   const [isNewBest,      setIsNewBest]      = useState(false)
   const [crackingIdx,    setCrackingIdx]    = useState(null)
@@ -38,6 +35,8 @@ export function useCalculationGame({ saveScore, getExistingScore }) {
   const questionRef      = useRef(null)
   const typingRef        = useRef('')
   const handleTimeoutRef = useRef(null)
+  const gameModeRef      = useRef(gameMode)
+  const gameSecsRef      = useRef(ENDURANCE_SECS)
 
   useEffect(() => { diffRef.current      = difficulty    }, [difficulty])
   useEffect(() => { streakRef.current    = streak        }, [streak])
@@ -45,6 +44,7 @@ export function useCalculationGame({ saveScore, getExistingScore }) {
   useEffect(() => { scoreRef.current     = score         }, [score])
   useEffect(() => { livesRef.current     = lives         }, [lives])
   useEffect(() => { questionRef.current  = question      }, [question])
+  useEffect(() => { gameModeRef.current  = gameMode      }, [gameMode])
 
   // ── Actions ──────────────────────────────────────────────────────
 
@@ -83,27 +83,36 @@ export function useCalculationGame({ saveScore, getExistingScore }) {
     setTimeout(() => nextQuestion(nextDiff), 500)
   }
 
+  function endGame() {
+    const finalScore = scoreRef.current
+    const existing   = getExistingScore()
+    setIsNewBest(existing === undefined || finalScore > existing)
+    saveScore(finalScore)
+    setGameState('gameover')
+  }
+
   function loseLife(type, typedVal) {
     frozenRef.current = true
-    const newLives    = livesRef.current - 1
-    livesRef.current  = newLives
     streakRef.current = 0
-
-    setCrackingIdx(newLives)
-    setTimeout(() => setCrackingIdx(null), 900)
-
-    setLives(newLives)
     setStreak(0)
     setFeedback({ type, typed: typedVal, correctAnswer: questionRef.current?.answer })
     setGameState('feedback')
 
+    if (gameModeRef.current === 'endurance') {
+      // In endurance mode wrong answer just shows feedback — no life lost
+      setTimeout(() => nextQuestion(), 1300)
+      return
+    }
+
+    const newLives   = livesRef.current - 1
+    livesRef.current = newLives
+    setCrackingIdx(newLives)
+    setTimeout(() => setCrackingIdx(null), 900)
+    setLives(newLives)
+
     setTimeout(() => {
       if (newLives <= 0) {
-        const finalScore = scoreRef.current
-        const existing   = getExistingScore()
-        setIsNewBest(existing === undefined || finalScore > existing)
-        saveScore(finalScore)
-        setGameState('gameover')
+        endGame()
       } else {
         nextQuestion()
       }
@@ -116,19 +125,38 @@ export function useCalculationGame({ saveScore, getExistingScore }) {
   function handleStart() {
     diffRef.current = 1; streakRef.current = 0
     levelProgRef.current = 0; scoreRef.current = 0; livesRef.current = MAX_LIVES
+    gameSecsRef.current = ENDURANCE_SECS
     setLives(MAX_LIVES); setScore(0); setDifficulty(1)
     setStreak(0); setLevelProgress(0); setIsNewBest(false)
+    setGameSecsLeft(ENDURANCE_SECS)
     nextQuestion(1)
   }
 
   // ── Effects ──────────────────────────────────────────────────────
 
+  // Per-question countdown (lives mode only)
   useEffect(() => {
-    if (gameState !== 'playing') return
+    if (gameState !== 'playing' || gameMode !== 'lives') return
     const countId   = setInterval(() => setTimeLeft((tl) => Math.max(0, tl - 1)), 1000)
     const timeoutId = setTimeout(() => handleTimeoutRef.current(), TIME_PER_Q * 1000)
     return () => { clearInterval(countId); clearTimeout(timeoutId) }
-  }, [gameState, question])
+  }, [gameState, question, gameMode])
+
+  // 3-minute game timer (endurance mode only)
+  useEffect(() => {
+    if (gameMode !== 'endurance') return
+    if (gameState !== 'playing' && gameState !== 'feedback') return
+    const id = setInterval(() => {
+      gameSecsRef.current -= 1
+      setGameSecsLeft(gameSecsRef.current)
+      if (gameSecsRef.current <= 0) {
+        clearInterval(id)
+        frozenRef.current = true
+        endGame()
+      }
+    }, 1000)
+    return () => clearInterval(id)
+  }, [gameState, gameMode]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (gameState !== 'playing') return
@@ -166,13 +194,17 @@ export function useCalculationGame({ saveScore, getExistingScore }) {
 
   // ── Public interface ─────────────────────────────────────────────
 
+  const mm  = Math.floor(gameSecsLeft / 60)
+  const ss  = String(gameSecsLeft % 60).padStart(2, '0')
+
   return {
     gameState, lives, score, difficulty, streak, levelProgress,
     question, typingValue, timeLeft, feedback, isNewBest, crackingIdx, questionKey,
+    gameMinsLeft:  `${mm}:${ss}`,
     timerDanger:   timeLeft <= 2,
     ops:           getDifficultyConfig(difficulty).ops,
     pointsToLevel: POINTS_TO_LEVEL,
-    maxLives:      MAX_LIVES,
+    maxLives:      gameMode === 'endurance' ? 0 : MAX_LIVES,
     timePerQ:      TIME_PER_Q,
     handleStart,
   }

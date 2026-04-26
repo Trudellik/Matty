@@ -12,7 +12,14 @@ import './AdditionChallenge.css'
 
 export default function AdditionChallenge() {
   const navigate                 = useNavigate()
-  const { scores, saveBestTime } = useHighScores()
+  const { scores, saveBestTime, globalTimes } = useHighScores()
+  const timeBadge = (challengeId, level) => {
+    const my = scores[challengeId]?.[level]
+    const gl = globalTimes(challengeId)?.[level]
+    const fmt = v => v !== undefined ? `⏱ ${formatTime(v)}` : undefined
+    const myF = fmt(my), glF = fmt(gl)
+    return (myF || glF) ? { my: myF, global: glF } : undefined
+  }
   const { t, homePath }          = useLocale()
 
   const game = useAdditionGame({
@@ -44,13 +51,12 @@ export default function AdditionChallenge() {
 
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
-    const addScores = typeof scores['addition'] === 'object' ? scores['addition'] : {}
     const COLORS = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' }
     const options = Object.entries(LEVELS).map(([key, cfg]) => ({
       key,
       label: t(cfg.labelKey),
       desc:  t(cfg.descKey),
-      badge: addScores[key] !== undefined ? `⏱ ${formatTime(addScores[key])}` : undefined,
+      badge: timeBadge('addition', key),
       color: COLORS[key],
     }))
     return (
