@@ -47,8 +47,8 @@ export function buildColorMatchGrid(pairs) {
   const selected = shuffled.slice(0, pairs)
 
   const flat = selected.flatMap(c => [
-    { value: c.id, type: 'gif',   gif: c.gif, color: c.color },
-    { value: c.id, type: 'color', gif: c.gif, color: c.color },
+    { value: c.id, type: 'gif',   gif: c.gif,  color: c.color },
+    { value: c.id, type: 'color', gif: null,   color: c.color },
   ])
 
   // Fisher-Yates shuffle

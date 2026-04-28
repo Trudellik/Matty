@@ -117,11 +117,11 @@ export default function ColorMatchChallenge() {
               onClick={() => selectCell(cell.id)}
               disabled={cell.matched || completed}
             >
-              {cell.gif ? (
+              {!cell.matched && (cell.gif ? (
                 <img src={cell.gif} alt={cell.value} draggable="false" />
               ) : (
                 <span className="cm-cell-color" style={{ background: cell.color }} />
-              )}
+              ))}
             </button>
           )
         })}

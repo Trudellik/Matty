@@ -32,6 +32,27 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+export function applyOp(a, op, b) {
+  if (op === '+') return a + b
+  if (op === '-') return a - b
+  if (op === '×') return a * b
+  if (op === '÷') return (b !== 0 && a % b === 0) ? a / b : null
+  return null
+}
+
+// Returns true if any sequence of allowedOps applied left-to-right over
+// remainingTerms starting from `current` can reach `target`.
+// Only paths through positive integers are considered (consistent with generation).
+export function canReach(current, remainingTerms, target, allowedOps) {
+  if (remainingTerms.length === 0) return current === target
+  const [next, ...rest] = remainingTerms
+  return allowedOps.some(op => {
+    const val = applyOp(current, op, next)
+    return val !== null && val > 0 && Number.isInteger(val) &&
+      canReach(val, rest, target, allowedOps)
+  })
+}
+
 export function getDifficultyConfig(correct, mode) {
   const level = Math.floor(correct / GAME_CONFIG.CORRECT_TO_LEVEL) + 1
 

@@ -56,7 +56,7 @@ export function useColorMatchGame({ saveBestTime, getExistingScore }) {
     selectedRef.current = null
     setSelected(null)
 
-    if (first.value === second.value) {
+    if (first.value === second.value && first.type !== second.type) {
       const newGrid = gridRef.current.map(c =>
         c.id === first.id || c.id === second.id ? { ...c, matched: true } : c
       )

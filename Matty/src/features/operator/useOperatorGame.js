@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import {
   generateQuestion, getDifficultyConfig,
+  applyOp, canReach,
   GAME_CONFIG, KEY_TO_OP,
 } from './operatorEngine'
 
@@ -21,11 +22,12 @@ export function useOperatorGame({ saveScore, getExistingScore, gameMode = 'lives
   const [streak,      setStreak]      = useState(0)
   const [gameSecsLeft, setGameSecsLeft] = useState(ENDURANCE_SECS)
 
-  const frozenRef    = useRef(false)
-  const livesRef     = useRef(MAX_LIVES)
-  const correctRef   = useRef(0)
-  const questionRef  = useRef(null)
-  const filledOpsRef = useRef([])
+  const frozenRef      = useRef(false)
+  const livesRef       = useRef(MAX_LIVES)
+  const correctRef     = useRef(0)
+  const questionRef    = useRef(null)
+  const filledOpsRef   = useRef([])
+  const runningValRef  = useRef(null)
   const modeRef      = useRef(null)
   const gameModeRef  = useRef(gameMode)
   const timerRef     = useRef(null)
@@ -118,6 +120,7 @@ export function useOperatorGame({ saveScore, getExistingScore, gameMode = 'lives
     const q = generateQuestion(correctRef.current, modeRef.current, questionRef.current)
     questionRef.current  = q
     filledOpsRef.current = []
+    runningValRef.current = q.terms[0]
     setQuestion(q)
     setFilledOps([])
     setFeedback(null)
@@ -128,12 +131,19 @@ export function useOperatorGame({ saveScore, getExistingScore, gameMode = 'lives
 
   function handleAnswer(op) {
     if (frozenRef.current) return
-    const q        = questionRef.current
+    const q = questionRef.current
     if (!q) return
     const blankIdx  = filledOpsRef.current.length
     const correctOp = q.ops[blankIdx]
 
-    if (op === correctOp) {
+    const newRunning     = applyOp(runningValRef.current, op, q.terms[blankIdx + 1])
+    const remainingTerms = q.terms.slice(blankIdx + 2)
+    const allowedOps     = getDifficultyConfig(correctRef.current, modeRef.current).ops
+    const isValid        = newRunning !== null && newRunning > 0 && Number.isInteger(newRunning) &&
+                           canReach(newRunning, remainingTerms, q.result, allowedOps)
+
+    if (isValid) {
+      runningValRef.current = newRunning
       const newFilled = [...filledOpsRef.current, op]
       filledOpsRef.current = newFilled
       setFilledOps(newFilled)

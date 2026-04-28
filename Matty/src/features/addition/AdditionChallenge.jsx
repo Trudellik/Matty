@@ -33,13 +33,17 @@ export default function AdditionChallenge() {
     focusedIdx, cols, selectLevel, playAgain, stopGame, selectCell,
   } = game
 
-  const [mouseReady, setMouseReady] = useState(false)
+  const [mouseReady,     setMouseReady]     = useState(false)
+  const [keyboardActive, setKeyboardActive] = useState(false)
+  useEffect(() => { setKeyboardActive(false) }, [level])
   useEffect(() => {
     if (!started || completed) return
-    const onMove = () => setMouseReady(true)
+    const onMove = () => { setMouseReady(true); setKeyboardActive(false) }
     const onKey  = (e) => {
-      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key))
+      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
         setMouseReady(false)
+        setKeyboardActive(true)
+      }
     }
     window.addEventListener('mousemove', onMove)
     window.addEventListener('keydown', onKey)
@@ -111,7 +115,7 @@ export default function AdditionChallenge() {
           if (cell.matched)    cls += ' add-cell-matched'
           else if (isWrong)    cls += ' add-cell-wrong'
           else if (isSelected) cls += ' add-cell-selected'
-          if (isFocused)       cls += ' add-cell-focused'
+          if (isFocused && keyboardActive) cls += ' add-cell-focused'
 
           return (
             <button
