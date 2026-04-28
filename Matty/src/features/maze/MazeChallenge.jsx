@@ -24,7 +24,7 @@ export default function MazeChallenge() {
 
   const {
     gameState, maze, position, visited, wrongCells,
-    elapsed, isNewBest,
+    elapsed, score, isNewBest,
     handleMove, start, playAgain, MOVE_MAP,
   } = game
 
@@ -111,7 +111,7 @@ export default function MazeChallenge() {
       <GameOver
         icon="🎉"
         title={t('maze_complete')}
-        result={scores['maze']}
+        result={score}
         resultLabel={t('maze_score_label')}
         isNewBest={isNewBest}
         newBestLabel={t('maze_new_best')}

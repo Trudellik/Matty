@@ -11,20 +11,22 @@ import ChallengePage from '../../pages/ChallengePage'
 import './GeometryChallenge.css'
 
 // ── Inline SVG shape renderer ──────────────────────────────────────
-function ShapeDisplay({ shape, dims }) {
+function ShapeDisplay({ shape, dims, qType }) {
   const W = 220, H = 140
-  const stroke = '#aaa'
-  const fill   = 'rgba(100,160,255,0.15)'
-  const lbl    = { fill: '#ccc', fontSize: 13 }
+  const isPerim = qType === 'perimeter'
+  const stroke  = isPerim ? 'var(--accent)' : 'var(--border)'
+  const sw      = isPerim ? 3.5 : 2
+  const fill    = isPerim ? 'rgba(100,160,255,0.06)' : 'rgba(100,160,255,0.38)'
+  const lbl     = { fill: 'var(--text)', fontSize: 13 }
 
   if (shape === 'rectangle' || shape === 'square') {
     const { w, h, s } = dims
-    const rw = s ? 120 : Math.min(180, (w / (w + h)) * 200 + 40)
-    const rh = s ? 120 : Math.min(100, (h / (w + h)) * 200 + 20)
+    const rw = s ? 100 : Math.min(180, (w / (w + h)) * 200 + 40)
+    const rh = s ? 100 : Math.min(100, (h / (w + h)) * 200 + 20)
     const x  = (W - rw) / 2, y = (H - rh) / 2
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <rect x={x} y={y} width={rw} height={rh} stroke={stroke} strokeWidth="2" fill={fill} />
+        <rect x={x} y={y} width={rw} height={rh} stroke={stroke} strokeWidth={sw} fill={fill} />
         <text x={W/2} y={y + rh + 18} textAnchor="middle" {...lbl}>{s ?? w}</text>
         <text x={x - 10} y={H/2} textAnchor="end" dominantBaseline="middle" {...lbl}>{s ?? h}</text>
       </svg>
@@ -32,15 +34,22 @@ function ShapeDisplay({ shape, dims }) {
   }
 
   if (shape === 'triangle' || shape === 'triangle-pyth') {
-    const { b, h, a } = dims
+    const { b, h, a, c } = dims
     const base = b ?? a
-    const ht   = h ?? dims.b
+    const ht   = h ?? a
     const bx   = (W - 160) / 2
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <polygon points={`${bx},${H-20} ${bx+160},${H-20} ${W/2},${H-20-90}`} stroke={stroke} strokeWidth="2" fill={fill} />
+        <polygon points={`${bx},${H-20} ${bx+160},${H-20} ${W/2},${H-20-90}`} stroke={stroke} strokeWidth={sw} fill={fill} />
         <text x={W/2} y={H-6} textAnchor="middle" {...lbl}>{base}</text>
-        <text x={W/2+90} y={H/2} textAnchor="start" {...lbl}>h={ht}</text>
+        {c != null ? (
+          <>
+            <text x={bx-4} y={H/2} textAnchor="end" dominantBaseline="middle" {...lbl}>a={ht}</text>
+            <text x={W-4} y={H/2} textAnchor="end" dominantBaseline="middle" {...lbl}>c={c}</text>
+          </>
+        ) : (
+          <text x={W-4} y={H/2} textAnchor="end" dominantBaseline="middle" {...lbl}>h={ht}</text>
+        )}
       </svg>
     )
   }
@@ -52,8 +61,8 @@ function ShapeDisplay({ shape, dims }) {
     const pts = `${offset+20},${y1} ${W-20},${y1} ${W-20-offset},${y0} ${20},${y0}`
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <polygon points={pts} stroke={stroke} strokeWidth="2" fill={fill} />
-        <text x={W/2} y={y1+16} textAnchor="middle" {...lbl}>{b}</text>
+        <polygon points={pts} stroke={stroke} strokeWidth={sw} fill={fill} />
+        <text x={W/2} y={y1+12} textAnchor="middle" {...lbl}>{b}</text>
         <text x={W-10} y={H/2} textAnchor="start" dominantBaseline="middle" {...lbl}>h={h}</text>
       </svg>
     )
@@ -68,7 +77,7 @@ function ShapeDisplay({ shape, dims }) {
     const pts = `${x0a},${y0} ${x0a+wa},${y0} ${x0b+wb},${y1} ${x0b},${y1}`
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <polygon points={pts} stroke={stroke} strokeWidth="2" fill={fill} />
+        <polygon points={pts} stroke={stroke} strokeWidth={sw} fill={fill} />
         <text x={W/2} y={y0-4} textAnchor="middle" {...lbl}>{a}</text>
         <text x={W/2} y={y1+14} textAnchor="middle" {...lbl}>{b}</text>
         <text x={W-5} y={H/2} textAnchor="end" dominantBaseline="middle" {...lbl}>h={h}</text>
@@ -82,9 +91,9 @@ function ShapeDisplay({ shape, dims }) {
     const x0 = (W-sz)/2, y0 = (H-sz)/2
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <rect x={x0} y={y0} width={sz} height={sz} stroke={stroke} strokeWidth="2" fill={fill} />
-        <polygon points={`${x0},${y0} ${x0+ox},${y0-oy} ${x0+ox+sz},${y0-oy} ${x0+sz},${y0}`} stroke={stroke} strokeWidth="2" fill={fill} />
-        <polygon points={`${x0+sz},${y0} ${x0+sz+ox},${y0-oy} ${x0+sz+ox},${y0-oy+sz} ${x0+sz},${y0+sz}`} stroke={stroke} strokeWidth="2" fill={fill} />
+        <rect x={x0} y={y0} width={sz} height={sz} stroke={stroke} strokeWidth={sw} fill={fill} />
+        <polygon points={`${x0},${y0} ${x0+ox},${y0-oy} ${x0+ox+sz},${y0-oy} ${x0+sz},${y0}`} stroke={stroke} strokeWidth={sw} fill={fill} />
+        <polygon points={`${x0+sz},${y0} ${x0+sz+ox},${y0-oy} ${x0+sz+ox},${y0-oy+sz} ${x0+sz},${y0+sz}`} stroke={stroke} strokeWidth={sw} fill={fill} />
         <text x={W/2} y={H-2} textAnchor="middle" {...lbl}>s={s}</text>
       </svg>
     )
@@ -96,10 +105,10 @@ function ShapeDisplay({ shape, dims }) {
     const x0 = (W-sz)/2-10, y0 = (H-sz)/2
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <rect x={x0} y={y0} width={sz} height={sz} stroke={stroke} strokeWidth="2" fill={fill} />
-        <polygon points={`${x0},${y0} ${x0+ox},${y0-oy} ${x0+ox+sz},${y0-oy} ${x0+sz},${y0}`} stroke={stroke} strokeWidth="2" fill={fill} />
-        <polygon points={`${x0+sz},${y0} ${x0+sz+ox},${y0-oy} ${x0+sz+ox},${y0-oy+sz} ${x0+sz},${y0+sz}`} stroke={stroke} strokeWidth="2" fill={fill} />
-        <text x={x0+sz/2} y={H+2} textAnchor="middle" {...lbl}>l={l}</text>
+        <rect x={x0} y={y0} width={sz} height={sz} stroke={stroke} strokeWidth={sw} fill={fill} />
+        <polygon points={`${x0},${y0} ${x0+ox},${y0-oy} ${x0+ox+sz},${y0-oy} ${x0+sz},${y0}`} stroke={stroke} strokeWidth={sw} fill={fill} />
+        <polygon points={`${x0+sz},${y0} ${x0+sz+ox},${y0-oy} ${x0+sz+ox},${y0-oy+sz} ${x0+sz},${y0+sz}`} stroke={stroke} strokeWidth={sw} fill={fill} />
+        <text x={x0+sz/2} y={y0+sz+16} textAnchor="middle" {...lbl}>l={l}</text>
         <text x={x0+sz+ox+4} y={y0-oy+sz/2} dominantBaseline="middle" {...lbl}>w={w}</text>
         <text x={x0-4} y={y0+sz/2} textAnchor="end" dominantBaseline="middle" {...lbl}>h={h}</text>
       </svg>
@@ -111,11 +120,11 @@ function ShapeDisplay({ shape, dims }) {
     const cx = W/2, cy = H/2, rx = 50, ry = 14, ch = 80
     return (
       <svg viewBox={`0 0 ${W} ${H}`}>
-        <ellipse cx={cx} cy={cy-ch/2} rx={rx} ry={ry} stroke={stroke} strokeWidth="2" fill={fill} />
+        <ellipse cx={cx} cy={cy-ch/2} rx={rx} ry={ry} stroke={stroke} strokeWidth={sw} fill={fill} />
         <rect x={cx-rx} y={cy-ch/2} width={rx*2} height={ch} stroke="none" fill={fill} />
-        <line x1={cx-rx} y1={cy-ch/2} x2={cx-rx} y2={cy+ch/2} stroke={stroke} strokeWidth="2" />
-        <line x1={cx+rx} y1={cy-ch/2} x2={cx+rx} y2={cy+ch/2} stroke={stroke} strokeWidth="2" />
-        <ellipse cx={cx} cy={cy+ch/2} rx={rx} ry={ry} stroke={stroke} strokeWidth="2" fill={fill} />
+        <line x1={cx-rx} y1={cy-ch/2} x2={cx-rx} y2={cy+ch/2} stroke={stroke} strokeWidth={sw} />
+        <line x1={cx+rx} y1={cy-ch/2} x2={cx+rx} y2={cy+ch/2} stroke={stroke} strokeWidth={sw} />
+        <ellipse cx={cx} cy={cy+ch/2} rx={rx} ry={ry} stroke={stroke} strokeWidth={sw} fill={fill} />
         <text x={cx+rx+4} y={cy} dominantBaseline="middle" {...lbl}>h={h}</text>
         <text x={cx} y={cy-ch/2-ry-4} textAnchor="middle" {...lbl}>r={r}</text>
       </svg>
@@ -210,10 +219,10 @@ export default function GeometryChallenge() {
       <div className="geo-arena">
         {question && (
           <>
-            <div className="geo-question-label">{question.label}</div>
-            <div className="geo-formula">{question.formula}</div>
+            <div className="geo-question-label">{t(question.labelKey)}</div>
+            <div className="geo-formula">{t(question.formulaKey)}</div>
             <div className="geo-shape-wrap">
-              <ShapeDisplay shape={question.shape} dims={question.dims} />
+              <ShapeDisplay shape={question.shape} dims={question.dims} qType={question.qType} />
             </div>
             <div className="geo-choices">
               {question.choices.map((c, i) => {
@@ -230,6 +239,7 @@ export default function GeometryChallenge() {
                     onClick={() => handleSelect(c)}
                     disabled={!!feedback}
                   >
+                    <kbd className="geo-choice-key">{i + 1}</kbd>
                     {c}
                   </button>
                 )

@@ -10,6 +10,7 @@ export function useMazeGame({ saveScore, getExistingScore }) {
   const [visited,    setVisited]    = useState(new Set(['0,0']))
   const [wrongCells, setWrongCells] = useState(new Set())
   const [elapsed,    setElapsed]    = useState(0)
+  const [score,      setScore]      = useState(null)
   const [isNewBest,  setIsNewBest]  = useState(false)
 
   const mazeRef       = useRef(null)
@@ -72,10 +73,11 @@ export function useMazeGame({ saveScore, getExistingScore }) {
 
       if (nr === N - 1 && nc === N - 1) {
         clearInterval(timerRef.current)
-        const score    = Math.max(0, 10000 - elapsedRef.current * 10 - wrongRef.current.size * 50)
-        const existing = getExistingScore()
-        setIsNewBest(existing === undefined || score > existing)
-        saveScore(score)
+        const finalScore = Math.max(0, 10000 - elapsedRef.current * 10 - wrongRef.current.size * 50)
+        const existing   = getExistingScore()
+        setIsNewBest(existing === undefined || finalScore > existing)
+        setScore(finalScore)
+        saveScore(finalScore)
         setGameState('won')
       }
     } else {
@@ -89,7 +91,7 @@ export function useMazeGame({ saveScore, getExistingScore }) {
 
   return {
     gameState, maze, position, visited, wrongCells,
-    elapsed, isNewBest,
+    elapsed, score, isNewBest,
     handleMove, start, playAgain: () => start(lastTargetRef.current),
     MOVE_MAP,
   }

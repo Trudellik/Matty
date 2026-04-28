@@ -19,13 +19,15 @@ export function useAlgebraGame({ saveScore, getExistingScore, gameMode = 'lives'
   const [isNewBest,    setIsNewBest]    = useState(false)
   const [crackingIdx,  setCrackingIdx]  = useState(null)
 
-  const timerRef    = useRef(null)
+  const timerRef     = useRef(null)
   const gameTimerRef = useRef(null)
-  const livesRef    = useRef(3)
-  const scoreRef    = useRef(0)
-  const levelRef    = useRef(null)
-  const gameModeRef = useRef(gameMode)
-  const gameSecsRef = useRef(ENDURANCE_SECS)
+  const livesRef     = useRef(3)
+  const scoreRef     = useRef(0)
+  const levelRef     = useRef(null)
+  const gameModeRef  = useRef(gameMode)
+  const gameSecsRef  = useRef(ENDURANCE_SECS)
+  const timerKeyRef  = useRef(0)
+  const [timerKey,   setTimerKey] = useState(0)
 
   useEffect(() => { gameModeRef.current = gameMode }, [gameMode])
 
@@ -34,6 +36,8 @@ export function useAlgebraGame({ saveScore, getExistingScore, gameMode = 'lives'
   const nextQuestion = useCallback(() => {
     if (!levelRef.current) return
     const q = LEVELS[levelRef.current].generate()
+    timerKeyRef.current += 1
+    setTimerKey(timerKeyRef.current)
     setQuestion(q)
     setTypingValue('')
     setFeedback(null)
@@ -114,22 +118,29 @@ export function useAlgebraGame({ saveScore, getExistingScore, gameMode = 'lives'
       } else if (e.key === '-' && typingValue === '') {
         setTypingValue('-')
       } else if (/^\d$/.test(e.key)) {
-        const next = typingValue + e.key
+        const next      = typingValue + e.key
+        const answerStr = String(question?.answer ?? '')
         setTypingValue(next)
-        const parsed = parseInt(next, 10)
-        if (!isNaN(parsed) && parsed === question?.answer) {
-          clearInterval(timerRef.current)
-          scoreRef.current += 1
-          setScore(scoreRef.current)
-          setFeedback({ type: 'correct' })
-          log('correct', { typed: next, answer: question.answer, score: scoreRef.current })
-          setTimeout(() => nextQuestion(), 600)
+        if (next.length === answerStr.length) {
+          const parsed = parseInt(next, 10)
+          if (!isNaN(parsed) && parsed === question?.answer) {
+            clearInterval(timerRef.current)
+            scoreRef.current += 1
+            setScore(scoreRef.current)
+            setFeedback({ type: 'correct' })
+            log('correct', { typed: next, answer: question.answer, score: scoreRef.current })
+            setTimeout(() => nextQuestion(), 600)
+          } else {
+            setFeedback({ type: 'wrong', correctAnswer: question?.answer })
+            log('wrong', { typed: next, answer: question?.answer })
+            setTimeout(() => loseLife(), 900)
+          }
         }
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [gameState, feedback, typingValue, question, nextQuestion, log])
+  }, [gameState, feedback, typingValue, question, nextQuestion, loseLife, log])
 
   const startGame = useCallback((lvl) => {
     const cfg = LEVELS[lvl]
@@ -137,11 +148,13 @@ export function useAlgebraGame({ saveScore, getExistingScore, gameMode = 'lives'
     scoreRef.current  = 0
     levelRef.current  = lvl
     gameSecsRef.current = ENDURANCE_SECS
+    timerKeyRef.current = 1
     setLevel(lvl)
     setLives(cfg.MAX_LIVES)
     setScore(0)
     setGameSecsLeft(ENDURANCE_SECS)
     setIsNewBest(false)
+    setTimerKey(1)
     setGameState('playing')
     log('start', { level: lvl, timePerQ: cfg.timePerQ, maxLives: cfg.MAX_LIVES, gameMode })
     const q = cfg.generate()
@@ -159,7 +172,7 @@ export function useAlgebraGame({ saveScore, getExistingScore, gameMode = 'lives'
 
   return {
     level, gameState, lives, maxLives, score, question, typingValue,
-    feedback, timeLeft, gameMinsLeft: `${mm}:${ss}`, isNewBest, crackingIdx,
+    feedback, timeLeft, timerKey, gameMinsLeft: `${mm}:${ss}`, isNewBest, crackingIdx,
     startGame, playAgain, selectLevel,
   }
 }

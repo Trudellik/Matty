@@ -29,7 +29,7 @@ export default function AlgebraChallenge() {
 
   const {
     level, gameState, lives, maxLives, score, question, typingValue,
-    feedback, timeLeft, gameMinsLeft, isNewBest, crackingIdx,
+    feedback, timeLeft, timerKey, gameMinsLeft, isNewBest, crackingIdx,
     startGame, playAgain, selectLevel,
   } = game
 
@@ -100,6 +100,9 @@ export default function AlgebraChallenge() {
           ? `${t(LEVELS[level].labelKey)}  ⏱ ${gameMinsLeft}`
           : level ? t(LEVELS[level].labelKey) : ''
       }
+      timerKey={gameMode === 'lives' ? timerKey : undefined}
+      timerDuration={gameMode === 'lives' && level ? LEVELS[level].timePerQ : undefined}
+      timerDanger={gameMode === 'lives' && timeLeft <= 5}
     >
 
       <input
@@ -127,7 +130,6 @@ export default function AlgebraChallenge() {
             </div>
           </>
         )}
-        {gameMode === 'lives' && <div className="alg-timer-num">{timeLeft}s</div>}
       </div>
 
       {feedback && (
