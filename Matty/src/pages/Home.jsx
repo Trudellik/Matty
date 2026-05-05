@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import challenges from '../config/challenges'
+import signeChallenges from '../config/signe-challenges'
 import { useHighScores } from '../hooks/useHighScores'
 import { useLocale } from '../store/LocaleContext'
 import { formatTime } from '../utils/utils'
@@ -11,7 +13,6 @@ function getScores(challenge, myScores, globalScore, globalTimes) {
   let my, global
 
   if (challenge.scoreKeys) {
-    // Multi-key score (e.g. multiple difficulty levels stored separately)
     const myVals = challenge.scoreKeys.map(k => myScores[k]).filter(v => v != null)
     const glVals = challenge.scoreKeys.map(k => globalScore(k)).filter(v => v != null)
     if (challenge.scoreType === 'time') {
@@ -45,23 +46,58 @@ function getScores(challenge, myScores, globalScore, globalTimes) {
   return { my, global }
 }
 
+function AppToggle({ app, onToggle }) {
+  const isSigne = app === 'signe'
+  return (
+    <button
+      className={`app-toggle${isSigne ? ' app-toggle--signe' : ''}`}
+      onClick={onToggle}
+      aria-label={isSigne ? 'Switch to Matty' : 'Switch to Signe'}
+    >
+      <span className={`app-toggle-option${!isSigne ? ' app-toggle-option--active' : ''}`}>
+        Matty
+      </span>
+      <span className="app-toggle-track">
+        <span className="app-toggle-thumb" />
+      </span>
+      <span className={`app-toggle-option${isSigne ? ' app-toggle-option--active' : ''}`}>
+        Signe
+      </span>
+    </button>
+  )
+}
+
 function Home() {
   const navigate = useNavigate()
   const { scores, globalScore, globalTimes } = useHighScores()
   const { t, challengePath } = useLocale()
 
+  const [app, setApp] = useState(() => localStorage.getItem('activeApp') ?? 'matty')
+
+  function handleToggle() {
+    const next = app === 'matty' ? 'signe' : 'matty'
+    setApp(next)
+    localStorage.setItem('activeApp', next)
+  }
+
+  const isSigne   = app === 'signe'
+  const list      = isSigne ? signeChallenges : challenges
+  const title     = isSigne ? 'Signe' : 'Matty'
+  const subtitle  = isSigne ? t('signe_subtitle') : t('home_subtitle')
+
   return (
-    <div className="home">
+    <div className={`home${isSigne ? ' home--signe' : ''}`}>
       <div className="home-topbar">
+        <AppToggle app={app} onToggle={handleToggle} />
         <UserPicker />
       </div>
       <header className="home-header">
-        <h1>Matty</h1>
-        <p>{t('home_subtitle')}</p>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
       </header>
 
       <main className="challenges-grid">
-        {challenges.map((challenge) => {
+        {list.map((challenge) => {
           const key         = challenge.id.replace(/-/g, '_')
           const label       = t(`challenge_${key}_label`)
           const description = t(`challenge_${key}_desc`)

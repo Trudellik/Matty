@@ -1,8 +1,29 @@
 const translations = {
   en: {
-    // Home
+    // Home / app toggle
     home_subtitle: 'Pick a challenge and start training your brain',
+    signe_subtitle: 'Pick a challenge and start learning sign & written language',
     coming_soon: 'Coming soon',
+    switch_to_signe: 'Switch to Signe',
+    switch_to_matty: 'Switch to Matty',
+
+    // Signe challenge cards
+    challenge_fingerspelling_label: 'Fingerspelling',
+    challenge_fingerspelling_desc: 'Learn the manual alphabet — spell words letter by letter',
+    challenge_signmatch_label: 'Sign Match',
+    challenge_signmatch_desc: 'Match a sign image to the correct word',
+    challenge_wordbuilder_label: 'Word Builder',
+    challenge_wordbuilder_desc: 'Arrange letters to build the target word',
+    challenge_readingflow_label: 'Reading Flow',
+    challenge_readingflow_desc: 'Read sentences and answer comprehension questions',
+    challenge_letterorder_label: 'Letter Order',
+    challenge_letterorder_desc: 'Put scrambled letters in alphabetical order',
+    challenge_wordchain_label: 'Word Chain',
+    challenge_wordchain_desc: 'Build a chain — each word starts with the last letter of the previous',
+    challenge_rhymetime_label: 'Rhyme Time',
+    challenge_rhymetime_desc: 'Pick the word that rhymes with the target',
+    challenge_syllables_label: 'Syllables',
+    challenge_syllables_desc: 'Count the syllables in each spoken word',
     best_time: '⏱ Best:',
     best_score: '🏆 Best:',
 
@@ -300,9 +321,30 @@ const translations = {
   },
 
   da: {
-    // Home
+    // Home / app toggle
     home_subtitle: 'Vælg en udfordring og træn din hjerne',
+    signe_subtitle: 'Vælg en udfordring og lær tegnsprog og skriftsprog',
     coming_soon: 'Kommer snart',
+    switch_to_signe: 'Skift til Signe',
+    switch_to_matty: 'Skift til Matty',
+
+    // Signe challenge cards
+    challenge_fingerspelling_label: 'Fingerstaving',
+    challenge_fingerspelling_desc: 'Lær det manuelle alfabet — stav ord bogstav for bogstav',
+    challenge_signmatch_label: 'Tegnmatch',
+    challenge_signmatch_desc: 'Match et tegnbillede til det rigtige ord',
+    challenge_wordbuilder_label: 'Ordbygning',
+    challenge_wordbuilder_desc: 'Sæt bogstaver i den rigtige rækkefølge for at danne ordet',
+    challenge_readingflow_label: 'Læseflow',
+    challenge_readingflow_desc: 'Læs sætninger og besvar forståelsesspørgsmål',
+    challenge_letterorder_label: 'Bogstavrækkefølge',
+    challenge_letterorder_desc: 'Sæt blandede bogstaver i alfabetisk rækkefølge',
+    challenge_wordchain_label: 'Ordkæde',
+    challenge_wordchain_desc: 'Byg en kæde — hvert ord starter med det forrige ords sidste bogstav',
+    challenge_rhymetime_label: 'Rim',
+    challenge_rhymetime_desc: 'Vælg det ord der rimer på målordet',
+    challenge_syllables_label: 'Stavelser',
+    challenge_syllables_desc: 'Tæl stavelserne i hvert ord',
     best_time: '⏱ Bedst:',
     best_score: '🏆 Bedst:',
 

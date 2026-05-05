@@ -13,7 +13,6 @@ const challenges = [
   { id: 'geometry',       label: 'Geometry',           icon: '📐', description: 'Calculate areas and volumes of shapes',                scoreType: 'score', scoreKeys: ['geometry_easy', 'geometry_medium', 'geometry_hard'] },
   { id: 'sequence',       label: 'Sequences',          icon: '🔢', description: 'Find the missing number in the pattern',               scoreType: 'score', scoreKeys: ['sequence_easy', 'sequence_medium', 'sequence_hard'] },
   { id: 'pairing',        label: 'Pairing',            icon: '🔀', description: 'Match pairs of colors, numbers, or letters',            scoreType: 'time', scoreKey: 'pairing_single' },
-  { id: 'colormatch',     label: 'Color Match',        icon: '🎨', description: 'Flip cards and match pairs of color GIFs',                scoreType: 'time'  },
 ].map(c => ({ ...c, ready: readyIds.has(c.id) }))
 
 export default challenges
