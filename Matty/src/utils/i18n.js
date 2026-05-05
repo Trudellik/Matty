@@ -296,6 +296,22 @@ const translations = {
     cm_new_best: 'New best time!',
     cm_play_again: 'Play Again',
 
+    // Animal Match challenge
+    an_title: 'Animal Match',
+    an_subtitle: 'Flip cards and match animals to their names',
+    an_level_easy: 'Easy',
+    an_level_easy_desc: '3×4 grid — 6 animal pairs',
+    an_level_medium: 'Medium',
+    an_level_medium_desc: '4×4 grid — 8 animal pairs',
+    an_level_hard: 'Hard',
+    an_level_hard_desc: '4×5 grid — 10 animal pairs',
+    an_rule_gif: 'Each animal has an animated GIF card and a photo card',
+    an_rule_match: 'Tap a GIF card then tap the matching photo',
+    an_rule_time: 'Clear the board as fast as you can',
+    an_complete: 'All Matched!',
+    an_new_best: 'New best time!',
+    an_play_again: 'Play Again',
+
     // Sequence challenge
     challenge_sequence_label: 'Sequences',
     challenge_sequence_desc: 'Find the missing number in the pattern',
@@ -616,6 +632,22 @@ const translations = {
     cm_complete: 'Alle matchet!',
     cm_new_best: 'Ny bedste tid!',
     cm_play_again: 'Spil igen',
+
+    // Animal Match challenge
+    an_title: 'Dyrematch',
+    an_subtitle: 'Vend kort og match dyr til deres navne',
+    an_level_easy: 'Let',
+    an_level_easy_desc: '3×4 gitter — 6 dyrepar',
+    an_level_medium: 'Mellem',
+    an_level_medium_desc: '4×4 gitter — 8 dyrepar',
+    an_level_hard: 'Svær',
+    an_level_hard_desc: '4×5 gitter — 10 dyrepar',
+    an_rule_gif: 'Hvert dyr har et animeret GIF-kort og et fotokort',
+    an_rule_match: 'Tryk på et GIF-kort og derefter det matchende foto',
+    an_rule_time: 'Ryd brættet så hurtigt som muligt',
+    an_complete: 'Alle matchet!',
+    an_new_best: 'Ny bedste tid!',
+    an_play_again: 'Spil igen',
 
     // Sequence challenge
     challenge_sequence_label: 'Talrækker',
