@@ -69,6 +69,7 @@
 .pair-grid {
   display: grid;
   grid-template-columns: repeat(var(--pair-cols), 1fr);
+  grid-template-rows: repeat(var(--pair-cols), 1fr);
   gap: clamp(4px, 1vmin, 12px);
   width:  min(calc(100vw - 32px), calc(100svh - 160px));
   height: min(calc(100vw - 32px), calc(100svh - 160px));
@@ -133,8 +134,8 @@
 
 /* Color mode: matched cells are replaced by an invisible same-size placeholder */
 .pair-cell-gone {
-  aspect-ratio: 1;
-  border-radius: 12px;
+  width: 100%;
+  height: 100%;
   visibility: hidden;
 }
 
