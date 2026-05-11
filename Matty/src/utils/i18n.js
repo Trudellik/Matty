@@ -278,12 +278,20 @@ const translations = {
     geo_f_square_perim:         'P = 4s',
     geo_f_right_triangle_perim: 'P = a+b+c',
 
-    // Animal Match challenge
-    challenge_animal_label: 'Animal Match',
+    // Animal challenge
+    challenge_animal_label: 'Animals',
     challenge_animal_desc: 'Flip cards and match animals to their names',
 
-    // Color Match challenge
-    challenge_colormatch_label: 'Color Match',
+    // Fruit challenge
+    challenge_fruit_label: 'Fruits',
+    challenge_fruit_desc: 'Flip cards and match fruits to their names',
+
+    // Nature challenge
+    challenge_nature_label: 'Nature',
+    challenge_nature_desc: 'Flip cards and match nature items to their names',
+
+    // Color challenge
+    challenge_colormatch_label: 'Colors',
     challenge_colormatch_desc: 'Flip cards and match pairs of color GIFs',
     cm_title: 'Color Match',
     cm_subtitle: 'Flip cards and find every matching pair',
@@ -619,12 +627,20 @@ const translations = {
     geo_f_square_perim:         'O = 4s',
     geo_f_right_triangle_perim: 'O = a+b+c',
 
-    // Animal Match challenge
-    challenge_animal_label: 'Dyrematch',
+    // Animal challenge
+    challenge_animal_label: 'Dyr',
     challenge_animal_desc: 'Vend kort og match dyr til deres navne',
 
-    // Color Match challenge
-    challenge_colormatch_label: 'Farvematch',
+    // Fruit challenge
+    challenge_fruit_label: 'Frugt',
+    challenge_fruit_desc: 'Vend kort og match frugter til deres navne',
+
+    // Nature challenge
+    challenge_nature_label: 'Natur',
+    challenge_nature_desc: 'Vend kort og match naturobjekter til deres navne',
+
+    // Color challenge
+    challenge_colormatch_label: 'Farver',
     challenge_colormatch_desc: 'Vend kort og match par af farve-GIF\'er',
     cm_title: 'Farvematch',
     cm_subtitle: 'Vend kort og find alle matchende par',

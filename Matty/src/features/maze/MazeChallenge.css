@@ -111,6 +111,7 @@
   opacity: 0.85;
 }
 
+
 /* ── Grid viewport ── */
 .maze-grid-viewport {
   flex: 1;
@@ -122,6 +123,7 @@
   padding: 4px 8px;
   box-sizing: border-box;
   overflow: hidden;
+  touch-action: none;
   container-type: size;
   --maze-cell: min(
     calc((100cqw - 16px) / var(--maze-cols)),
