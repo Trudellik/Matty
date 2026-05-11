@@ -51,8 +51,18 @@ export const LEVELS = {
 
 export const BG_ANIMALS = ['bee', 'cat', 'dog', 'duck', 'frog', 'horse', 'lion', 'monkey', 'pig', 'bird']
 
-export function getAnimalGifUrl(id) { return `/animal/${id}.gif` }
-export function getAnimalJpgUrl(id) { return `/animal/${id}.jpg` }
+const gifModules = import.meta.glob('../../assets/animal/gifs/*.gif', { eager: true })
+const jpgModules = import.meta.glob('../../assets/animal/photos/*.jpg', { eager: true })
+
+const gifUrls = Object.fromEntries(
+  Object.entries(gifModules).map(([path, mod]) => [path.split('/').pop().replace('.gif', ''), mod.default])
+)
+const jpgUrls = Object.fromEntries(
+  Object.entries(jpgModules).map(([path, mod]) => [path.split('/').pop().replace('.jpg', ''), mod.default])
+)
+
+export function getAnimalGifUrl(id) { return gifUrls[id] ?? '' }
+export function getAnimalJpgUrl(id) { return jpgUrls[id] ?? '' }
 
 function shuffle(arr) {
   const a = [...arr]

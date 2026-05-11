@@ -91,6 +91,7 @@
 /* Color mode: fill the cell with the color */
 .pair-cell--color {
   background: var(--cell-color, var(--social-bg));
+  border-color: var(--border);
 }
 
 /* Number / alphabet label */
@@ -105,7 +106,10 @@
 
 .pair-cell:hover:not(:disabled) {
   transform: scale(1.08);
-  filter: brightness(1.15);
+}
+
+.pair-cell--color:hover:not(:disabled) {
+  filter: none;
 }
 
 .pair-cell--selected {

@@ -45,6 +45,15 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  *
  * If n*n is odd the center cell gets value=null (rendered as striped wild cell).
  */
+function shuffled(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 export function buildPairingGrid(n, type) {
   const total     = n * n
   const isOdd     = total % 2 !== 0
@@ -52,10 +61,11 @@ export function buildPairingGrid(n, type) {
 
   // Generate pair values
   const pairValues = []
+  const colorPool  = shuffled(PAIR_COLORS)
   for (let i = 0; i < pairCount; i++) {
     let v
     if (type === 'color') {
-      v = PAIR_COLORS[i % PAIR_COLORS.length]
+      v = colorPool[i % colorPool.length]
     } else if (type === 'number') {
       v = String((i % 50) + 1)
     } else {

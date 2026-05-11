@@ -278,6 +278,10 @@ const translations = {
     geo_f_square_perim:         'P = 4s',
     geo_f_right_triangle_perim: 'P = a+b+c',
 
+    // Animal Match challenge
+    challenge_animal_label: 'Animal Match',
+    challenge_animal_desc: 'Flip cards and match animals to their names',
+
     // Color Match challenge
     challenge_colormatch_label: 'Color Match',
     challenge_colormatch_desc: 'Flip cards and match pairs of color GIFs',
@@ -614,6 +618,10 @@ const translations = {
     geo_f_rectangle_perim:      'O = 2(b+l)',
     geo_f_square_perim:         'O = 4s',
     geo_f_right_triangle_perim: 'O = a+b+c',
+
+    // Animal Match challenge
+    challenge_animal_label: 'Dyrematch',
+    challenge_animal_desc: 'Vend kort og match dyr til deres navne',
 
     // Color Match challenge
     challenge_colormatch_label: 'Farvematch',

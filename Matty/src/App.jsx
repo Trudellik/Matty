@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import NotReadyPage from './pages/NotReadyPage'
 import { LocaleProvider } from './store/LocaleContext'
@@ -22,11 +22,10 @@ const AnimalChallenge         = lazy(() => import('./features/animal/AnimalChall
 function App() {
   return (
     <UserProvider>
-      <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/da" replace />} />
-          <Route path="/:locale" element={<LocaleProvider />}>
-            <Route index element={<Home />} />
+      <LocaleProvider>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="challenge/multiplication" element={<MultiplicationChallenge />} />
             <Route path="challenge/calculation"    element={<CalculationChallenge />} />
             <Route path="challenge/addition"       element={<AdditionChallenge />} />
@@ -40,9 +39,9 @@ function App() {
             <Route path="challenge/colormatch"     element={<ColorMatchChallenge />} />
             <Route path="challenge/animal"         element={<AnimalChallenge />} />
             <Route path="challenge/:id"            element={<NotReadyPage />} />
-          </Route>
-        </Routes>
-      </Suspense>
+          </Routes>
+        </Suspense>
+      </LocaleProvider>
     </UserProvider>
   )
 }
