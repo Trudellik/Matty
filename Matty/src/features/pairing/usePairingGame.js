@@ -137,20 +137,26 @@ export function usePairingGame({ mode = 'single', pairType = 'color', startSize 
 
   // ── Start / restart ───────────────────────────────────────────────────
   function start(overridePairType) {
-    if (overridePairType) pairTypeRef.current = overridePairType
+    if (typeof overridePairType === 'string') pairTypeRef.current = overridePairType
     const size = modeRef.current === 'timed' ? TIMED_START_SIZE : startSize
+    const freshGrid = buildPairingGrid(size, pairTypeRef.current)
+    gridRef.current      = freshGrid
+    gridSizeRef.current  = size
     scoreRef.current     = 0
     completedRef.current = false
     frozenRef.current    = false
     selectedRef.current  = null
+    setGrid(freshGrid)
+    setGridSize(size)
     setScore(0)
     setCompleted(false)
     setIsNewBest(false)
+    setSelected(null)
+    setWrongPair(null)
     elapsedRef.current = 0
     setElapsed(0)
     setFinalElapsed(0)
     setTimeLeft(TIMED_DURATION_S)
-    loadRound(size)
     setGameState('playing')
   }
 

@@ -20,8 +20,8 @@ export const COLOR_CARDS = [
   { id: 'black',     gif: blackGif,    color: '#202020' },
   { id: 'brown',     gif: brownGif,    color: '#92400e' },
   { id: 'gray',      gif: grayGif,     color: '#6b7280' },
-  { id: 'white',     gif: whiteGif,    color: '#d1d5db' },
-  { id: 'light-red', gif: lightRedGif, color: '#ff7878' },
+  { id: 'white',     gif: whiteGif,    color: '#ededff' },
+  { id: 'light-red', gif: lightRedGif, color: '#FFC0CB' },
 ]
 
 export const ALL_BG_COLORS = COLOR_CARDS.map(c => c.color)
