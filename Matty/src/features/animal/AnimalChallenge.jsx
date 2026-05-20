@@ -16,7 +16,7 @@ function AnimalBg() {
         <img
           key={i}
           className="an-bg-cell"
-          src={getAnimalGifUrl(BG_ANIMALS[i % BG_ANIMALS.length])}
+          src={getAnimalJpgUrl(BG_ANIMALS[i % BG_ANIMALS.length])}
           alt=""
           draggable="false"
         />

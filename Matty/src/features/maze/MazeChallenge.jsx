@@ -34,6 +34,7 @@ export default function MazeChallenge() {
 
   const currentCellRef = useRef(null)
   const bumpTimerRef   = useRef(null)
+  const touchStartRef  = useRef(null)
 
   useEffect(() => {
     currentCellRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
@@ -47,6 +48,22 @@ export default function MazeChallenge() {
       setBumpDir(dir)
       bumpTimerRef.current = setTimeout(() => setBumpDir(null), 300)
     }
+  }
+
+  function onTouchStart(e) {
+    const t = e.touches[0]
+    touchStartRef.current = { x: t.clientX, y: t.clientY }
+  }
+
+  function onTouchEnd(e) {
+    if (!touchStartRef.current) return
+    const t  = e.changedTouches[0]
+    const dx = t.clientX - touchStartRef.current.x
+    const dy = t.clientY - touchStartRef.current.y
+    touchStartRef.current = null
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return
+    if (Math.abs(dx) > Math.abs(dy)) tryMove(0, dx > 0 ? 1 : -1)
+    else                              tryMove(dy > 0 ? 1 : -1, 0)
   }
 
   const tryMoveRef = useRef(null)
@@ -132,7 +149,11 @@ export default function MazeChallenge() {
     >
 
       {/* Grid */}
-      <div className="maze-grid-viewport">
+      <div
+        className="maze-grid-viewport"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         <div className="maze-grid" style={{ gridTemplateColumns: `repeat(${N}, var(--maze-cell))` }}>
           {maze.grid.map((row, r) =>
             row.map((cell, c) => {
