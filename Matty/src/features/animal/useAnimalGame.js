@@ -92,7 +92,7 @@ export function useAnimalGame({ saveBestTime, getExistingScore }) {
     setElapsed(0)
     setCompleted(false)
     setIsNewBest(false)
-    const newGrid = buildAnimalGrid(cfg.pairs)
+    const newGrid = buildAnimalGrid(cfg.pairs, key)
     gridRef.current = newGrid
     setGrid(newGrid)
   }
