@@ -9,6 +9,8 @@ import purpleGif   from '../../assets/colors/gifs/purple.gif'
 import redGif      from '../../assets/colors/gifs/red.gif'
 import whiteGif    from '../../assets/colors/gifs/white.gif'
 import yellowGif   from '../../assets/colors/gifs/yellow.gif'
+import goldGif     from '../../assets/colors/gifs/gold.gif'
+import silverGif   from '../../assets/colors/gifs/silver.gif'
 
 export const COLOR_CARDS = [
   { id: 'red',       gif: redGif,      color: '#e92929' },
@@ -19,9 +21,11 @@ export const COLOR_CARDS = [
   { id: 'purple',    gif: purpleGif,   color: '#a855f7' },
   { id: 'black',     gif: blackGif,    color: '#202020' },
   { id: 'brown',     gif: brownGif,    color: '#92400e' },
-  { id: 'gray',      gif: grayGif,     color: '#6b7280' },
-  { id: 'white',     gif: whiteGif,    color: '#ededff' },
+  { id: 'gray',      gif: grayGif,     color: '#555555' },
+  { id: 'white',     gif: whiteGif,    color: '#fdfdfd' },
   { id: 'light-red', gif: lightRedGif, color: '#FFC0CB' },
+  { id: 'gold',      gif: goldGif,     color: '#FFD700' },
+  { id: 'silver',    gif: silverGif,   color: '#C0C0C0' },
 ]
 
 export const ALL_BG_COLORS = COLOR_CARDS.map(c => c.color)

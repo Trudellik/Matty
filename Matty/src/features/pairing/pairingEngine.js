@@ -65,7 +65,10 @@ export function buildPairingGrid(n, type) {
   for (let i = 0; i < pairCount; i++) {
     let v
     if (type === 'color') {
-      v = colorPool[i % colorPool.length]
+      // Never reuse a color — overflow pairs get unique golden-angle HSL colors
+      v = i < colorPool.length
+        ? colorPool[i]
+        : `hsl(${Math.round((i * 137.508) % 360)}, 65%, 55%)`
     } else if (type === 'number') {
       v = String((i % 50) + 1)
     } else {

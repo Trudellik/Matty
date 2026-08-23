@@ -18,6 +18,8 @@ const SequenceChallenge       = lazy(() => import('./features/sequence/SequenceC
 const PairingChallenge        = lazy(() => import('./features/pairing/PairingChallenge'))
 const ColorMatchChallenge     = lazy(() => import('./features/colormatch/ColorMatchChallenge'))
 const AnimalChallenge         = lazy(() => import('./features/animal/AnimalChallenge'))
+const FruitChallenge          = lazy(() => import('./features/fruit/FruitChallenge'))
+const NumberChallenge         = lazy(() => import('./features/number/NumberChallenge'))
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
             <Route path="challenge/pairing"        element={<PairingChallenge />} />
             <Route path="challenge/colormatch"     element={<ColorMatchChallenge />} />
             <Route path="challenge/animal"         element={<AnimalChallenge />} />
+            <Route path="challenge/fruit"          element={<FruitChallenge />} />
+            <Route path="challenge/number"         element={<NumberChallenge />} />
             <Route path="challenge/:id"            element={<NotReadyPage />} />
           </Routes>
         </Suspense>
