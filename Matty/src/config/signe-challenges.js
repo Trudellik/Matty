@@ -1,8 +1,8 @@
 const signeChallenges = [
   { id: 'colormatch',     label: 'Colors',       icon: '🎨', description: 'Flip cards and match pairs of color GIFs',                       scoreType: 'time',  ready: true },
   { id: 'animal',         label: 'Animals',      icon: '🦁', description: 'Flip cards and match animals to their names',           scoreType: 'time',  ready: true },
-  { id: 'fruit',          label: 'Fruits',       icon: '🍎', description: 'Flip cards and match fruits to their names',            scoreType: 'time',  ready: false },
-  { id: 'nature',         label: 'Nature',       icon: '🌿', description: 'Flip cards and match nature items to their names',      scoreType: 'time',  ready: false },
+  { id: 'fruit',          label: 'Fruits',       icon: '🍎', description: 'Flip cards and match fruits to their names',            scoreType: 'time',  ready: true },
+  { id: 'number',         label: 'Numbers',      icon: '🔢', description: 'Flip cards and match numbers to their names',            scoreType: 'time',  ready: true },
 //  { id: 'fingerspelling', label: 'Fingerspelling',    icon: '🤟', description: 'Learn the manual alphabet — spell words letter by letter',        scoreType: 'score', ready: true },
 //  { id: 'signmatch',      label: 'Sign Match',        icon: '👐', description: 'Match a sign image to the correct word',                          scoreType: 'score', ready: true },
 //  { id: 'wordbuilder',    label: 'Word Builder',      icon: '🔤', description: 'Arrange letters to build the target word',                        scoreType: 'time',  ready: true },

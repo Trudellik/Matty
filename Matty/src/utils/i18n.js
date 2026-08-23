@@ -48,8 +48,6 @@ const translations = {
     challenge_calculation_desc: 'Answer fast before time runs out',
     challenge_division_label: 'Division',
     challenge_division_desc: 'Divide with confidence',
-    challenge_fractions_label: 'Fractions',
-    challenge_fractions_desc: 'Work with fractions & decimals',
     challenge_mental_math_label: 'Mental Math',
     challenge_mental_math_desc: 'Fast calculations in your head',
     challenge_number_sequence_label: 'Number Sequences',
@@ -286,9 +284,9 @@ const translations = {
     challenge_fruit_label: 'Fruits',
     challenge_fruit_desc: 'Flip cards and match fruits to their names',
 
-    // Nature challenge
-    challenge_nature_label: 'Nature',
-    challenge_nature_desc: 'Flip cards and match nature items to their names',
+    // Number challenge
+    challenge_number_label: 'Numbers',
+    challenge_number_desc: 'Flip cards and match numbers to their names',
 
     // Color challenge
     challenge_colormatch_label: 'Colors',
@@ -307,6 +305,38 @@ const translations = {
     cm_complete: 'All Matched!',
     cm_new_best: 'New best time!',
     cm_play_again: 'Play Again',
+
+    // Fruit Match challenge
+    ft_title: 'Fruit Match',
+    ft_subtitle: 'Flip cards and match fruits to their names',
+    ft_level_easy: 'Easy',
+    ft_level_easy_desc: '3×4 grid — 6 fruit pairs',
+    ft_level_medium: 'Medium',
+    ft_level_medium_desc: '4×4 grid — 8 fruit pairs',
+    ft_level_hard: 'Hard',
+    ft_level_hard_desc: '4×5 grid — 10 fruit pairs',
+    ft_rule_gif: 'Each fruit has an animated GIF card and a photo card',
+    ft_rule_match: 'Tap a GIF card then tap the matching photo',
+    ft_rule_time: 'Clear the board as fast as you can',
+    ft_complete: 'All Matched!',
+    ft_new_best: 'New best time!',
+    ft_play_again: 'Play Again',
+
+    // Number Match challenge
+    nb_title: 'Number Match',
+    nb_subtitle: 'Flip cards and match numbers to their names',
+    nb_level_easy: 'Easy',
+    nb_level_easy_desc: '3×4 grid — 6 number pairs',
+    nb_level_medium: 'Medium',
+    nb_level_medium_desc: '4×4 grid — 8 number pairs',
+    nb_level_hard: 'Hard',
+    nb_level_hard_desc: '4×5 grid — 10 number pairs',
+    nb_rule_gif: 'Each number has an animated sign GIF card and a digit card',
+    nb_rule_match: 'Tap a sign card then tap the matching digit',
+    nb_rule_time: 'Clear the board as fast as you can',
+    nb_complete: 'All Matched!',
+    nb_new_best: 'New best time!',
+    nb_play_again: 'Play Again',
 
     // Animal Match challenge
     an_title: 'Animal Match',
@@ -397,8 +427,6 @@ const translations = {
     challenge_calculation_desc: 'Svar hurtigt inden tiden løber ud',
     challenge_division_label: 'Division',
     challenge_division_desc: 'Divider med sikkerhed',
-    challenge_fractions_label: 'Brøker',
-    challenge_fractions_desc: 'Arbejd med brøker og decimaler',
     challenge_mental_math_label: 'Hovedregning',
     challenge_mental_math_desc: 'Hurtige beregninger i hovedet',
     challenge_number_sequence_label: 'Talrækker',
@@ -635,9 +663,9 @@ const translations = {
     challenge_fruit_label: 'Frugt',
     challenge_fruit_desc: 'Vend kort og match frugter til deres navne',
 
-    // Nature challenge
-    challenge_nature_label: 'Natur',
-    challenge_nature_desc: 'Vend kort og match naturobjekter til deres navne',
+    // Number challenge
+    challenge_number_label: 'Tal',
+    challenge_number_desc: 'Vend kort og match tal med deres navne',
 
     // Color challenge
     challenge_colormatch_label: 'Farver',
@@ -656,6 +684,38 @@ const translations = {
     cm_complete: 'Alle matchet!',
     cm_new_best: 'Ny bedste tid!',
     cm_play_again: 'Spil igen',
+
+    // Fruit Match challenge
+    ft_title: 'Frugtmatch',
+    ft_subtitle: 'Vend kort og match frugter til deres navne',
+    ft_level_easy: 'Let',
+    ft_level_easy_desc: '3×4 gitter — 6 frugtpar',
+    ft_level_medium: 'Mellem',
+    ft_level_medium_desc: '4×4 gitter — 8 frugtpar',
+    ft_level_hard: 'Svær',
+    ft_level_hard_desc: '4×5 gitter — 10 frugtpar',
+    ft_rule_gif: 'Hver frugt har et animeret GIF-kort og et fotokort',
+    ft_rule_match: 'Tryk på et GIF-kort og derefter det matchende foto',
+    ft_rule_time: 'Ryd brættet så hurtigt som muligt',
+    ft_complete: 'Alle matchet!',
+    ft_new_best: 'Ny bedste tid!',
+    ft_play_again: 'Spil igen',
+
+    // Number Match challenge
+    nb_title: 'Talmatch',
+    nb_subtitle: 'Vend kort og match tal med deres navne',
+    nb_level_easy: 'Let',
+    nb_level_easy_desc: '3×4 gitter — 6 talpar',
+    nb_level_medium: 'Mellem',
+    nb_level_medium_desc: '4×4 gitter — 8 talpar',
+    nb_level_hard: 'Svær',
+    nb_level_hard_desc: '4×5 gitter — 10 talpar',
+    nb_rule_gif: 'Hvert tal har et animeret tegnsprogskort og et talkort',
+    nb_rule_match: 'Tryk på et tegnkort og derefter det matchende tal',
+    nb_rule_time: 'Ryd brættet så hurtigt som muligt',
+    nb_complete: 'Alle matchet!',
+    nb_new_best: 'Ny bedste tid!',
+    nb_play_again: 'Spil igen',
 
     // Animal Match challenge
     an_title: 'Dyrematch',
