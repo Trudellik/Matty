@@ -88,6 +88,38 @@
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(0,0,0,0.15);
 }
 
+/* Gold/silver: metallic gradient with an animated shine sweep */
+.cm-cell-color--shine {
+  position: relative;
+  background-size: 200% 200%;
+  animation: cm-shine-shift 3s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.cm-cell-color--shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 48%,
+    transparent 60%
+  );
+  background-size: 250% 250%;
+  animation: cm-shine-sweep 2.6s ease-in-out infinite;
+}
+
+@keyframes cm-shine-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+@keyframes cm-shine-sweep {
+  0%   { background-position: 200% 0%; }
+  100% { background-position: -50% 0%; }
+}
+
 /* Selected */
 .cm-cell--selected {
   border-color: var(--accent);

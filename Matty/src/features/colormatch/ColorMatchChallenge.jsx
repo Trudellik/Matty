@@ -159,7 +159,10 @@ export default function ColorMatchChallenge() {
                 <img src={cell.gif} alt={cell.word} draggable="false" />
               )}
               {!cell.matched && cell.type === 'color' && (
-                <span className="cm-cell-color" style={{ background: cell.color }} />
+                <span
+                  className={`cm-cell-color${cell.gradient ? ' cm-cell-color--shine' : ''}`}
+                  style={{ background: cell.gradient ?? cell.color }}
+                />
               )}
               {!cell.matched && cell.type === 'word' && (
                 <span className="cm-cell-word">{cell.word}</span>

@@ -24,8 +24,8 @@ export const COLOR_CARDS = [
   { id: 'gray',      gif: grayGif,     color: '#555555' },
   { id: 'white',     gif: whiteGif,    color: '#fdfdfd' },
   { id: 'light-red', gif: lightRedGif, color: '#FFC0CB' },
-  { id: 'gold',      gif: goldGif,     color: '#FFD700' },
-  { id: 'silver',    gif: silverGif,   color: '#C0C0C0' },
+  { id: 'gold',      gif: goldGif,     color: '#FFD700', gradient: 'linear-gradient(135deg, #a17a1a 0%, #ffe9a8 22%, #d4a017 45%, #fff6d5 60%, #b8860b 78%, #ffdf7e 100%)' },
+  { id: 'silver',    gif: silverGif,   color: '#C0C0C0', gradient: 'linear-gradient(135deg, #6b6b6b 0%, #f2f2f2 22%, #a8a8a8 45%, #ffffff 60%, #8c8c8c 78%, #e6e6e6 100%)' },
 ]
 
 export const ALL_BG_COLORS = COLOR_CARDS.map(c => c.color)
@@ -67,7 +67,7 @@ export function buildColorMatchGrid(pairs, selectedTypes) {
   const selected = shuffle(COLOR_CARDS).slice(0, pairs)
 
   const flat = selected.flatMap(c =>
-    types.map(type => ({ value: c.id, type, gif: c.gif, color: c.color, word: c.word }))
+    types.map(type => ({ value: c.id, type, gif: c.gif, color: c.color, gradient: c.gradient, word: c.word }))
   )
 
   return shuffle(flat).map((cell, id) => ({ ...cell, id, matched: false }))
