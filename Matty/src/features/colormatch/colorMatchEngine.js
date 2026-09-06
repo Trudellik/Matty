@@ -30,36 +30,45 @@ export const COLOR_CARDS = [
 
 export const ALL_BG_COLORS = COLOR_CARDS.map(c => c.color)
 
+// LEVELS store pairs count; grid dimensions are computed at build time
 export const LEVELS = {
-  easy:   { cols: 3, rows: 4, pairs: 6,  labelKey: 'cm_level_easy',   descKey: 'cm_level_easy_desc' },
-  medium: { cols: 4, rows: 4, pairs: 8,  labelKey: 'cm_level_medium', descKey: 'cm_level_medium_desc' },
-  hard:   { cols: 4, rows: 5, pairs: 10, labelKey: 'cm_level_hard',   descKey: 'cm_level_hard_desc' },
+  easy:   { pairs: 4,  labelKey: 'cm_level_easy',   descKey: 'cm_level_easy_desc'   },
+  medium: { pairs: 6,  labelKey: 'cm_level_medium', descKey: 'cm_level_medium_desc' },
+  hard:   { pairs: 8,  labelKey: 'cm_level_hard',   descKey: 'cm_level_hard_desc'   },
+}
+
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+/** Returns { cols, rows } for a given cell count, preferring wider layouts */
+export function gridDims(count) {
+  // Try to keep rows >= cols and reasonably square
+  for (let cols = Math.ceil(Math.sqrt(count)); cols <= count; cols++) {
+    if (count % cols === 0) return { cols, rows: count / cols }
+  }
+  // Fallback: one row
+  return { cols: count, rows: 1 }
 }
 
 /**
- * Builds a flat grid of cells for the Color Match game.
- * Each pair: one 'gif' cell + one 'color' cell sharing the same value (colorId).
- * { id, value, type, gif, color, matched }
+ * Builds a flat grid for Color Match.
+ * selectedTypes: subset of ['gif','color','word'] (at least 2)
+ * Each color gets one card per selected type.
+ * { id, value, type, gif, color, word, matched }
  */
-export function buildColorMatchGrid(pairs) {
-  // Shuffle the full palette so every game picks a different set of colors
-  const shuffled = [...COLOR_CARDS]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  const selected = shuffled.slice(0, pairs)
+export function buildColorMatchGrid(pairs, selectedTypes) {
+  const types    = selectedTypes ?? ['gif', 'color']
+  const selected = shuffle(COLOR_CARDS).slice(0, pairs)
 
-  const flat = selected.flatMap(c => [
-    { value: c.id, type: 'gif',   gif: c.gif,  color: c.color },
-    { value: c.id, type: 'color', gif: null,   color: c.color },
-  ])
+  const flat = selected.flatMap(c =>
+    types.map(type => ({ value: c.id, type, gif: c.gif, color: c.color, word: c.word }))
+  )
 
-  // Fisher-Yates shuffle
-  for (let i = flat.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[flat[i], flat[j]] = [flat[j], flat[i]]
-  }
-
-  return flat.map((cell, id) => ({ ...cell, id, matched: false }))
+  return shuffle(flat).map((cell, id) => ({ ...cell, id, matched: false }))
 }

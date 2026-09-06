@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocale } from '../../store/LocaleContext'
 import { useHighScores } from '../../hooks/useHighScores'
@@ -23,17 +24,52 @@ function ColorBg() {
   )
 }
 
+const ALL_TYPES = ['gif', 'color', 'word']
+
+function TypePicker({ selected, onChange, t }) {
+  function toggle(type) {
+    if (selected.includes(type)) {
+      if (selected.length <= 2) return  // must keep at least 2
+      onChange(selected.filter(x => x !== type))
+    } else {
+      onChange([...selected, type])
+    }
+  }
+
+  return (
+    <div className="cm-type-picker">
+      <span className="cm-type-picker-label">{t('match_mode_label')}</span>
+      <div className="cm-type-picker-row">
+        {ALL_TYPES.map(type => (
+          <button
+            key={type}
+            className={`cm-type-btn${selected.includes(type) ? ' cm-type-btn--active' : ''}`}
+            onClick={() => toggle(type)}
+          >
+            {t(`match_type_${type}`)}
+          </button>
+        ))}
+      </div>
+      <span className="cm-type-picker-hint">
+        {selected.length === 3 ? t('match_mode_triple') : t('match_mode_pair')}
+      </span>
+    </div>
+  )
+}
+
 export default function ColorMatchChallenge() {
   const navigate                 = useNavigate()
   const { t, homePath }          = useLocale()
   const { scores, saveBestTime, globalTimes, globalTimeHolder } = useHighScores()
+
+  const [pendingTypes, setPendingTypes] = useState(['gif', 'color'])
 
   const game = useColorMatchGame({
     saveBestTime:     (lvl, time) => saveBestTime('colormatch', lvl, time),
     getExistingScore: (lvl)       => scores['colormatch']?.[lvl],
   })
 
-  const { level, grid, selected, wrongPair, elapsed, completed, isNewBest, selectLevel, playAgain, stopGame, selectCell } = game
+  const { level, grid, selected, wrongGroup, elapsed, completed, isNewBest, dims, selectLevel, playAgain, stopGame, selectCell } = game
 
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
@@ -53,13 +89,16 @@ export default function ColorMatchChallenge() {
       color: COLORS[key],
     }))
 
+    const extra = <TypePicker selected={pendingTypes} onChange={setPendingTypes} t={t} />
+
     return (
       <GameOptionsPage
         icon="🎨"
         title={t('cm_title')}
         subtitle={t('cm_subtitle')}
         options={options}
-        onStart={(key) => selectLevel(key)}
+        extra={extra}
+        onStart={(key) => selectLevel(key, pendingTypes)}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('mult_start')}
@@ -69,8 +108,6 @@ export default function ColorMatchChallenge() {
   }
 
   // ── Game screen ───────────────────────────────────────────────────
-  const cfg = LEVELS[level]
-
   return (
     <ChallengePage
       onQuit={() => { stopGame(); selectLevel(null) }}
@@ -99,16 +136,17 @@ export default function ColorMatchChallenge() {
 
       <div
         className="cm-grid"
-        style={{ '--cm-cols': cfg.cols, '--cm-rows': cfg.rows }}
+        style={{ '--cm-cols': dims.cols, '--cm-rows': dims.rows }}
       >
         {grid.map(cell => {
-          const isSelected = selected === cell.id
-          const isWrong    = wrongPair?.includes(cell.id)
+          const isSelected = selected.includes(cell.id)
+          const isWrong    = wrongGroup?.includes(cell.id)
 
           let cls = 'cm-cell'
-          if (cell.matched)  cls += ' cm-cell--matched'
-          else if (isWrong)  cls += ' cm-cell--wrong'
+          if (cell.matched)    cls += ' cm-cell--matched'
+          else if (isWrong)    cls += ' cm-cell--wrong'
           else if (isSelected) cls += ' cm-cell--selected'
+          if (cell.type === 'word') cls += ' cm-cell--word'
 
           return (
             <button
@@ -117,11 +155,15 @@ export default function ColorMatchChallenge() {
               onClick={() => selectCell(cell.id)}
               disabled={cell.matched || completed}
             >
-              {!cell.matched && (cell.gif ? (
-                <img src={cell.gif} alt={cell.value} draggable="false" />
-              ) : (
+              {!cell.matched && cell.type === 'gif' && (
+                <img src={cell.gif} alt={cell.word} draggable="false" />
+              )}
+              {!cell.matched && cell.type === 'color' && (
                 <span className="cm-cell-color" style={{ background: cell.color }} />
-              ))}
+              )}
+              {!cell.matched && cell.type === 'word' && (
+                <span className="cm-cell-word">{cell.word}</span>
+              )}
             </button>
           )
         })}

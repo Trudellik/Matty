@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocale } from '../../store/LocaleContext'
 import { useHighScores } from '../../hooks/useHighScores'
@@ -25,17 +26,52 @@ function AnimalBg() {
   )
 }
 
+const ALL_TYPES = ['gif', 'photo', 'word']
+
+function TypePicker({ selected, onChange, t }) {
+  function toggle(type) {
+    if (selected.includes(type)) {
+      if (selected.length <= 2) return
+      onChange(selected.filter(x => x !== type))
+    } else {
+      onChange([...selected, type])
+    }
+  }
+
+  return (
+    <div className="an-type-picker">
+      <span className="an-type-picker-label">{t('match_mode_label')}</span>
+      <div className="an-type-picker-row">
+        {ALL_TYPES.map(type => (
+          <button
+            key={type}
+            className={`an-type-btn${selected.includes(type) ? ' an-type-btn--active' : ''}`}
+            onClick={() => toggle(type)}
+          >
+            {t(`match_type_${type}`)}
+          </button>
+        ))}
+      </div>
+      <span className="an-type-picker-hint">
+        {selected.length === 3 ? t('match_mode_triple') : t('match_mode_pair')}
+      </span>
+    </div>
+  )
+}
+
 export default function AnimalChallenge() {
   const navigate                 = useNavigate()
-  const { t, homePath }          = useLocale()
+  const { t, homePath, locale }  = useLocale()
   const { scores, saveBestTime, globalTimes, globalTimeHolder } = useHighScores()
+
+  const [pendingTypes, setPendingTypes] = useState(['gif', 'photo'])
 
   const game = useAnimalGame({
     saveBestTime:     (lvl, time) => saveBestTime('animal', lvl, time),
     getExistingScore: (lvl)       => scores['animal']?.[lvl],
   })
 
-  const { level, grid, selected, wrongPair, elapsed, completed, isNewBest, selectLevel, playAgain, stopGame, selectCell } = game
+  const { level, grid, selected, wrongGroup, elapsed, completed, isNewBest, dims, selectLevel, playAgain, stopGame, selectCell } = game
 
   // ── Level select ──────────────────────────────────────────────────
   if (!level) {
@@ -55,13 +91,16 @@ export default function AnimalChallenge() {
       color: COLORS[key],
     }))
 
+    const extra = <TypePicker selected={pendingTypes} onChange={setPendingTypes} t={t} />
+
     return (
       <GameOptionsPage
         icon="🦁"
         title={t('an_title')}
         subtitle={t('an_subtitle')}
         options={options}
-        onStart={(key) => selectLevel(key)}
+        extra={extra}
+        onStart={(key) => selectLevel(key, pendingTypes)}
         onBack={() => navigate(homePath())}
         backLabel={t('back')}
         startLabel={t('mult_start')}
@@ -71,8 +110,6 @@ export default function AnimalChallenge() {
   }
 
   // ── Game screen ───────────────────────────────────────────────────
-  const cfg = LEVELS[level]
-
   return (
     <ChallengePage
       onQuit={() => { stopGame(); selectLevel(null) }}
@@ -101,16 +138,17 @@ export default function AnimalChallenge() {
 
       <div
         className="an-grid"
-        style={{ '--an-cols': cfg.cols, '--an-rows': cfg.rows }}
+        style={{ '--an-cols': dims.cols, '--an-rows': dims.rows }}
       >
         {grid.map(cell => {
-          const isSelected = selected === cell.id
-          const isWrong    = wrongPair?.includes(cell.id)
+          const isSelected = selected.includes(cell.id)
+          const isWrong    = wrongGroup?.includes(cell.id)
 
           let cls = 'an-cell'
           if (cell.matched)    cls += ' an-cell--matched'
           else if (isWrong)    cls += ' an-cell--wrong'
           else if (isSelected) cls += ' an-cell--selected'
+          if (cell.type === 'word') cls += ' an-cell--word'
 
           return (
             <button
@@ -119,12 +157,14 @@ export default function AnimalChallenge() {
               onClick={() => selectCell(cell.id)}
               disabled={cell.matched || completed}
             >
-              {!cell.matched && (
-                <img
-                  src={cell.type === 'gif' ? getAnimalGifUrl(cell.animal.id) : getAnimalJpgUrl(cell.animal.id)}
-                  alt={cell.animal.en}
-                  draggable="false"
-                />
+              {!cell.matched && cell.type === 'gif' && (
+                <img src={getAnimalGifUrl(cell.animal.id)} alt={cell.animal.en} draggable="false" />
+              )}
+              {!cell.matched && cell.type === 'photo' && (
+                <img src={getAnimalJpgUrl(cell.animal.id)} alt={cell.animal.en} draggable="false" />
+              )}
+              {!cell.matched && cell.type === 'word' && (
+                <span className="an-cell-name">{locale === 'da' ? cell.animal.da : cell.animal.en}</span>
               )}
             </button>
           )
