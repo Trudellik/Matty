@@ -350,6 +350,15 @@ const translations = {
     an_rule_gif: 'Each animal has an animated GIF card and a photo card',
     an_rule_match: 'Tap a GIF card then tap the matching photo',
     an_rule_time: 'Clear the board as fast as you can',
+
+    // Mode picker (shared by Animal and Color Match)
+    match_mode_label: 'Card types',
+    match_type_gif:   'GIF',
+    match_type_photo: 'Photo',
+    match_type_word:  'Word',
+    match_type_color: 'Color',
+    match_mode_pair:   'Match pairs — find 2 cards with the same value',
+    match_mode_triple: 'Triple match — find all 3 cards with the same value',
     an_complete: 'All Matched!',
     an_new_best: 'New best time!',
     an_play_again: 'Play Again',
@@ -729,6 +738,15 @@ const translations = {
     an_rule_gif: 'Hvert dyr har et animeret GIF-kort og et fotokort',
     an_rule_match: 'Tryk på et GIF-kort og derefter det matchende foto',
     an_rule_time: 'Ryd brættet så hurtigt som muligt',
+
+    // Mode picker (shared by Animal and Color Match)
+    match_mode_label: 'Korttyper',
+    match_type_gif:   'GIF',
+    match_type_photo: 'Foto',
+    match_type_word:  'Ord',
+    match_type_color: 'Farve',
+    match_mode_pair:   'Parring — find 2 kort med samme værdi',
+    match_mode_triple: 'Tripling — find alle 3 kort med samme værdi',
     an_complete: 'Alle matchet!',
     an_new_best: 'Ny bedste tid!',
     an_play_again: 'Spil igen',

@@ -1,20 +1,23 @@
 import { useState, useEffect, useRef } from 'react'
-import { buildAnimalGrid, LEVELS } from './animalEngine'
+import { buildAnimalGrid, gridDims, LEVELS } from './animalEngine'
 
 export function useAnimalGame({ saveBestTime, getExistingScore }) {
-  const [level,     setLevel]     = useState(null)
-  const [grid,      setGrid]      = useState([])
-  const [selected,  setSelected]  = useState(null)
-  const [wrongPair, setWrongPair] = useState(null)
-  const [elapsed,   setElapsed]   = useState(0)
-  const [completed, setCompleted] = useState(false)
-  const [isNewBest, setIsNewBest] = useState(false)
+  const [level,          setLevel]         = useState(null)
+  const [selectedTypes,  setSelectedTypes] = useState(['gif', 'photo'])
+  const [grid,           setGrid]          = useState([])
+  const [selected,       setSelected]      = useState([])   // array of ids
+  const [wrongGroup,     setWrongGroup]    = useState(null)
+  const [elapsed,        setElapsed]       = useState(0)
+  const [completed,      setCompleted]     = useState(false)
+  const [isNewBest,      setIsNewBest]     = useState(false)
+  const [dims,           setDims]          = useState({ cols: 3, rows: 4 })
 
-  const elapsedRef  = useRef(0)
-  const frozenRef   = useRef(false)
-  const gridRef     = useRef([])
-  const selectedRef = useRef(null)
-  const levelRef    = useRef(null)
+  const elapsedRef       = useRef(0)
+  const frozenRef        = useRef(false)
+  const gridRef          = useRef([])
+  const selectedRef      = useRef([])
+  const levelRef         = useRef(null)
+  const selectedTypesRef = useRef(['gif', 'photo'])
 
   useEffect(() => { gridRef.current = grid }, [grid])
 
@@ -36,26 +39,36 @@ export function useAnimalGame({ saveBestTime, getExistingScore }) {
     const cell = gridRef.current.find(c => c.id === id)
     if (!cell || cell.matched) return
 
-    if (selectedRef.current === id) {
-      selectedRef.current = null
-      setSelected(null)
+    const cur       = selectedRef.current
+    const groupSize = selectedTypesRef.current.length  // 2 or 3
+
+    // Deselect if tapping already-selected cell
+    if (cur.includes(id)) {
+      const next = cur.filter(x => x !== id)
+      selectedRef.current = next
+      setSelected(next)
       return
     }
 
-    if (selectedRef.current === null) {
-      selectedRef.current = id
-      setSelected(id)
+    const next = [...cur, id]
+
+    if (next.length < groupSize) {
+      selectedRef.current = next
+      setSelected(next)
       return
     }
 
-    const first  = gridRef.current.find(c => c.id === selectedRef.current)
-    const second = cell
-    selectedRef.current = null
-    setSelected(null)
+    // Full group — evaluate
+    selectedRef.current = []
+    setSelected([])
 
-    if (first.value === second.value && first.type !== second.type) {
+    const cells       = next.map(i => gridRef.current.find(c => c.id === i))
+    const allSameValue = cells.every(c => c.value === cells[0].value)
+    const allDiffTypes = new Set(cells.map(c => c.type)).size === cells.length
+
+    if (allSameValue && allDiffTypes) {
       const newGrid = gridRef.current.map(c =>
-        c.id === first.id || c.id === second.id ? { ...c, matched: true } : c
+        next.includes(c.id) ? { ...c, matched: true } : c
       )
       gridRef.current = newGrid
       setGrid(newGrid)
@@ -70,38 +83,57 @@ export function useAnimalGame({ saveBestTime, getExistingScore }) {
       }
     } else {
       frozenRef.current = true
-      setWrongPair([first.id, second.id])
+      setWrongGroup(next)
       setTimeout(() => {
-        setWrongPair(null)
+        setWrongGroup(null)
         frozenRef.current = false
       }, 600)
     }
   }
 
-  // ── Level select & restart ────────────────────────────────────────
-  function selectLevel(key) {
-    levelRef.current    = key
-    frozenRef.current   = false
-    selectedRef.current = null
-    setSelected(null)
-    setWrongPair(null)
-    setLevel(key)
-    if (!key) { setGrid([]); return }
-    const cfg = LEVELS[key]
+  // ── Start a game ──────────────────────────────────────────────────
+  function startGame(lvl, types) {
+    const resolvedTypes    = types ?? selectedTypesRef.current
+    levelRef.current       = lvl
+    selectedTypesRef.current = resolvedTypes
+    frozenRef.current      = false
+    selectedRef.current    = []
+
+    const cfg     = LEVELS[lvl]
+    const newGrid = buildAnimalGrid(cfg.pairs, resolvedTypes)
+    const d       = gridDims(newGrid.length)
+
+    gridRef.current    = newGrid
     elapsedRef.current = 0
+
+    setSelectedTypes(resolvedTypes)
+    setLevel(lvl)
+    setGrid(newGrid)
+    setDims(d)
+    setSelected([])
+    setWrongGroup(null)
     setElapsed(0)
     setCompleted(false)
     setIsNewBest(false)
-    const newGrid = buildAnimalGrid(cfg.pairs, key)
-    gridRef.current = newGrid
-    setGrid(newGrid)
   }
 
-  function playAgain() { selectLevel(levelRef.current) }
-  function stopGame()  { frozenRef.current = false; selectedRef.current = null; setLevel(null) }
+  function selectLevel(key, types) {
+    if (!key) {
+      levelRef.current    = null
+      frozenRef.current   = false
+      selectedRef.current = []
+      setLevel(null)
+      setGrid([])
+      return
+    }
+    startGame(key, types)
+  }
+
+  function playAgain() { startGame(levelRef.current, selectedTypesRef.current) }
+  function stopGame()  { frozenRef.current = false; selectedRef.current = []; setLevel(null) }
 
   return {
-    level, grid, selected, wrongPair, elapsed, completed, isNewBest,
+    level, selectedTypes, grid, selected, wrongGroup, elapsed, completed, isNewBest, dims,
     selectLevel, playAgain, stopGame, selectCell,
   }
 }

@@ -44,9 +44,9 @@ export const ANIMALS = [
 ]
 
 export const LEVELS = {
-  easy:   { cols: 3, rows: 4, pairs: 6,  labelKey: 'an_level_easy',   descKey: 'an_level_easy_desc' },
-  medium: { cols: 4, rows: 4, pairs: 8,  labelKey: 'an_level_medium', descKey: 'an_level_medium_desc' },
-  hard:   { cols: 4, rows: 5, pairs: 10, labelKey: 'an_level_hard',   descKey: 'an_level_hard_desc' },
+  easy:   { pairs: 6,  labelKey: 'an_level_easy',   descKey: 'an_level_easy_desc' },
+  medium: { pairs: 8,  labelKey: 'an_level_medium', descKey: 'an_level_medium_desc' },
+  hard:   { pairs: 10, labelKey: 'an_level_hard',   descKey: 'an_level_hard_desc' },
 }
 
 export const BG_ANIMALS = ['bee', 'cat', 'dog', 'duck', 'frog', 'horse', 'lion', 'monkey', 'pig', 'bird']
@@ -64,6 +64,14 @@ const jpgUrls = Object.fromEntries(
 export function getAnimalGifUrl(id) { return gifUrls[id] ?? '' }
 export function getAnimalJpgUrl(id) { return jpgUrls[id] ?? '' }
 
+/** Returns { cols, rows } for a given cell count, preferring wider layouts */
+export function gridDims(count) {
+  for (let cols = Math.ceil(Math.sqrt(count)); cols <= count; cols++) {
+    if (count % cols === 0) return { cols, rows: count / cols }
+  }
+  return { cols: count, rows: 1 }
+}
+
 function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -73,16 +81,19 @@ function shuffle(arr) {
   return a
 }
 
-const LEVEL_ORDER = ['easy', 'medium', 'hard']
+/**
+ * Builds a flat grid for Animal Match.
+ * selectedTypes: subset of ['gif', 'photo', 'word'] (at least 2)
+ * Each animal gets one card per selected type.
+ * { id, value, type, animal, matched }
+ */
+export function buildAnimalGrid(pairs, selectedTypes) {
+  const types    = selectedTypes ?? ['gif', 'photo']
+  const selected = shuffle(ANIMALS).slice(0, pairs)
 
-export function buildAnimalGrid(pairs, level = 'easy') {
-  const eligible = ANIMALS.filter(a =>
-    !a.minLevel || LEVEL_ORDER.indexOf(level) >= LEVEL_ORDER.indexOf(a.minLevel)
+  const flat = selected.flatMap(a =>
+    types.map(type => ({ value: a.id, type, animal: a }))
   )
-  const selected = shuffle(eligible).slice(0, pairs)
-  const flat = selected.flatMap(a => [
-    { value: a.id, type: 'gif', animal: a },
-    { value: a.id, type: 'jpg', animal: a },
-  ])
+
   return shuffle(flat).map((cell, id) => ({ ...cell, id, matched: false }))
 }
